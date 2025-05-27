@@ -1,0 +1,121 @@
+.topbar{
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 15px;
+    min-height: 65px;
+    background-color: var(--white);
+    box-shadow: 0px 5px 10px 0px rgb(0, 0, 0, 15%);
+    gap: 20px;
+}
+
+.topbar-left{
+    display: flex;
+    gap: 15px;
+}
+
+.topbar-logo{
+    width: inherit;
+    position: relative;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: 20px;
+    font-family: 'SFProDisplay-Medium', sans-serif;
+    color: var(--heading-color);
+}
+
+.navbar-toggle-btn{
+    min-width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #FFF1DD;
+    border-radius: 8px;
+    border: none;
+}
+
+.topbar-right{
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-avatar{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0px;
+    background-color: transparent;
+    border: none;
+}
+
+.user-avatar p{
+    margin-bottom: 0px;
+}
+
+.notifications{
+    position: relative;
+}
+
+.notify-btn{
+    width: 35px;
+    height: 35px;
+    min-width: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    background-color: transparent;
+    border: none;
+}
+
+.new-nofifications{
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    border-radius: 50%;
+    background-color: red;
+    position: absolute;
+    right: 8px;
+    top: 5px;
+}
+
+/* Dropdown menu */
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 15px;
+  background-color: white;
+  box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.15);
+  border-radius: 12px;
+  overflow: hidden;
+  z-index: 1000;
+  border: none;
+}
+
+.dropdown-item {
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #333;
+  text-decoration: none;
+}
+
+.dropdown-item:hover {
+  background-color: #f0f0f0;
+}
+
+/* Hide the dropdown when not open */
+.dropdown-menu {
+  display: none;
+}
+
+.dropdown-menu.show {
+  display: block;
+}

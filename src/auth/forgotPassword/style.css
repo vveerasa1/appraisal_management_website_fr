@@ -1,0 +1,9 @@
+.blue-link-text{
+    text-align: center;
+    width: auto;
+    color: var(--blue);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

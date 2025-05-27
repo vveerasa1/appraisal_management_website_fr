@@ -1,0 +1,122 @@
+.breadcrumb-wrapper{
+    width: 100%;
+    position: relative;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+
+.page-name{
+    font-size: 20px;
+}
+
+.breadcrumb-lists{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb-lists li{
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb-lists li::after{
+    content: '/';
+    position: relative;
+    display: inline-block;
+    margin: 0px 10px;
+    color: var(--blue);
+}
+
+.breadcrumb-lists li:last-child:after{
+    display: none;
+}
+
+.breadcrumb-lists li p{
+    margin-bottom: 0px;
+}
+
+.breadcrumb-lists li a{
+    color: var(--blue);
+}
+
+.dashboard-wrapper{
+    width: 100%;
+    position: relative;
+    display: inline-block;
+}
+
+.dashboard-cards-wrapper{
+    width: 100%;
+    position: relative;
+    display: inline-block;
+}
+
+.dashboard-count-card{
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background-color: #FFF1DD;
+    gap: 20px;
+    justify-content: space-between;
+    border-radius: 12px;
+    box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.15);
+    height: 100%;
+}
+
+.dashcard-left{
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.dicon{
+    background-color: var(--theme-color-blue);
+    width: 50px;
+    min-width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-size: 20px;
+}
+
+.dinfo h3{
+    font-size: 26px;
+    margin-bottom: 2px;
+}
+
+.dinfo p{
+    margin-bottom: 0px;
+}
+
+.dashcard-right{
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.dashcard-right p{
+    font-size: 10px;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+.dashcard-right p:last-child{
+    margin-bottom: 0px;
+}
+
+.dashcard-right .up{
+    color: var(--green);
+}
+
+.dashcard-right .down{
+    color: var(--red);
+}
