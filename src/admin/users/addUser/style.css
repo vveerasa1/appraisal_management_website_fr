@@ -1,0 +1,44 @@
+.form-list-container{
+    width: 100%;
+    position: relative;
+    display: inline-block;
+    max-height: calc(100vh - 186px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: auto;
+    min-height: auto;
+}
+
+.forn-group{
+    width: 100%;
+    position: relative;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+
+.form-label{
+    width: 100%;
+    position: relative;
+    display: inline-block;
+}
+
+.form-input{
+    width: 100%;
+    position: relative;
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 12px;
+    background-color: var(--white);
+    border: 1px solid #dddddd;
+    min-height: 42px;
+}
+
+.submit-btn-block{
+    width: 100%;
+    position: relative;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: 2rem;
+}

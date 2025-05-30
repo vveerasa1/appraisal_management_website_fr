@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 
 const Sidebar = ({ isOpen }) => {
 
-    const [activeMenu, setActiveMenu] = useState("Dashboard");
+    const [activeMenu, setActiveMenu] = useState("");
 
     const handleMenuClick = (menu) => {
         setActiveMenu(menu);
@@ -35,12 +35,22 @@ const Sidebar = ({ isOpen }) => {
                 </li>
                 <li className="nav-item">
                     <Link
-                        to="/admin/appraisal"
-                        className={`nav-link ${activeMenu === "Appraisal" ? "active" : ""}`}
-                        onClick={() => handleMenuClick("Appraisal")}
+                        to="/admin/employees"
+                        className={`nav-link ${activeMenu === "Employees" ? "active" : ""}`}
+                        onClick={() => handleMenuClick("Employees")}
+                    >
+                        <i className="fa fa-user"></i>
+                        Employees
+                    </Link>
+                </li>
+                <li className="nav-item">
+                    <Link
+                        to="/admin/appraisals"
+                        className={`nav-link ${activeMenu === "Appraisals" ? "active" : ""}`}
+                        onClick={() => handleMenuClick("Appraisals")}
                     >
                         <i className="fa fa-sticky-note"></i>
-                        Appraisal
+                        Appraisals
                     </Link>
                 </li>
                 <li className="nav-item">

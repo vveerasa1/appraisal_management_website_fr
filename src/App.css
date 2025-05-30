@@ -73,4 +73,38 @@ h1, h2, h3, h4, h5{
   height: 42px;
   border-radius: 30px;
   width: fit-content;
+  transition: ease-in-out 0.3s;
+  text-decoration: none;
+  gap: 6px;
+  border: 1px solid transparent;
+}
+
+.btn-blue{
+  background-color: var(--theme-color-blue);
+  color: var(--white);
+  transition: ease-in-out 0.3s;
+}
+
+.btn-blue:hover{
+  background-color: #114261;
+  color: var(--white);
+  transition: ease-in-out 0.3s;
+}
+
+.btn-border{
+  background-color: #fff;
+  color: #333;
+  transition: ease-in-out 0.3s;
+  border-color: #333;
+}
+
+.btn-border:hover{
+  background-color: #114261;
+  color: var(--white);
+  transition: ease-in-out 0.3s;
+}
+
+b{
+  font-weight: normal;
+  font-family: 'SFProDisplay-Medium', sans-serif;
 }
