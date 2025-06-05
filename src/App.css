@@ -108,3 +108,15 @@ b{
   font-weight: normal;
   font-family: 'SFProDisplay-Medium', sans-serif;
 }
+
+.btn-red{
+  background-color: var(--red);
+  color: var(--white);
+  transition: ease-in 0.3s;
+}
+
+.btn-red:hover{
+  background-color: var(--red);
+  color: var(--white);
+  transition: ease-in 0.3s;
+}

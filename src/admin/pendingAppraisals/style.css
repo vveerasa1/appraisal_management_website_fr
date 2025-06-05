@@ -1,0 +1,12 @@
+/* styles.css */
+.status-approved {
+  color: green;
+}
+
+.status-rejected {
+  color: red;
+}
+
+.status-new {
+  color: blue;
+}

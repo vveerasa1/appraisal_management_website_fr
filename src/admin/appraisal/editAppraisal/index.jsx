@@ -16,50 +16,25 @@ const EditEmployee = () => {
     return (
         <>
             <div className='breadcrumb-wrapper'>
-                <h3 className='page-name'>John Doe</h3>
+                <h3 className='page-name'>Quarterly Appraisal</h3>
                 <ul className='breadcrumb-lists'>
                     <li><Link to="/admin/dashboad" className="page-link">Home</Link></li>
-                    <li><Link to="/admin/employees" className="page-link">Employees</Link></li>
-                    <li><p>John Doe</p></li>
+                    <li><Link to="/admin/appraisals" className="page-link">Appraisal</Link></li>
+                    <li><p>Quarterly Appraisal</p></li>
                 </ul>
             </div>
             <form className='form-list-container'>
                 <div className='row'>
-                    <div className='col-12 col-md-6 col-lg-4'>
+                    <div className='col-12 col-md-6 col-lg-7'>
                         <div className='forn-group'>
-                            <label className='form-label'>First Name</label>
+                            <label className='form-label'>Appraisal Title</label>
                             <input type='text' className='form-input' placeholder='' />
                         </div>
                     </div>
-                    <div className='col-12 col-md-6 col-lg-4'>
+                    <div className='col-12 col-md-6 col-lg-5'>
                         <div className='forn-group'>
-                            <label className='form-label'>Last Name</label>
-                            <input type='text' className='form-input' placeholder='' />
-                        </div>
-                    </div>
-                    <div className='col-12 col-md-6 col-lg-4'>
-                        <div className='forn-group'>
-                            <label className='form-label'>Email Address</label>
-                            <input type='email' className='form-input' placeholder='' />
-                        </div>
-                    </div>
-                    <div className='col-12 col-md-6 col-lg-4'>
-                        <div className='forn-group'>
-                            <label className='form-label'>Phone Number</label>
-                            <input type='text' className='form-input' placeholder='' />
-                        </div>
-                    </div>
-                    <div className='col-12 col-md-6 col-lg-4'>
-                        <div className='forn-group'>
-                            <label className='form-label'>Employee ID</label>
-                            <input type='text' className='form-input' placeholder='' />
-                        </div>
-                    </div>
-                    <div className='col-12 col-md-6 col-lg-4'>
-                        <div className='forn-group'>
-                            <label className='form-label'>Department</label>
+                            <label className='form-label'>Appraisal Type</label>
                             <select className='form-input'>
-                                <option>---Select Department---</option>
                                 <option></option>
                                 <option></option>
                                 <option></option>
@@ -68,64 +43,60 @@ const EditEmployee = () => {
                     </div>
                     <div className='col-12 col-md-6 col-lg-4'>
                         <div className='forn-group'>
-                            <label className='form-label'>Manager</label>
-                            <select className='form-input'>
-                                <option>---Assign Manager---</option>
-                                <option></option>
-                                <option></option>
-                                <option></option>
-                            </select>
-                        </div>
-                    </div>
-                    <div className='col-12 col-md-6 col-lg-4'>
-                        <div className='forn-group'>
-                            <label className='form-label'>Designation</label>
-                            <input type='text' className='form-input' placeholder='' />
-                        </div>
-                    </div>
-                    <div className='col-12 col-md-6 col-lg-4'>
-                        <div className='forn-group'>
-                            <label className='form-label'>Date of Joining</label>
+                            <label className='form-label'>Appraisal Start Date</label>
                             <input type='date' className='form-input' placeholder='' />
                         </div>
                     </div>
                     <div className='col-12 col-md-6 col-lg-4'>
                         <div className='forn-group'>
-                            <label className='form-label'>Temporary Password</label>
+                            <label className='form-label'>Appraisal End Date</label>
+                            <input type='date' className='form-input' placeholder='' />
+                        </div>
+                    </div>
+                    <div className='col-12 col-md-6 col-lg-4'>
+                        <div className='forn-group'>
+                            <label className='form-label'>Assign to Department</label>
+                            <select className='form-input'>
+                                <option>---Assign Department---</option>
+                                <option></option>
+                                <option></option>
+                                <option></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div className='col-12 col-md-6 col-lg-4'>
+                        <div className='forn-group'>
+                            <label className='form-label'>Assign to Roles</label>
+                            <select className='form-input'>
+                                <option>---Assign Roles---</option>
+                                <option></option>
+                                <option></option>
+                                <option></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div className='col-12 col-md-6 col-lg-4'>
+                        <div className='forn-group'>
+                            <label className='form-label'>Points to Award</label>
                             <input type='text' className='form-input' placeholder='' />
                         </div>
                     </div>
                     <div className='col-12 col-md-6 col-lg-4'>
                         <div className='forn-group'>
-                            <label className='form-label'>Profile Photo</label>
-                            <div className="upload-container">
-                                {!fileName ? (
-                                    <label htmlFor="upload" className="upload-button">
-                                        <span>Upload</span>
-                                        <i className='fa fa-upload'></i>
-                                    </label>
-                                ) : (
-                                    <div className="file-name">{fileName}</div>
-                                )}
-                                <input
-                                    type="file"
-                                    id="upload"
-                                    className="upload-input"
-                                    onChange={handleFileChange}
-                                />
-                            </div>
+                            <label className='form-label'>Bonus Amount</label>
+                            <input type='date' className='form-input' placeholder='' />
                         </div>
                     </div>
                     <div className='col-12 col-md-6 col-lg-12'>
                         <div className='forn-group'>
-                            <label className='form-label'>Employee Description</label>
+                            <label className='form-label'>Appraisal Notes/Description</label>
                             <textarea cols={30} rows={3} className='form-input' placeholder=''></textarea>
                         </div>
                     </div>
                     <div className='col-12 col-md-12 col-lg-12'>
                         <div className='submit-btn-block'>
                             <button className='theme-btn btn-border' type='button'>Cancel</button>
-                            <button className='theme-btn btn-blue' type='button'>UPdate Employee</button>
+                            <button className='theme-btn btn-blue' type='button'>Save Appraisal</button>
                         </div>
                     </div>
                 </div>

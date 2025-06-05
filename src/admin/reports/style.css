@@ -1,0 +1,53 @@
+.reports-lists-container{
+    width: 100%;
+    position: relative;
+    display: inline-block;
+    max-height: calc(100vh - 218px);
+    height: auto;
+    min-height: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.report-wrapper{
+    width: 100%;
+    position: relative;
+    display: inline-block;
+    padding: 20px;
+    background-color: var(--white);
+    border-radius: 12px;
+    border: 1px solid #dddddd;
+}
+
+.report-head{
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 20px;
+}
+
+.report-head h3{
+    font-size: 16px;
+    margin-bottom: 0px;
+}
+
+.report-drop-btn{
+    width: 35px;
+    height: 35px;
+    min-width: 35px;
+    background-color: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.report-body{
+    width: 100%;
+    position: relative;
+    display: inline-block;
+    min-height: 200px;
+}

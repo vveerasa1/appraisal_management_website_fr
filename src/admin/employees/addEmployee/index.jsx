@@ -97,7 +97,7 @@ const AddEmployee = () => {
                     </div>
                     <div className='col-12 col-md-6 col-lg-4'>
                         <div className='forn-group'>
-                            <label className='form-label'>Profile Photo</label>
+                            <label className='form-label'>Upload Logo</label>
                             <div className="upload-container">
                                 {!fileName ? (
                                     <label htmlFor="upload" className="upload-button">
