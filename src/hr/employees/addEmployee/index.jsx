@@ -18,8 +18,8 @@ const AddEmployee = () => {
             <div className='breadcrumb-wrapper'>
                 <h3 className='page-name'>Add New Employee</h3>
                 <ul className='breadcrumb-lists'>
-                    <li><Link to="/admin/dashboad" className="page-link">Home</Link></li>
-                    <li><Link to="/admin/employees" className="page-link">Employees</Link></li>
+                    <li><Link to="/hr/dashboad" className="page-link">Home</Link></li>
+                    <li><Link to="/hr/employees" className="page-link">Employee</Link></li>
                     <li><p>Add Employee</p></li>
                 </ul>
             </div>

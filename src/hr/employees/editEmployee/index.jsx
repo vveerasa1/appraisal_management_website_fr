@@ -2,7 +2,7 @@ import { useState } from 'react'
 import "./style.css"
 import { Link } from 'react-router-dom'
 
-const AddEmployee = () => {
+const EditEmployee = () => {
 
     const [fileName, setFileName] = useState("");
 
@@ -16,11 +16,11 @@ const AddEmployee = () => {
     return (
         <>
             <div className='breadcrumb-wrapper'>
-                <h3 className='page-name'>Add New Employee</h3>
+                <h3 className='page-name'>John Doe</h3>
                 <ul className='breadcrumb-lists'>
-                    <li><Link to="/admin/dashboad" className="page-link">Home</Link></li>
-                    <li><Link to="/admin/employees" className="page-link">Employees</Link></li>
-                    <li><p>Add Employee</p></li>
+                    <li><Link to="/hr/dashboad" className="page-link">Home</Link></li>
+                    <li><Link to="/hr/employees" className="page-link">Employee</Link></li>
+                    <li><p>John Doe</p></li>
                 </ul>
             </div>
             <form className='form-list-container'>
@@ -151,4 +151,4 @@ const AddEmployee = () => {
     );
 };
 
-export default AddEmployee;
+export default EditEmployee;

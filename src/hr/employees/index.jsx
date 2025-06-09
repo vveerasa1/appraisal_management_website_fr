@@ -4,14 +4,14 @@ import { Link } from 'react-router-dom'
 
 const Employees = () => {
     const data = [
-        { tid: "T001", template: "Quarterly Appraisal", assigned: "50", pending: "12" },
-        { tid: "T002", template: "Spot Award", assigned: "50", pending: "12" },
-        { tid: "T003", template: "Yearly Appraisal", assigned: "50", pending: "12" },
+        { eid: "PB0001", name: "Alice Manty", designation: "HR", email: "alice@gmail.com" },
+        { eid: "PB0002", name: "John Doe", designation: "Manager", email: "johndoe@gmail.com" },
+        { eid: "PB0003", name: "William Smith", designation: "User", email: "williamsmith@gmail.com" },
     ];
 
     const [currentPage, setCurrentPage] = useState(1);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const [sortConfig, setSortConfig] = useState({ key: "tid", direction: "asc" });
+    const [sortConfig, setSortConfig] = useState({ key: "eid", direction: "asc" });
 
     const indexOfLastRow = currentPage * rowsPerPage;
     const indexOfFirstRow = indexOfLastRow - rowsPerPage;
@@ -49,10 +49,10 @@ const Employees = () => {
     return (
         <>
             <div className='breadcrumb-wrapper'>
-                <h3 className='page-name'>Appraisal Management</h3>
+                <h3 className='page-name'>Employee Management</h3>
                 <ul className='breadcrumb-lists'>
-                    <li><Link to="/admin/dashboad" className="page-link">Home</Link></li>
-                    <li><p>Appraisals</p></li>
+                    <li><Link to="/hr/dashboad" className="page-link">Home</Link></li>
+                    <li><p>Employees</p></li>
                 </ul>
             </div>
             <div className='table-lists-container'>
@@ -60,7 +60,7 @@ const Employees = () => {
                     <div className='filters'>
                         <div className='filter-item'>
                             <select className='filter-input'>
-                                <option>Select template</option>
+                                <option>Select Designation</option>
                                 <option></option>
                                 <option></option>
                                 <option></option>
@@ -71,7 +71,7 @@ const Employees = () => {
                         <input className='search-input' type='text' placeholder='Search...' />
                         <i className='fa fa-search'></i>
                     </div>
-                    <Link to="/admin/appraisal/add" className='theme-btn btn-blue'><i className='fa fa-plus-circle'></i>Add Appraisal</Link>
+                    <Link to="/hr/employee/add" className='theme-btn btn-blue'><i className='fa fa-plus-circle'></i>Add Employee</Link>
                 </div>
                 <div className='tables'>
                     <table className="table table-striped">
@@ -80,9 +80,9 @@ const Employees = () => {
                                 <th>
                                     <button
                                         className="table-head-btn"
-                                        onClick={() => handleSort("tid")}
+                                        onClick={() => handleSort("eid")}
                                     >
-                                        Template ID {sortConfig.key === "tid" && (
+                                        Employee ID {sortConfig.key === "eid" && (
                                             <span className={`ml-1 arrow ${sortConfig.direction === "asc" ? "arrow-up" : "arrow-down"}`}>
                                                 {sortConfig.direction === "asc" ? "▲" : "▼"}
                                             </span>
@@ -92,9 +92,9 @@ const Employees = () => {
                                 <th>
                                     <button
                                         className="table-head-btn"
-                                        onClick={() => handleSort("template")}
+                                        onClick={() => handleSort("name")}
                                     >
-                                        Template {sortConfig.key === "template" && (
+                                        Name {sortConfig.key === "name" && (
                                             <span className={`ml-1 arrow ${sortConfig.direction === "asc" ? "arrow-up" : "arrow-down"}`}>
                                                 {sortConfig.direction === "asc" ? "▲" : "▼"}
                                             </span>
@@ -104,9 +104,9 @@ const Employees = () => {
                                 <th>
                                     <button
                                         className="table-head-btn"
-                                        onClick={() => handleSort("assigned")}
+                                        onClick={() => handleSort("designation")}
                                     >
-                                        Assigned {sortConfig.key === "assigned" && (
+                                        Designation {sortConfig.key === "designation" && (
                                             <span className={`ml-1 arrow ${sortConfig.direction === "asc" ? "arrow-up" : "arrow-down"}`}>
                                                 {sortConfig.direction === "asc" ? "▲" : "▼"}
                                             </span>
@@ -116,9 +116,9 @@ const Employees = () => {
                                 <th>
                                     <button
                                         className="table-head-btn"
-                                        onClick={() => handleSort("pending")}
+                                        onClick={() => handleSort("email")}
                                     >
-                                        Pending {sortConfig.key === "pending" && (
+                                        Email {sortConfig.key === "email" && (
                                             <span className={`ml-1 arrow ${sortConfig.direction === "asc" ? "arrow-up" : "arrow-down"}`}>
                                                 {sortConfig.direction === "asc" ? "▲" : "▼"}
                                             </span>
@@ -130,22 +130,22 @@ const Employees = () => {
                         </thead>
                         <tbody>
                             {currentRows.map((row) => (
-                                <tr key={row.tid}>
+                                <tr key={row.eid}>
                                     <td>
-                                        <Link to={`/admin/appraisal/view`} className="tlink">
-                                            {row.tid}
+                                        <Link to={`/hr/employee/view`} className="tlink">
+                                            {row.eid}
                                         </Link>
                                     </td>
                                     <td>
-                                        <Link to={`/admin/appraisal/view`} className="tlink">
-                                            {row.template}
+                                        <Link to={`/hr/employee/view`} className="tlink">
+                                            {row.name}
                                         </Link>
                                     </td>
-                                    <td>{row.assigned}</td>
-                                    <td>{row.pending}</td>
+                                    <td>{row.designation}</td>
+                                    <td>{row.email}</td>
                                     <td>
                                         <div className='table-action-btns'>
-                                            <Link to="/admin/appraisal/edit" className='tbtn edit'><i className='fa fa-edit'></i></Link>
+                                            <Link to="/hr/employee/edit" className='tbtn edit'><i className='fa fa-edit'></i></Link>
                                             <button className='tbtn delete'><i className='fa fa-trash'></i></button>
                                         </div>
                                     </td>

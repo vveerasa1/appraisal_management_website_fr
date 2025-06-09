@@ -76,25 +76,6 @@ const Dashboard = () => {
                             </div>
                         </div>
                     </div>
-                    <div className='col-12 col-md-6 col-lg-4 mb-4'>
-                        <div className='dashboard-count-card'>
-                            <div className='dashcard-left'>
-                                <div className='dicon'>
-                                    <i className='fa fa-sticky-note'></i>
-                                </div>
-                                <div className='dinfo'>
-                                    <h3>12</h3>
-                                    <p>Pending Appraisals</p>
-                                </div>
-                            </div>
-                            <div className='dashcard-right'>
-                                <div>
-                                    <p>This Month</p>
-                                    <p className='up'>+20% <i className='fa fa-line-chart'></i></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

@@ -1,12 +1,12 @@
-import { useState } from 'react'
+import React, { useState } from "react";
 import "./style.css"
 import { Link } from 'react-router-dom'
 
-const Employees = () => {
+const HRDashboard = () => {
     const data = [
-        { eid: "PB0001", name: "Alice Manty", designation: "HR", email: "alice@gmail.com" },
-        { eid: "PB0002", name: "John Doe", designation: "Manager", email: "johndoe@gmail.com" },
-        { eid: "PB0003", name: "William Smith", designation: "User", email: "williamsmith@gmail.com" },
+        { eid: "PB0001", name: "Alice Manty", designation: "Senior Developer", balance: "450", updated: "May 20, 2025" },
+        { eid: "PB0002", name: "John Doe", designation: "Senior Developer", balance: "450", updated: "May 20, 2025" },
+        { eid: "PB0003", name: "William Smith", designation: "Senior Developer", balance: "450", updated: "May 20, 2025" },
     ];
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -45,14 +45,13 @@ const Employees = () => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setCurrentPage(1); // Reset to the first page
     };
-
     return (
         <>
             <div className='breadcrumb-wrapper'>
-                <h3 className='page-name'>Employee Management</h3>
+                <h3 className='page-name'>Team Members</h3>
                 <ul className='breadcrumb-lists'>
-                    <li><Link to="/admin/dashboad" className="page-link">Home</Link></li>
-                    <li><p>Employees</p></li>
+                    <li><Link to="/hr/dashboard" className="page-link">Home</Link></li>
+                    <li><p>Team Members</p></li>
                 </ul>
             </div>
             <div className='table-lists-container'>
@@ -60,17 +59,7 @@ const Employees = () => {
                     <div className='filters'>
                         <div className='filter-item'>
                             <select className='filter-input'>
-                                <option>Select Role</option>
-                                <option></option>
-                                <option></option>
-                                <option></option>
-                            </select>
-                        </div>
-                        <div className='filter-item'>
-                            <select className='filter-input'>
-                                <option>Select Designation</option>
-                                <option></option>
-                                <option></option>
+                                <option>Select Employee</option>
                                 <option></option>
                             </select>
                         </div>
@@ -79,7 +68,6 @@ const Employees = () => {
                         <input className='search-input' type='text' placeholder='Search...' />
                         <i className='fa fa-search'></i>
                     </div>
-                    <Link to="/admin/employee/add" className='theme-btn btn-blue'><i className='fa fa-plus-circle'></i>Add Employee</Link>
                 </div>
                 <div className='tables'>
                     <table className="table table-striped">
@@ -124,9 +112,21 @@ const Employees = () => {
                                 <th>
                                     <button
                                         className="table-head-btn"
-                                        onClick={() => handleSort("email")}
+                                        onClick={() => handleSort("balance")}
                                     >
-                                        Email {sortConfig.key === "email" && (
+                                        Balance {sortConfig.key === "balance" && (
+                                            <span className={`ml-1 arrow ${sortConfig.direction === "asc" ? "arrow-up" : "arrow-down"}`}>
+                                                {sortConfig.direction === "asc" ? "▲" : "▼"}
+                                            </span>
+                                        )}
+                                    </button>
+                                </th>
+                                <th>
+                                    <button
+                                        className="table-head-btn"
+                                        onClick={() => handleSort("updated")}
+                                    >
+                                        Last Updated {sortConfig.key === "updated" && (
                                             <span className={`ml-1 arrow ${sortConfig.direction === "asc" ? "arrow-up" : "arrow-down"}`}>
                                                 {sortConfig.direction === "asc" ? "▲" : "▼"}
                                             </span>
@@ -140,21 +140,23 @@ const Employees = () => {
                             {currentRows.map((row) => (
                                 <tr key={row.eid}>
                                     <td>
-                                        <Link to={`/admin/employee/view`} className="tlink">
+                                        <Link to={`/hr/team-member/view`} className="tlink">
                                             {row.eid}
                                         </Link>
                                     </td>
                                     <td>
-                                        <Link to={`/admin/employee/view`} className="tlink">
+                                        <Link to={`/hr/team-member/view`} className="tlink">
                                             {row.name}
                                         </Link>
                                     </td>
-                                    <td>{row.designation}</td>
-                                    <td>{row.email}</td>
+                                    <td>
+                                        {row.designation}
+                                    </td>
+                                    <td>{row.balance}</td>
+                                    <td>{row.updated}</td>
                                     <td>
                                         <div className='table-action-btns'>
-                                            <Link to="/admin/employee/edit" className='tbtn edit'><i className='fa fa-edit'></i></Link>
-                                            <button className='tbtn delete'><i className='fa fa-trash'></i></button>
+                                            <Link to="/hr/team-member/view" className='tbtn edit'><i className='fa fa-eye'></i></Link>
                                         </div>
                                     </td>
                                 </tr>
@@ -202,4 +204,4 @@ const Employees = () => {
     );
 };
 
-export default Employees;
+export default HRDashboard;

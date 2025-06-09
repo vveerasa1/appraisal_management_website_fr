@@ -68,9 +68,8 @@ const EditEmployee = () => {
                     </div>
                     <div className='col-12 col-md-6 col-lg-4'>
                         <div className='forn-group'>
-                            <label className='form-label'>Manager</label>
+                            <label className='form-label'>Reporting To</label>
                             <select className='form-input'>
-                                <option>---Assign Manager---</option>
                                 <option></option>
                                 <option></option>
                                 <option></option>
@@ -89,15 +88,39 @@ const EditEmployee = () => {
                             <input type='date' className='form-input' placeholder='' />
                         </div>
                     </div>
-                    <div className='col-12 col-md-6 col-lg-4'>
+                    <div className='col-12 col-md-6 col-lg-6'>
                         <div className='forn-group'>
-                            <label className='form-label'>Temporary Password</label>
+                            <label className='form-label'>Address</label>
+                            <input type='text' className='form-input' placeholder='' />
+                        </div>
+                    </div>
+                    <div className='col-12 col-md-6 col-lg-3'>
+                        <div className='forn-group'>
+                            <label className='form-label'>City</label>
+                            <input type='text' className='form-input' placeholder='' />
+                        </div>
+                    </div>
+                    <div className='col-12 col-md-6 col-lg-3'>
+                        <div className='forn-group'>
+                            <label className='form-label'>Province</label>
                             <input type='text' className='form-input' placeholder='' />
                         </div>
                     </div>
                     <div className='col-12 col-md-6 col-lg-4'>
                         <div className='forn-group'>
-                            <label className='form-label'>Profile Photo</label>
+                            <label className='form-label'>Postal Code</label>
+                            <input type='text' className='form-input' placeholder='' />
+                        </div>
+                    </div>
+                    <div className='col-12 col-md-6 col-lg-4'>
+                        <div className='forn-group'>
+                            <label className='form-label'>Country</label>
+                            <input type='text' className='form-input' placeholder='' />
+                        </div>
+                    </div>
+                    <div className='col-12 col-md-6 col-lg-4'>
+                        <div className='forn-group'>
+                            <label className='form-label'>Upload Logo</label>
                             <div className="upload-container">
                                 {!fileName ? (
                                     <label htmlFor="upload" className="upload-button">
@@ -116,16 +139,10 @@ const EditEmployee = () => {
                             </div>
                         </div>
                     </div>
-                    <div className='col-12 col-md-6 col-lg-12'>
-                        <div className='forn-group'>
-                            <label className='form-label'>Employee Description</label>
-                            <textarea cols={30} rows={3} className='form-input' placeholder=''></textarea>
-                        </div>
-                    </div>
                     <div className='col-12 col-md-12 col-lg-12'>
                         <div className='submit-btn-block'>
                             <button className='theme-btn btn-border' type='button'>Cancel</button>
-                            <button className='theme-btn btn-blue' type='button'>UPdate Employee</button>
+                            <button className='theme-btn btn-blue' type='button'>Save Employee</button>
                         </div>
                     </div>
                 </div>

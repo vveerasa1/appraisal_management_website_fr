@@ -2,16 +2,16 @@ import { useState } from 'react'
 import "./style.css"
 import { Link } from 'react-router-dom'
 
-const PendingApprsisals = () => {
+const Points = () => {
     const data = [
-        { aid: "1", name: "John Doe", status: "Approved", type: "Quarterly Appraisal", points: "30", date: "May 15, 2025" },
-        { aid: "2", name: "John Doe", status: "Rejected", type: "Quarterly Appraisal", points: "30", date: "May 15, 2025" },
-        { aid: "3", name: "John Doe", status: "New", type: "Quarterly Appraisal", points: "30", date: "May 15, 2025" },
+        { eid: "PB0001", name: "Alice Manty", points: "+20", balance: "450", reason: "Quarterly Bonus", date: "May 20, 2025" },
+        { eid: "PB0002", name: "John Doe", points: "+10", balance: "450", reason: "Quarterly Bonus", date: "May 20, 2025" },
+        { eid: "PB0003", name: "William Smith", points: "-5", balance: "450", reason: "Quarterly Bonus", date: "May 20, 2025" },
     ];
 
     const [currentPage, setCurrentPage] = useState(1);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const [sortConfig, setSortConfig] = useState({ key: "aid", direction: "asc" });
+    const [sortConfig, setSortConfig] = useState({ key: "eid", direction: "asc" });
 
     const indexOfLastRow = currentPage * rowsPerPage;
     const indexOfFirstRow = indexOfLastRow - rowsPerPage;
@@ -45,13 +45,14 @@ const PendingApprsisals = () => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setCurrentPage(1); // Reset to the first page
     };
+
     return (
         <>
             <div className='breadcrumb-wrapper'>
-                <h3 className='page-name'>Pending Apprsisals</h3>
+                <h3 className='page-name'>Point History</h3>
                 <ul className='breadcrumb-lists'>
-                    <li><Link to="/admin/dashboad" className="page-link">Home</Link></li>
-                    <li><p>Pending Apprsisals</p></li>
+                    <li><Link to="/hr/dashboad" className="page-link">Home</Link></li>
+                    <li><p>Points</p></li>
                 </ul>
             </div>
             <div className='table-lists-container'>
@@ -59,17 +60,7 @@ const PendingApprsisals = () => {
                     <div className='filters'>
                         <div className='filter-item'>
                             <select className='filter-input'>
-                                <option>Type</option>
-                                <option></option>
-                                <option></option>
-                                <option></option>
-                            </select>
-                        </div>
-                        <div className='filter-item'>
-                            <select className='filter-input'>
-                                <option>Status</option>
-                                <option></option>
-                                <option></option>
+                                <option>Select Employee</option>
                                 <option></option>
                             </select>
                         </div>
@@ -78,6 +69,7 @@ const PendingApprsisals = () => {
                         <input className='search-input' type='text' placeholder='Search...' />
                         <i className='fa fa-search'></i>
                     </div>
+                    <Link to="/hr/point/add" className='theme-btn btn-blue'><i className='fa fa-plus-circle'></i>Add Point</Link>
                 </div>
                 <div className='tables'>
                     <table className="table table-striped">
@@ -86,9 +78,9 @@ const PendingApprsisals = () => {
                                 <th>
                                     <button
                                         className="table-head-btn"
-                                        onClick={() => handleSort("aid")}
+                                        onClick={() => handleSort("eid")}
                                     >
-                                        Apprsisal ID {sortConfig.key === "aid" && (
+                                        Employee ID {sortConfig.key === "eid" && (
                                             <span className={`ml-1 arrow ${sortConfig.direction === "asc" ? "arrow-up" : "arrow-down"}`}>
                                                 {sortConfig.direction === "asc" ? "▲" : "▼"}
                                             </span>
@@ -110,33 +102,33 @@ const PendingApprsisals = () => {
                                 <th>
                                     <button
                                         className="table-head-btn"
-                                        onClick={() => handleSort("status")}
-                                    >
-                                        Status {sortConfig.key === "status" && (
-                                            <span className={`ml-1 arrow ${sortConfig.direction === "asc" ? "arrow-up" : "arrow-down"}`}>
-                                                {sortConfig.direction === "asc" ? "▲" : "▼"}
-                                            </span>
-                                        )}
-                                    </button>
-                                </th>
-                                <th>
-                                    <button
-                                        className="table-head-btn"
-                                        onClick={() => handleSort("type")}
-                                    >
-                                        Type {sortConfig.key === "type" && (
-                                            <span className={`ml-1 arrow ${sortConfig.direction === "asc" ? "arrow-up" : "arrow-down"}`}>
-                                                {sortConfig.direction === "asc" ? "▲" : "▼"}
-                                            </span>
-                                        )}
-                                    </button>
-                                </th>
-                                <th>
-                                    <button
-                                        className="table-head-btn"
                                         onClick={() => handleSort("points")}
                                     >
                                         Points {sortConfig.key === "points" && (
+                                            <span className={`ml-1 arrow ${sortConfig.direction === "asc" ? "arrow-up" : "arrow-down"}`}>
+                                                {sortConfig.direction === "asc" ? "▲" : "▼"}
+                                            </span>
+                                        )}
+                                    </button>
+                                </th>
+                                <th>
+                                    <button
+                                        className="table-head-btn"
+                                        onClick={() => handleSort("balance")}
+                                    >
+                                        Balance {sortConfig.key === "balance" && (
+                                            <span className={`ml-1 arrow ${sortConfig.direction === "asc" ? "arrow-up" : "arrow-down"}`}>
+                                                {sortConfig.direction === "asc" ? "▲" : "▼"}
+                                            </span>
+                                        )}
+                                    </button>
+                                </th>
+                                <th>
+                                    <button
+                                        className="table-head-btn"
+                                        onClick={() => handleSort("reason")}
+                                    >
+                                        Reason {sortConfig.key === "reason" && (
                                             <span className={`ml-1 arrow ${sortConfig.direction === "asc" ? "arrow-up" : "arrow-down"}`}>
                                                 {sortConfig.direction === "asc" ? "▲" : "▼"}
                                             </span>
@@ -160,36 +152,27 @@ const PendingApprsisals = () => {
                         </thead>
                         <tbody>
                             {currentRows.map((row) => (
-                                <tr key={row.aid}>
+                                <tr key={row.eid}>
                                     <td>
-                                        <Link to={`/admin/view-pending-appraisals`} className="tlink">
-                                            {row.aid}
+                                        <Link to={`/hr/point/view`} className="tlink">
+                                            {row.eid}
                                         </Link>
                                     </td>
                                     <td>
-                                        <Link to={`/admin/view-pending-appraisals`} className="tlink">
+                                        <Link to={`/hr/point/view`} className="tlink">
                                             {row.name}
                                         </Link>
                                     </td>
-                                    <td
-                                        style={{
-                                            color:
-                                                row.status === "Approved"
-                                                    ? "green"
-                                                    : row.status === "Rejected"
-                                                        ? "red"
-                                                        : "blue", // Default for "New"
-                                        }}
-                                    >
-                                        {row.status}
+                                    <td style={{ color: row.points.startsWith('+') ? 'green' : row.points.startsWith('-') ? 'red' : 'black' }}>
+                                        {row.points}
                                     </td>
-
-                                    <td>{row.type}</td>
-                                    <td>{row.points}</td>
+                                    <td>{row.balance}</td>
+                                    <td>{row.reason}</td>
                                     <td>{row.date}</td>
                                     <td>
                                         <div className='table-action-btns'>
-                                            <Link to="/admin/view-pending-appraisals" className='tbtn edit'><i className='fa fa-eye'></i></Link>
+                                            <Link to="/hr/point/edit" className='tbtn edit'><i className='fa fa-edit'></i></Link>
+                                            <button className='tbtn delete'><i className='fa fa-trash'></i></button>
                                         </div>
                                     </td>
                                 </tr>
@@ -237,4 +220,4 @@ const PendingApprsisals = () => {
     );
 };
 
-export default PendingApprsisals;
+export default Points;

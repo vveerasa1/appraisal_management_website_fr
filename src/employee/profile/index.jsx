@@ -1,20 +1,19 @@
-import { useState } from 'react'
+import React, { useState } from "react";
 import "./style.css"
 import { Link } from 'react-router-dom'
-import ProfileImg from '../../../assets/images/user.png'
+import ProfileImg from '../../assets/images/user.png'
 
-const ViewEmployee = () => {
+const Points = () => {
     return (
         <>
             <div className='breadcrumb-wrapper'>
-                <h3 className='page-name'>John Doe</h3>
+                <h3 className='page-name'>Profile</h3>
                 <ul className='breadcrumb-lists'>
-                    <li><Link to="/admin/dashboad" className="page-link">Home</Link></li>
-                    <li><Link to="/admin/users" className="page-link">Employee</Link></li>
-                    <li><p>John Doe</p></li>
+                    <li><Link to="/employee/dashboard" className="page-link">Home</Link></li>
+                    <li><p>Profile</p></li>
                 </ul>
             </div>
-            <div className='view-container'>
+            <div className='page-wrapper'>
                 <div className='row'>
                     <div className='col-12 col-md-4 col-lg-4 mb-4'>
                         <div className='view-avatar-info'>
@@ -26,7 +25,7 @@ const ViewEmployee = () => {
                     </div>
                     <div className='col-12 col-md-4 col-lg-8'>
                         <div className='view-other-info'>
-                            <h3 className='small-heading'>Employee Details</h3>
+                            <h3 className='small-heading'>Profile Details</h3>
                             <ul className='otherInfo-lists'>
                                 <li>
                                     <p>Email:</p>
@@ -62,8 +61,7 @@ const ViewEmployee = () => {
 
                     <div className='col-12 col-md-12 col-lg-12'>
                         <div className='submit-btn-block'>
-                            <button className='theme-btn btn-border' type='button'>Delete</button>
-                            <Link to="/admin/employee/edit" className='theme-btn btn-blue' type='button'>Edit Employee</Link>
+                            <Link to="/employee/profile/edit" className='theme-btn btn-blue' type='button'>Edit Profile</Link>
                         </div>
                     </div>
                 </div>
@@ -72,4 +70,4 @@ const ViewEmployee = () => {
     );
 };
 
-export default ViewEmployee;
+export default Points;

@@ -42,7 +42,8 @@ const Topbar = ({ toggleSidebar }) => {
                         <i className='fa fa-bell'></i>
                     </button>
                 </div>
-                <div className='user' ref={dropdownRef}>
+                {/* admin */}
+                {/* <div className='user' ref={dropdownRef}>
                     <button className='user-avatar' onClick={toggleDropdown}>
                         <img className='img-fluid' src={User} alt='Avatar' />
                         <p>John Doe</p>
@@ -59,9 +60,57 @@ const Topbar = ({ toggleSidebar }) => {
                             </Link>
                         </li>
                         <li>
-                            <Link to="/admin/logout" className="dropdown-item">
+                            <button type="button" className="dropdown-item">
                                 <i className="fa fa-sign-out"></i> Logout
+                            </button>
+                        </li>
+                    </ul>
+                </div> */}
+                {/* employee */}
+                {/* <div className='user' ref={dropdownRef}>
+                    <button className='user-avatar' onClick={toggleDropdown}>
+                        <img className='img-fluid' src={User} alt='Avatar' />
+                        <p>John Doe</p>
+                    </button>
+                    <ul className={`dropdown-menu ${isDropdownOpen ? "show" : ""}`}>
+                        <li>
+                            <Link to="/employee/profile" className="dropdown-item">
+                                <i className="fa fa-user"></i> Profile
                             </Link>
+                        </li>
+                        <li>
+                            <Link to="/employee/profile/change-password" className="dropdown-item">
+                                <i className="fa fa-user"></i> Change Password
+                            </Link>
+                        </li>
+                        <li>
+                            <button type="button" className="dropdown-item">
+                                <i className="fa fa-sign-out"></i> Logout
+                            </button>
+                        </li>
+                    </ul>
+                </div> */}
+                {/* HR */}
+                <div className='user' ref={dropdownRef}>
+                    <button className='user-avatar' onClick={toggleDropdown}>
+                        <img className='img-fluid' src={User} alt='Avatar' />
+                        <p>John Doe</p>
+                    </button>
+                    <ul className={`dropdown-menu ${isDropdownOpen ? "show" : ""}`}>
+                        <li>
+                            <Link to="/hr/profile" className="dropdown-item">
+                                <i className="fa fa-user"></i> Profile
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/hr/profile/change-password" className="dropdown-item">
+                                <i className="fa fa-user"></i> Change Password
+                            </Link>
+                        </li>
+                        <li>
+                            <button type="button" className="dropdown-item">
+                                <i className="fa fa-sign-out"></i> Logout
+                            </button>
                         </li>
                     </ul>
                 </div>

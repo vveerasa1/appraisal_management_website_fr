@@ -147,7 +147,7 @@ const Roles = () => {
                                     <td>{row.permission}</td>
                                     <td>
                                         <div className='table-action-btns'>
-                                            <Link to="/admin/point/edit" className='tbtn edit'><i className='fa fa-edit'></i></Link>
+                                            <Link to="/admin/role/edit" className='tbtn edit'><i className='fa fa-edit'></i></Link>
                                             <button className='tbtn delete'><i className='fa fa-trash'></i></button>
                                         </div>
                                     </td>

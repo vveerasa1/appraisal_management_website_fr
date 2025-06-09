@@ -46,16 +46,6 @@ const Sidebar = ({ isOpen }) => {
         //         </li>
         //         <li className="nav-item">
         //             <Link
-        //                 to="/admin/appraisals"
-        //                 className={`nav-link ${activeMenu === "Appraisals" ? "active" : ""}`}
-        //                 onClick={() => handleMenuClick("Appraisals")}
-        //             >
-        //                 <i className="fa fa-sticky-note"></i>
-        //                 Appraisals
-        //             </Link>
-        //         </li>
-        //         <li className="nav-item">
-        //             <Link
         //                 to="/admin/points"
         //                 className={`nav-link ${activeMenu === "Points" ? "active" : ""}`}
         //                 onClick={() => handleMenuClick("Points")}
@@ -68,7 +58,7 @@ const Sidebar = ({ isOpen }) => {
         //             <Link
         //                 to="/admin/roles"
         //                 className={`nav-link ${activeMenu === "Roles" ? "active" : ""}`}
-        //                 onClick={() => handleMenuClick("Points")}
+        //                 onClick={() => handleMenuClick("Roles")}
         //             >
         //                 <i className="fa fa-users"></i>
         //                 Roles
@@ -80,27 +70,44 @@ const Sidebar = ({ isOpen }) => {
         //         <Link to="/admin/user/add" className='sbtn-link'>
         //             <i className='fa fa-add'></i>
         //             Add User
-        //         </Link>   
-        //         <Link to="/admin/appraisal/add" className='sbtn-link'>
-        //             <i className='fa fa-add'></i>
-        //             Create Appraisal
         //         </Link>
         //         <Link to="/admin/reports" className='sbtn-link'>
         //             <i className='fa fa-add'></i>
         //             View Reports
         //         </Link>
-        //         <Link to="/admin/pending-appraisals" className='sbtn-link'>
-        //             <i className='fa fa-clock'></i>
-        //             Pending Appraisals <span className='menuConts'>10</span>
-        //         </Link>
         //     </div>
         // </div>
         // employee sidebar
+        // <div className={`sidebar ${isOpen ? "d-none" : "d-block"}`}>
+        //     <ul className="nav flex-column">
+        //         <li className="nav-item">
+        //             <Link
+        //                 to="/employee/dashboard"
+        //                 className={`nav-link ${activeMenu === "Dashboard" ? "active" : ""}`}
+        //                 onClick={() => handleMenuClick("Dashboard")}
+        //             >
+        //                 <i className="fa fa-home"></i>
+        //                 Dashboard
+        //             </Link>
+        //         </li>
+        //         <li className="nav-item">
+        //             <Link
+        //                 to="/employee/points"
+        //                 className={`nav-link ${activeMenu === "Points" ? "active" : ""}`}
+        //                 onClick={() => handleMenuClick("Points")}
+        //             >
+        //                 <i className="fa fa-pie-chart"></i>
+        //                 Points
+        //             </Link>
+        //         </li>
+        //     </ul>
+        // </div>
+        // hr sidebar
         <div className={`sidebar ${isOpen ? "d-none" : "d-block"}`}>
             <ul className="nav flex-column">
                 <li className="nav-item">
                     <Link
-                        to="/employee/dashboard"
+                        to="/hr/dashboard"
                         className={`nav-link ${activeMenu === "Dashboard" ? "active" : ""}`}
                         onClick={() => handleMenuClick("Dashboard")}
                     >
@@ -110,25 +117,50 @@ const Sidebar = ({ isOpen }) => {
                 </li>
                 <li className="nav-item">
                     <Link
-                        to="/employee/appraisals"
-                        className={`nav-link ${activeMenu === "Appraisals" ? "active" : ""}`}
-                        onClick={() => handleMenuClick("Appraisals")}
+                        to="/hr/my-points"
+                        className={`nav-link ${activeMenu === "My Points" ? "active" : ""}`}
+                        onClick={() => handleMenuClick("My Points")}
                     >
-                        <i className="fa fa-sticky-note"></i>
-                        Appraisals
+                        <i className="fa fa-pie-chart"></i>
+                        My Points
                     </Link>
                 </li>
                 <li className="nav-item">
                     <Link
-                        to="/employee/points"
-                        className={`nav-link ${activeMenu === "Points" ? "active" : ""}`}
-                        onClick={() => handleMenuClick("Points")}
+                        to="/hr/team-members"
+                        className={`nav-link ${activeMenu === "Team Members" ? "active" : ""}`}
+                        onClick={() => handleMenuClick("Team Members")}
                     >
-                        <i className="fa fa-pie-chart"></i>
-                        Points
+                        <i className="fa fa-users"></i>
+                        Team Members
+                    </Link>
+                </li>
+                <li className="nav-item">
+                    <Link
+                        to="/hr/employees"
+                        className={`nav-link ${activeMenu === "Employees" ? "active" : ""}`}
+                        onClick={() => handleMenuClick("Employees")}
+                    >
+                        <i className="fa fa-users"></i>
+                        Employees
                     </Link>
                 </li>
             </ul>
+            <div className='sibebar-actions'>
+                <h3 className='mb-2'>Quick Actions</h3>
+                <Link to="/hr/employee/add" className='sbtn-link'>
+                    <i className='fa fa-add'></i>
+                    Add Employee
+                </Link>
+                <Link to="/hr/points" className='sbtn-link'>
+                    <i className='fa fa-add'></i>
+                    Points History
+                </Link>
+                <Link to="/hr/team-members" className='sbtn-link'>
+                    <i className='fa fa-add'></i>
+                    View Team
+                </Link>
+            </div>
         </div>
     );
 };

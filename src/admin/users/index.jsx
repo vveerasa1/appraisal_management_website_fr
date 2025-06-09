@@ -60,7 +60,7 @@ const Users = () => {
                     <div className='filters'>
                         <div className='filter-item'>
                             <select className='filter-input'>
-                                <option>Select role</option>
+                                <option>Select Role</option>
                                 <option></option>
                                 <option></option>
                                 <option></option>
@@ -68,7 +68,7 @@ const Users = () => {
                         </div>
                         <div className='filter-item'>
                             <select className='filter-input'>
-                                <option>Select department</option>
+                                <option>Select Designation</option>
                                 <option></option>
                                 <option></option>
                                 <option></option>

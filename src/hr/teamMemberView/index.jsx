@@ -1,16 +1,15 @@
-import { useState } from 'react'
+import React, { useState } from "react";
 import "./style.css"
 import { Link } from 'react-router-dom'
-import ProfileImg from '../../../assets/images/user.png'
+import ProfileImg from '../../assets/images/user.png'
 
-const ViewEmployee = () => {
+const TeamMemberView = () => {
     return (
         <>
             <div className='breadcrumb-wrapper'>
                 <h3 className='page-name'>John Doe</h3>
                 <ul className='breadcrumb-lists'>
-                    <li><Link to="/admin/dashboad" className="page-link">Home</Link></li>
-                    <li><Link to="/admin/users" className="page-link">Employee</Link></li>
+                    <li><Link to="/employee/dashboard" className="page-link">Home</Link></li>
                     <li><p>John Doe</p></li>
                 </ul>
             </div>
@@ -20,7 +19,7 @@ const ViewEmployee = () => {
                         <div className='view-avatar-info'>
                             <img className='img-fluid' src={ProfileImg} alt='Profile' />
                             <h3>John Doe</h3>
-                            <p>Role: <b>-</b></p>
+                            <p>Designation: <b>Web Developer</b></p>
                             <p>Employee ID: <b>ABC1234</b></p>
                         </div>
                     </div>
@@ -41,10 +40,6 @@ const ViewEmployee = () => {
                                     <h4>Software Development</h4>
                                 </li>
                                 <li>
-                                    <p>Designation:</p>
-                                    <h4>Web Developer</h4>
-                                </li>
-                                <li>
                                     <p>DOJ:</p>
                                     <h4>12 Jan, 2024</h4>
                                 </li>
@@ -62,8 +57,8 @@ const ViewEmployee = () => {
 
                     <div className='col-12 col-md-12 col-lg-12'>
                         <div className='submit-btn-block'>
-                            <button className='theme-btn btn-border' type='button'>Delete</button>
-                            <Link to="/admin/employee/edit" className='theme-btn btn-blue' type='button'>Edit Employee</Link>
+                            <Link to="/hr/adjust-points" className='theme-btn btn-blue' type='button'>Adjust Points</Link>
+                            <Link to="/hr/points" className='theme-btn btn-blue' type='button'>Points History</Link>
                         </div>
                     </div>
                 </div>
@@ -72,4 +67,4 @@ const ViewEmployee = () => {
     );
 };
 
-export default ViewEmployee;
+export default TeamMemberView;

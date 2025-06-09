@@ -3,14 +3,14 @@ import "./style.css"
 import { Link } from 'react-router-dom'
 import ProfileImg from '../../../assets/images/user.png'
 
-const ViewRole = () => {
+const ViewPoint = () => {
     return (
         <>
             <div className='breadcrumb-wrapper'>
                 <h3 className='page-name'>John Doe</h3>
                 <ul className='breadcrumb-lists'>
-                    <li><Link to="/admin/dashboad" className="page-link">Home</Link></li>
-                    <li><Link to="/admin/users" className="page-link">Users</Link></li>
+                    <li><Link to="/hr/dashboad" className="page-link">Home</Link></li>
+                    <li><Link to="/hr/points" className="page-link">Points</Link></li>
                     <li><p>John Doe</p></li>
                 </ul>
             </div>
@@ -19,34 +19,32 @@ const ViewRole = () => {
                     <div className='col-12 col-md-4 col-lg-4 mb-4'>
                         <div className='view-avatar-info'>
                             <img className='img-fluid' src={ProfileImg} alt='Profile' />
-                            <h3>Admin</h3>
-                            <p>Created at: <b>25 Jan, 2025 10:30pm</b></p>
+                            <h3>John Doe</h3>
+                            <p>Designation: <b>Web Developer</b></p>
+                            <p>Employee ID: <b>ABC1234</b></p>
                         </div>
                     </div>
                     <div className='col-12 col-md-4 col-lg-8'>
                         <div className='view-other-info'>
-                            <h3 className='small-heading'>Role Details</h3>
+                            <h3 className='small-heading'>Points Details</h3>
                             <ul className='otherInfo-lists'>
                                 <li>
-                                    <p>Role:</p>
-                                    <h4>Admin</h4>
+                                    <p>Points:</p>
+                                    <h4>+20</h4>
                                 </li>
                                 <li>
-                                    <p>Role Description:</p>
-                                    <h4>Can view team performance and assign tasks</h4>
+                                    <p>Balance:</p>
+                                    <h4>450</h4>
                                 </li>
                                 <li>
-                                    <p>Permissions:</p>
-                                    <h4>Add/Edit/Delete Users, View All Users, Adjust Points, View Transactions</h4>
+                                    <p>Reason:</p>
+                                    <h4>Quarterly Bonus</h4>
+                                </li>
+                                <li>
+                                    <p>Date:</p>
+                                    <h4>May 20, 2025</h4>
                                 </li>
                             </ul>
-                        </div>
-                    </div>
-
-                    <div className='col-12 col-md-12 col-lg-12'>
-                        <div className='submit-btn-block'>
-                            <button className='theme-btn btn-border' type='button'>Delete</button>
-                            <Link to="/admin/role/edit" className='theme-btn btn-blue' type='button'>Edit Role</Link>
                         </div>
                     </div>
                 </div>
@@ -55,4 +53,4 @@ const ViewRole = () => {
     );
 };
 
-export default ViewRole;
+export default ViewPoint;

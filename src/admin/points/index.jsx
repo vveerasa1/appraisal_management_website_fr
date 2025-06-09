@@ -49,7 +49,7 @@ const Points = () => {
     return (
         <>
             <div className='breadcrumb-wrapper'>
-                <h3 className='page-name'>Point Transactions</h3>
+                <h3 className='page-name'>Point History</h3>
                 <ul className='breadcrumb-lists'>
                     <li><Link to="/admin/dashboad" className="page-link">Home</Link></li>
                     <li><p>Points</p></li>
@@ -60,19 +60,9 @@ const Points = () => {
                     <div className='filters'>
                         <div className='filter-item'>
                             <select className='filter-input'>
-                                <option>Points</option>
-                                <option>+20</option>
-                                <option>+15</option>
-                                <option>+10</option>
-                                <option>+5</option>
-                                <option>-5</option>
-                                <option>-10</option>
-                                <option>-15</option>
-                                <option>-20</option>
+                                <option>Select Employee</option>
+                                <option></option>
                             </select>
-                        </div>
-                        <div className='filter-item'>
-                            <input className='filter-input' type='date' placeholder='' />
                         </div>
                     </div>
                     <div className='searchblock'>

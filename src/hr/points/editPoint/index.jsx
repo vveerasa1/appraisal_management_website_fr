@@ -8,8 +8,8 @@ const EditPoint = () => {
             <div className='breadcrumb-wrapper'>
                 <h3 className='page-name'>Edit Points</h3>
                 <ul className='breadcrumb-lists'>
-                    <li><Link to="/admin/dashboad" className="page-link">Home</Link></li>
-                    <li><Link to="/admin/points" className="page-link">Points</Link></li>
+                    <li><Link to="/hr/dashboad" className="page-link">Home</Link></li>
+                    <li><Link to="/hr/points" className="page-link">Points</Link></li>
                     <li><p>Edit Point</p></li>
                 </ul>
             </div>
@@ -18,18 +18,13 @@ const EditPoint = () => {
                     <div className='col-12 col-md-6 col-lg-4'>
                         <div className='forn-group'>
                             <label className='form-label'>User</label>
-                            <select className='form-input'>
-                                <option>---Select User---</option>
-                                <option>John Doe</option>
-                                <option>Mary Joe</option>
-                                <option>William Smith</option>
-                            </select>
+                            <input type='email' className='form-input' placeholder='' value="John Doe" disabled/>
                         </div>
                     </div>
                     <div className='col-12 col-md-6 col-lg-4'>
                         <div className='forn-group'>
                             <label className='form-label'>Current Points Balance (Read-Only)</label>
-                            <input type='email' className='form-input' placeholder='' value={0} disabled/>
+                            <input type='email' className='form-input' placeholder='' value="0" disabled/>
                         </div>
                     </div>
                     <div className='col-12 col-md-12 col-lg-12'>
