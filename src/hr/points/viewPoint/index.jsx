@@ -9,7 +9,7 @@ const ViewPoint = () => {
             <div className='breadcrumb-wrapper'>
                 <h3 className='page-name'>John Doe</h3>
                 <ul className='breadcrumb-lists'>
-                    <li><Link to="/hr/dashboad" className="page-link">Home</Link></li>
+                    <li><Link to="/hr/dashboard" className="page-link">Home</Link></li>
                     <li><Link to="/hr/points" className="page-link">Points</Link></li>
                     <li><p>John Doe</p></li>
                 </ul>

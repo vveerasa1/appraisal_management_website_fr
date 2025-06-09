@@ -4,6 +4,39 @@
     display: inline-block;
     min-height: calc(100vh - 65px);
     background-color: var(--theme-color-blue);
+    overflow-y: auto;
+    transition: transform 0.3s ease;
+}
+
+.sidebar.show-sidebar{
+    display: none;
+    transform: translateX(-100%);
+}
+
+.sidebar.hide-sidebar{
+    display: block;
+    transform: translateX(0);
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(0);
+        position: static;
+    }
+    .sidebar.hide-sidebar{
+        display: none;
+        transform: translateX(-100%);
+    }
+    .sidebar.show-sidebar{
+        display: block;
+        transform: translateX(0);
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        height: 100vh;
+        overflow: auto;
+    }
 }
 
 .sidebar .nav{
@@ -87,3 +120,4 @@
     font-size: 10px;
     margin-left: 0px;
 }
+

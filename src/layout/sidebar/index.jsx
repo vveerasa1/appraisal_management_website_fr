@@ -103,7 +103,7 @@ const Sidebar = ({ isOpen }) => {
         //     </ul>
         // </div>
         // hr sidebar
-        <div className={`sidebar ${isOpen ? "d-none" : "d-block"}`}>
+        <div className={`sidebar ${isOpen ? "show-sidebar" : "hide-sidebar"}`}>
             <ul className="nav flex-column">
                 <li className="nav-item">
                     <Link

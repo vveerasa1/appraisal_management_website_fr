@@ -8,8 +8,8 @@ const AddPoints = () => {
             <div className='breadcrumb-wrapper'>
                 <h3 className='page-name'>Add New Points</h3>
                 <ul className='breadcrumb-lists'>
-                    <li><Link to="/admin/dashboad" className="page-link">Home</Link></li>
-                    <li><Link to="/admin/points" className="page-link">Points</Link></li>
+                    <li><Link to="/hr/dashboad" className="page-link">Home</Link></li>
+                    <li><Link to="/hr/points" className="page-link">Points</Link></li>
                     <li><p>Add Point</p></li>
                 </ul>
             </div>

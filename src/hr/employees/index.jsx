@@ -51,7 +51,7 @@ const Employees = () => {
             <div className='breadcrumb-wrapper'>
                 <h3 className='page-name'>Employee Management</h3>
                 <ul className='breadcrumb-lists'>
-                    <li><Link to="/hr/dashboad" className="page-link">Home</Link></li>
+                    <li><Link to="/hr/dashboard" className="page-link">Home</Link></li>
                     <li><p>Employees</p></li>
                 </ul>
             </div>

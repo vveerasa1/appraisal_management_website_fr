@@ -8,20 +8,36 @@ const Topbar = ({ toggleSidebar }) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
 
+    const [isNotificationDropdownOpen, setIsNotificationDropdownOpen] = useState(false);
+    const notificationDropdownRef = useRef(null);
+
     const toggleDropdown = () => {
         setIsDropdownOpen((prev) => !prev);
+        setIsNotificationDropdownOpen(false);
+    };
+
+    const toggleNotificationDropdown = () => {
+        setIsNotificationDropdownOpen((prev) => !prev);
+        setIsDropdownOpen(false);
     };
 
     const handleClickOutside = (event) => {
         if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsDropdownOpen(false);
+            setIsDropdownOpen(false);
+        }
+
+        if (
+            notificationDropdownRef.current &&
+            !notificationDropdownRef.current.contains(event.target)
+        ) {
+            setIsNotificationDropdownOpen(false);
         }
     };
 
     useEffect(() => {
         document.addEventListener("click", handleClickOutside);
         return () => {
-        document.removeEventListener("click", handleClickOutside);
+            document.removeEventListener("click", handleClickOutside);
         };
     }, []);
 
@@ -36,11 +52,33 @@ const Topbar = ({ toggleSidebar }) => {
                 </button>
             </div>
             <div className='topbar-right'>
-                <div className='notifications'>
+                <div className='notifications' ref={notificationDropdownRef}>
                     <span className='new-nofifications'></span>
-                    <button type='button' className='notify-btn'>
+                    <button type='button' className='notify-btn' onClick={toggleNotificationDropdown}>
                         <i className='fa fa-bell'></i>
                     </button>
+
+                    <ul className={`notificationdrop dropdown-menu ${isNotificationDropdownOpen ? "show" : ""}`}>
+                        <h3 className="nofify-heading">Notifications</h3>
+                        <li>
+                            <p className="dropdown-item">
+                                <span>+2 Points added</span>
+                                <span>12:30PM</span>
+                            </p>
+                        </li>
+                        <li>
+                            <p className="dropdown-item">
+                                <span>+2 Points added</span>
+                                <span>12:30PM</span>
+                            </p>
+                        </li>
+                        <li>
+                            <p className="dropdown-item">
+                                <span>+2 Points added</span>
+                                <span>12:30PM</span>
+                            </p>
+                        </li>
+                    </ul>
                 </div>
                 {/* admin */}
                 {/* <div className='user' ref={dropdownRef}>

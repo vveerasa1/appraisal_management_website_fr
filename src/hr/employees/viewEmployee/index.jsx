@@ -9,7 +9,7 @@ const ViewEmployee = () => {
             <div className='breadcrumb-wrapper'>
                 <h3 className='page-name'>John Doe</h3>
                 <ul className='breadcrumb-lists'>
-                    <li><Link to="/hr/dashboad" className="page-link">Home</Link></li>
+                    <li><Link to="/hr/dashboard" className="page-link">Home</Link></li>
                     <li><Link to="/hr/employees" className="page-link">Employee</Link></li>
                     <li><p>John Doe</p></li>
                 </ul>
