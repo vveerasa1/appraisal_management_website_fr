@@ -173,3 +173,9 @@ input:focus, input:active{
     background: #152E5E;
     transition: ease-in 0.3s;
 }
+
+.form-error {
+  color: red;
+  font-size: 0.85rem;
+  margin-left: 30px; /* align under input */
+}
