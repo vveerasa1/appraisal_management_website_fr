@@ -7,9 +7,9 @@ import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 
 const Employees = () => {
     const data = [
-        { eid: "PB0001", name: "Alice Manty", designation: "HR", email: "alice@gmail.com" },
-        { eid: "PB0002", name: "John Doe", designation: "Manager", email: "johndoe@gmail.com" },
-        { eid: "PB0003", name: "William Smith", designation: "User", email: "williamsmith@gmail.com" },
+        { eid: "PB0001", firstname: "Alice", lastname: "Manty", email: "alice@gmail.com", department: "Software Development", designation: "HR", doj: "11-Jun-2025", reporting: "Mary Joe ABC12345", mobilenumber: "123456789", address: "1234, New Winston Road, New York", status: "Active", addedby: "PBY01001 - Vijay Ram - Veeraswamy", addedtime: "11-Jun-2025 09:00 AM" },
+        { eid: "PB0002", firstname: "John", lastname: "Doe", email: "alice@gmail.com", department: "Software Development", designation: "HR", doj: "11-Jun-2025", reporting: "Mary Joe ABC12345", mobilenumber: "123456789", address: "1234, New Winston Road, New York", status: "Active", addedby: "PBY01001 - Vijay Ram - Veeraswamy", addedtime: "11-Jun-2025 09:00 AM" },
+        { eid: "PB0003", firstname: "William", lastname: "Smith", email: "alice@gmail.com", department: "Software Development", designation: "HR", doj: "11-Jun-2025", reporting: "Mary Joe ABC12345", mobilenumber: "123456789", address: "1234, New Winston Road, New York", status: "Active", addedby: "PBY01001 - Vijay Ram - Veeraswamy", addedtime: "11-Jun-2025 09:00 AM" },
     ];
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -107,8 +107,8 @@ const Employees = () => {
     }, [openDropdown, isFilterOpen]);
 
     const options = [
-        { value: "active-view", label: "Active User View" },
-        { value: "inactive-view", label: "Inactive User View" },
+        { value: "active-view", label: "Active Employee View" },
+        { value: "inactive-view", label: "Inactive Employee View" },
     ];
 
     const customStyles = {
@@ -210,10 +210,10 @@ const Employees = () => {
                 </div>
                 <div className='tables'>
                     <div className='table-wrapper'>
-                        <table className="table">
+                        <table className="table large-table">
                             <thead>
                                 <tr>
-                                    <th><button className="table-head-btn"> <i className='fa fa-tasks'></i> </button></th>
+                                    <th style={{width: '50px'}}><button className="table-head-btn"> <i className='fa fa-tasks'></i> </button></th>
                                     <th>
                                         <input
                                             className="tablecheck"
@@ -238,9 +238,45 @@ const Employees = () => {
                                     <th>
                                         <button
                                             className="table-head-btn"
-                                            onClick={() => handleSort("name")}
+                                            onClick={() => handleSort("firstname")}
                                         >
-                                            Name {sortConfig.key === "name" && (
+                                            First Name {sortConfig.key === "firstname" && (
+                                                <span className={`ml-1 arrow ${sortConfig.direction === "asc" ? "arrow-up" : "arrow-down"}`}>
+                                                    {sortConfig.direction === "asc" ? "▲" : "▼"}
+                                                </span>
+                                            )}
+                                        </button>
+                                    </th>
+                                    <th>
+                                        <button
+                                            className="table-head-btn"
+                                            onClick={() => handleSort("lastname")}
+                                        >
+                                            Last Name {sortConfig.key === "lastname" && (
+                                                <span className={`ml-1 arrow ${sortConfig.direction === "asc" ? "arrow-up" : "arrow-down"}`}>
+                                                    {sortConfig.direction === "asc" ? "▲" : "▼"}
+                                                </span>
+                                            )}
+                                        </button>
+                                    </th>
+                                    <th>
+                                        <button
+                                            className="table-head-btn"
+                                            onClick={() => handleSort("email")}
+                                        >
+                                            Email {sortConfig.key === "email" && (
+                                                <span className={`ml-1 arrow ${sortConfig.direction === "asc" ? "arrow-up" : "arrow-down"}`}>
+                                                    {sortConfig.direction === "asc" ? "▲" : "▼"}
+                                                </span>
+                                            )}
+                                        </button>
+                                    </th>
+                                    <th>
+                                        <button
+                                            className="table-head-btn"
+                                            onClick={() => handleSort("department")}
+                                        >
+                                            Department {sortConfig.key === "department" && (
                                                 <span className={`ml-1 arrow ${sortConfig.direction === "asc" ? "arrow-up" : "arrow-down"}`}>
                                                     {sortConfig.direction === "asc" ? "▲" : "▼"}
                                                 </span>
@@ -262,9 +298,81 @@ const Employees = () => {
                                     <th>
                                         <button
                                             className="table-head-btn"
-                                            onClick={() => handleSort("email")}
+                                            onClick={() => handleSort("doj")}
                                         >
-                                            Email {sortConfig.key === "email" && (
+                                            Date of Joining {sortConfig.key === "doj" && (
+                                                <span className={`ml-1 arrow ${sortConfig.direction === "asc" ? "arrow-up" : "arrow-down"}`}>
+                                                    {sortConfig.direction === "asc" ? "▲" : "▼"}
+                                                </span>
+                                            )}
+                                        </button>
+                                    </th>
+                                    <th>
+                                        <button
+                                            className="table-head-btn"
+                                            onClick={() => handleSort("reporting")}
+                                        >
+                                            Reporting to {sortConfig.key === "reporting" && (
+                                                <span className={`ml-1 arrow ${sortConfig.direction === "asc" ? "arrow-up" : "arrow-down"}`}>
+                                                    {sortConfig.direction === "asc" ? "▲" : "▼"}
+                                                </span>
+                                            )}
+                                        </button>
+                                    </th>
+                                    <th>
+                                        <button
+                                            className="table-head-btn"
+                                            onClick={() => handleSort("mobilenumber")}
+                                        >
+                                            Mobile Number {sortConfig.key === "mobilenumber" && (
+                                                <span className={`ml-1 arrow ${sortConfig.direction === "asc" ? "arrow-up" : "arrow-down"}`}>
+                                                    {sortConfig.direction === "asc" ? "▲" : "▼"}
+                                                </span>
+                                            )}
+                                        </button>
+                                    </th>
+                                    <th>
+                                        <button
+                                            className="table-head-btn"
+                                            onClick={() => handleSort("address")}
+                                        >
+                                            Address {sortConfig.key === "address" && (
+                                                <span className={`ml-1 arrow ${sortConfig.direction === "asc" ? "arrow-up" : "arrow-down"}`}>
+                                                    {sortConfig.direction === "asc" ? "▲" : "▼"}
+                                                </span>
+                                            )}
+                                        </button>
+                                    </th>
+                                    <th>
+                                        <button
+                                            className="table-head-btn"
+                                            onClick={() => handleSort("status")}
+                                        >
+                                            Status {sortConfig.key === "status" && (
+                                                <span className={`ml-1 arrow ${sortConfig.direction === "asc" ? "arrow-up" : "arrow-down"}`}>
+                                                    {sortConfig.direction === "asc" ? "▲" : "▼"}
+                                                </span>
+                                            )}
+                                        </button>
+                                    </th>
+                                    <th>
+                                        <button
+                                            className="table-head-btn"
+                                            onClick={() => handleSort("addedby")}
+                                        >
+                                            Added By {sortConfig.key === "addedby" && (
+                                                <span className={`ml-1 arrow ${sortConfig.direction === "asc" ? "arrow-up" : "arrow-down"}`}>
+                                                    {sortConfig.direction === "asc" ? "▲" : "▼"}
+                                                </span>
+                                            )}
+                                        </button>
+                                    </th>
+                                    <th>
+                                        <button
+                                            className="table-head-btn"
+                                            onClick={() => handleSort("addedtime")}
+                                        >
+                                            Added Time {sortConfig.key === "addedtime" && (
                                                 <span className={`ml-1 arrow ${sortConfig.direction === "asc" ? "arrow-up" : "arrow-down"}`}>
                                                     {sortConfig.direction === "asc" ? "▲" : "▼"}
                                                 </span>
@@ -314,12 +422,21 @@ const Employees = () => {
                                             </Link>
                                         </td>
                                         <td>
-                                            {row.name}
+                                            {row.firstname}
                                         </td>
-                                        <td>{row.designation}</td>
+                                        <td>{row.lastname}</td>
                                         <td>
                                             <a className='tlink' href='mailto:'>{row.email}</a>
                                         </td>
+                                        <td>{row.department}</td>
+                                        <td>{row.designation}</td>
+                                        <td>{row.doj}</td>
+                                        <td>{row.reporting}</td>
+                                        <td>{row.mobilenumber}</td>
+                                        <td>{row.address}</td>
+                                        <td>{row.status}</td>
+                                        <td>{row.addedby}</td>
+                                        <td>{row.addedtime}</td>
                                     </tr>
                                 ))}
                             </tbody>

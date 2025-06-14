@@ -7,50 +7,90 @@ const ViewPoint = () => {
     return (
         <>
             <div className='pageTanDiv'>
-                <ul className='pageTabPane'>
-                    <li className='active'>
-                        <Link to="/admin/points">Points</Link>
-                    </li>
-                </ul>
+                <div className='viewPageTopDiv'>
+                    <div className='lvDiv'>
+                        <Link to="/admin/points"><i className='fa fa-angle-left'></i></Link>
+                        <img className="img-fluid" src={ProfileImg} alt='Profile' />
+                        <p>ABC1234 - John Doe</p>
+                    </div>
+                    <div className='rvDiv'>
+                        <Link to="/admin/point/edit" className='rvDiv-btns' type='button'><i className='fa fa-pencil'></i></Link>
+                        <button className='rvDiv-btns delete' type='button'><i className='fa fa-trash'></i></button>
+                    </div>
+                </div>
             </div>
             <div className='view-container'>
                 <div className='row'>
-                    <div className='col-12 col-md-4 col-lg-4 mb-4'>
-                        <div className='view-avatar-info'>
-                            <img className='img-fluid' src={ProfileImg} alt='Profile' />
-                            <h3>John Doe</h3>
-                            <p>Designation: <b>Web Developer</b></p>
-                            <p>Employee ID: <b>ABC1234</b></p>
-                        </div>
-                    </div>
-                    <div className='col-12 col-md-4 col-lg-8'>
-                        <div className='view-other-info'>
-                            <h3 className='small-heading'>Points Details</h3>
-                            <ul className='otherInfo-lists'>
-                                <li>
-                                    <p>Points:</p>
-                                    <h4>+20</h4>
-                                </li>
-                                <li>
-                                    <p>Balance:</p>
-                                    <h4>450</h4>
-                                </li>
-                                <li>
-                                    <p>Reason:</p>
-                                    <h4>Quarterly Bonus</h4>
-                                </li>
-                                <li>
-                                    <p>Date:</p>
-                                    <h4>May 20, 2025</h4>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
                     <div className='col-12 col-md-12 col-lg-12'>
-                        <div className='submit-btn-block'>
-                            <button className='theme-btn btn-border' type='button'>Delete</button>
-                            <Link to="/admin/edit" className='theme-btn btn-blue' type='button'>Edit User</Link>
+                        <div className='view-other-info'>
+                            <h3 className='small-heading'>Point Details</h3>
+                            <div className='row'>
+                                <div className='col-12 col-md-6 col-lg-4'>
+                                    <div className='editform-group'>
+                                        <label className='editform-label'>User</label>
+                                        <input type='text' className='editform-input' value="John Doe" placeholder='' />
+                                        <div className="ef-actionbtns">
+                                            <button className="editform-btn" type='button'><i className='fa fa-pencil'></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='col-12 col-md-6 col-lg-4'>
+                                    <div className='editform-group'>
+                                        <label className='editform-label'>Points Balance</label>
+                                        <input type='text' className='editform-input' value="100" placeholder='' disabled />
+                                    </div>
+                                </div>
+                                <div className='col-12 col-md-12'>
+                                    <h3 className='small-heading'>Adjust Points</h3>
+                                </div>
+                                <div className='col-12 col-md-6 col-lg-4'>
+                                    <div className='editform-group'>
+                                        <label className='editform-label'>Points Count</label>
+                                        <input type='text' className='editform-input' value="John Doe" placeholder='' />
+                                        <div className="ef-actionbtns">
+                                            <button className="editform-btn" type='button'><i className='fa fa-pencil'></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='col-12 col-md-6 col-lg-8'>
+                                    <div className='editform-group'>
+                                        <label className='editform-label'>Reason/Note for Adjustment</label>
+                                        <input type='text' className='editform-input' value="John Doe" placeholder='' />
+                                        <div className="ef-actionbtns">
+                                            <button className="editform-btn" type='button'><i className='fa fa-pencil'></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='col-12 col-md-6 col-lg-4'>
+                                    <div className='editform-group'>
+                                        <label className='editform-label'>Added By</label>
+                                        <input type='text' className='editform-input' value="Admin" placeholder='' disabled />
+                                    </div>
+                                </div>
+                                <div className='col-12 col-md-6 col-lg-4'>
+                                    <div className='editform-group'>
+                                        <label className='editform-label'>Added Time</label>
+                                        <input type='text' className='editform-input' value="20/07/2024" placeholder='' disabled />
+                                    </div>
+                                </div>
+                                <div className='col-12 col-md-6 col-lg-4'>
+                                    <div className='editform-group'>
+                                        <label className='editform-label'>Modified By</label>
+                                        <input type='text' className='editform-input' value="Admin" placeholder='' disabled />
+                                    </div>
+                                </div>
+                                <div className='col-12 col-md-6 col-lg-4'>
+                                    <div className='editform-group'>
+                                        <label className='editform-label'>Modified Time</label>
+                                        <input type='text' className='editform-input' value="20/07/2024" placeholder='' disabled />
+                                    </div>
+                                </div>
+                                <div className='col-12 col-md-12 col-lg-12'>
+                                    <div className='submit-btn-block'>
+                                        <button className='theme-btn btn-blue' type='button'>Save Changes</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

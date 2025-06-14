@@ -14,6 +14,7 @@ import AdminDashboard from './admin/dashboard'
 import AdminReports from './admin/reports'
 import AdminSettings from './admin/settings'
 import AdminOverview from './admin/overview'
+import AdminOrganization from './admin/organization'
 // admin users
 import AdminUsers from './admin/users'
 import AdminAddUser from './admin/users/addUser'
@@ -160,6 +161,10 @@ function App() {
         <Route
           path="/admin/role/view"
           element={<AppLayout><AdminViewRoles /></AppLayout>}
+        />
+        <Route
+          path="/admin/organization/overview"
+          element={<AppLayout><AdminOrganization /></AppLayout>}
         />
        
         {/* employee */}

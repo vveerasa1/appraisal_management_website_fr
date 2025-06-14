@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import "./style.css"
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import User from '../../assets/images/user.png'
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 
 const Topbar = ({ toggleSidebar }) => {
+
+    const location = useLocation();
 
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
@@ -58,8 +60,18 @@ const Topbar = ({ toggleSidebar }) => {
         <nav className='topbar'>
             <div className='topbar-left'>
                 <Link to="#" className="topbar-logo">
-                    <h3 className='topbar-brand'>People</h3>
+                    <h3 className='topbar-brand'>People Soft</h3>
                 </Link>
+                <div className="topbar-menu">
+                    <ul className='pageTabPane'>
+                        <li className={location.pathname === "/admin/reports" ? "active" : ""}>
+                            <Link to="/admin/reports">Reports</Link>
+                        </li>
+                        <li className={location.pathname === "/admin/organization/overview" ? "active" : ""}>
+                            <Link to="/admin/organization/overview">Organization</Link>
+                        </li>
+                    </ul>
+                </div>
             </div>
             <div className='topbar-right'>
                 <div className="quickactions" ref={addmenuDropdownRef}>
@@ -73,7 +85,7 @@ const Topbar = ({ toggleSidebar }) => {
                                 <i className="fa fa-plus-circle"></i> Add Employee
                             </Link>
                         </li>
-                        <li>
+                        {/* <li>
                             <Link to="/admin/user/add" className="dropdown-item">
                                 <i className="fa fa-plus-circle"></i> Add User
                             </Link>
@@ -81,6 +93,21 @@ const Topbar = ({ toggleSidebar }) => {
                         <li>
                             <Link to="/admin/role/add" className="dropdown-item">
                                 <i className="fa fa-plus-circle"></i> Add Role
+                            </Link>
+                        </li> */}
+                        <li>
+                            <Link to="/admin/point/add" className="dropdown-item">
+                                <i className="fa fa-plus-circle"></i> Add Points
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/admin/organization/department/add" className="dropdown-item">
+                                <i className="fa fa-plus-circle"></i> Department
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/admin/organization/designation/add" className="dropdown-item">
+                                <i className="fa fa-plus-circle"></i> Designation
                             </Link>
                         </li>
                     </ul>
