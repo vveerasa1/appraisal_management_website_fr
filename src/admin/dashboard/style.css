@@ -1,51 +1,59 @@
-.breadcrumb-wrapper{
+.pageTanDiv{
     width: 100%;
     position: relative;
-    display: inline-block;
-    margin-bottom: 20px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 0px;
+    height: 45px;
+    padding: 0px 20px;
+    background-color: var(--white);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07);
 }
 
-.page-name{
-    font-size: 20px;
-}
-
-.breadcrumb-lists{
+.pageTabPane{
+    list-style: none;
     margin: 0;
     padding: 0;
-    list-style: none;
     display: flex;
+    height: 100%;
     align-items: center;
 }
 
-.breadcrumb-lists li{
+.pageTabPane li{
+    height: 100%;
+}
+
+.pageTabPane li:last-child{
+    padding-right: 0px;
+}
+
+.pageTabPane li a{
+    color: inherit;
+    text-decoration: none;
+    font-family: 'Lato-Bold', sans-serif;
     display: flex;
     align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 0px 15px;
 }
 
-.breadcrumb-lists li::after{
-    content: '/';
-    position: relative;
-    display: inline-block;
-    margin: 0px 10px;
-    color: var(--blue);
-}
-
-.breadcrumb-lists li:last-child:after{
-    display: none;
-}
-
-.breadcrumb-lists li p{
-    margin-bottom: 0px;
-}
-
-.breadcrumb-lists li a{
-    color: var(--blue);
+.pageTabPane .active{
+    border-bottom: 2px solid var(--theme-color-secondary);
 }
 
 .dashboard-wrapper{
     width: 100%;
     position: relative;
     display: inline-block;
+    padding: 20px;
+    padding-top: 0px;
+    max-height: calc(100vh - 119px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: auto;
+    min-height: auto;
 }
 
 .dashboard-cards-wrapper{
@@ -119,4 +127,142 @@
 
 .dashcard-right .down{
     color: var(--red);
+}
+
+.dashbord-cards-wrapper{
+    width: 100%;
+    position: relative;
+    display: inline-block;
+    min-height: 350px;
+    box-shadow: 0 5px 15px 3px rgba(0, 0, 0, 0.1);
+    background-color: var(--white);
+    border-radius: 20px;
+}
+
+.dc-head{
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 50px;
+    padding: 15px 25px;
+    border-bottom: 1px solid #f7f7f7;
+}
+
+.dash-title{
+    font-size: 16px;
+    margin-bottom: 0px;
+}
+
+.dc-body{
+    width: 100%;
+    position: relative;
+    display: inline-block;
+    padding-left: 25px;
+    padding-right: 15px;
+    height: 300px;
+    overflow-y: auto;
+}
+
+.no-results-wrapper{
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 100%;
+    gap: 15px;
+}
+
+.no-results-wrapper img{
+    width: 90px;
+}
+
+.no-results-wrapper p{
+    color: #666;
+    font-size: 16px;
+}
+
+.dc-list{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.dc-list li {
+    position: relative;
+    padding: 15px 0;
+    border-bottom: 1px solid #f5f5f5;
+    margin-bottom: 0px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.dc-list-inner{
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.dc-list-info h3{
+    font-size: 15px;
+}
+
+.dc-list-info p{
+    font-size: 12px;
+    margin-bottom: 0px;
+}
+
+.dc-link-inner{
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: inherit;
+}
+
+.small-img{
+    width: 10px;
+    margin-left: 6px;
+}
+
+.dashcounts-wrapper{
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-radius: 20px;
+    background-color: var(--theme-color-blue);
+}
+
+.dashcounts-item{
+    flex: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    padding-right: 10px;
+    border-right: 1px dashed var(--white);
+}
+
+.dashcounts-item:last-child{
+    margin-right: 0px;
+    padding-right: 0px;
+    border-right: none;
+}
+
+.dashcounts-item p{
+    margin-bottom: 10px;
+    color: var(--white);
+}
+
+.dashcounts-item h2{
+    margin-bottom: 0px;
+    color: var(--white);
+    font-size: 24px;
 }

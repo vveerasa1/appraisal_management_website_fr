@@ -1,8 +1,8 @@
 .sidebar{
-    min-width: 240px;
+    min-width: 70px;
     position: relative;
     display: inline-block;
-    min-height: calc(100vh - 65px);
+    min-height: calc(100vh - 48px);
     background-color: var(--theme-color-blue);
     overflow-y: auto;
     transition: transform 0.3s ease;
@@ -39,26 +39,23 @@
     }
 }
 
-.sidebar .nav{
-    margin-top: 10px;
-}
-
-.sidebar .nav .nav-item{
-    margin: 0px 10px 5px 10px;
-}
-
 .sidebar .nav .nav-item .nav-link{
-    padding: 10px;
+    padding: 0px 0px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 5px;
     color: var(--white);
-    border-radius: 12px;
+    border-radius: 0px;
     transition: ease-in-out 0.3s;
+    flex-direction: column;
+    font-size: 11px;
+    min-height: 60px;
+    text-align: center;
+    justify-content: center;
 }
 
 .sidebar .nav .nav-item .nav-link i{
-    font-size: 13px;
+    font-size: 16px;
 }
 
 .sidebar .nav .nav-item .nav-link.active{

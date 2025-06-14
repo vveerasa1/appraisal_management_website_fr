@@ -2,11 +2,22 @@
     width: 100%;
     position: relative;
     display: inline-block;
-    max-height: calc(100vh - 186px);
+    max-height: calc(100vh - 108px);
     overflow-x: hidden;
     overflow-y: auto;
     height: auto;
     min-height: auto;
+    padding: 5px 20px 20px 20px;
+}
+
+.form-list-wrapper{
+    width: 100%;
+    position: relative;
+    display: inline-block;
+    background-color: var(--white);
+    padding: 15px 25px;
+    box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
 }
 
 .forn-group{

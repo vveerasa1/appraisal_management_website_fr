@@ -5,12 +5,11 @@ import { Link } from 'react-router-dom'
 const EditPoint = () => {
     return (
         <>
-            <div className='breadcrumb-wrapper'>
-                <h3 className='page-name'>Edit Points</h3>
-                <ul className='breadcrumb-lists'>
-                    <li><Link to="/admin/dashboad" className="page-link">Home</Link></li>
-                    <li><Link to="/admin/points" className="page-link">Points</Link></li>
-                    <li><p>Edit Point</p></li>
+            <div className='pageTanDiv'>
+                <ul className='pageTabPane'>
+                    <li className='active'>
+                        <Link to="/admin/points">Points</Link>
+                    </li>
                 </ul>
             </div>
             <form className='form-list-container'>

@@ -15,11 +15,11 @@ const Settings = () => {
 
     return (
         <>
-            <div className='breadcrumb-wrapper'>
-                <h3 className='page-name'>Settings</h3>
-                <ul className='breadcrumb-lists'>
-                    <li><Link to="/admin/dashboad" className="page-link">Home</Link></li>
-                    <li><p>Settings</p></li>
+            <div className='pageTanDiv'>
+                <ul className='pageTabPane'>
+                    <li className='active'>
+                        <Link to="/admin/settings">System Setting</Link>
+                    </li>
                 </ul>
             </div>
             <form className='form-list-container'>

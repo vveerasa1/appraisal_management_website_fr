@@ -6,12 +6,11 @@ import ProfileImg from '../../../assets/images/user.png'
 const ViewRole = () => {
     return (
         <>
-            <div className='breadcrumb-wrapper'>
-                <h3 className='page-name'>John Doe</h3>
-                <ul className='breadcrumb-lists'>
-                    <li><Link to="/admin/dashboad" className="page-link">Home</Link></li>
-                    <li><Link to="/admin/users" className="page-link">Users</Link></li>
-                    <li><p>John Doe</p></li>
+            <div className='pageTanDiv'>
+                <ul className='pageTabPane'>
+                    <li className='active'>
+                        <Link to="/admin/roles">Roles</Link>
+                    </li>
                 </ul>
             </div>
             <div className='view-container'>

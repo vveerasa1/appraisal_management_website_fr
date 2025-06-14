@@ -1,12 +1,29 @@
 .table-lists-container{
     width: 100%;
     position: relative;
-    display: inline-block;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
 .table-top-block{
     width: 100%;
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 0px 20px;
+}
+
+.ttb-left{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 15px;
+}
+
+.ttb-right{
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -18,7 +35,7 @@
 }
 
 .search-input{
-    height: 42px;
+    height: 35px;
     padding: 5px 35px 5px 10px;
     border: 1px solid #ddd;
     background-color: var(--white);
@@ -29,7 +46,7 @@
 .searchblock i{
     position: absolute;
     right: 10px;
-    top: 15px;
+    top: 12px;
     opacity: 0.5;
 }
 
@@ -40,7 +57,7 @@
 }
 
 .filter-input{
-    height: 42px;
+    height: 35px;
     padding: 5px 35px 5px 10px;
     border: 1px solid #ddd;
     background-color: var(--white);
@@ -50,23 +67,36 @@
 
 .tables{
     width: 100%;
+    max-width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.table-wrapper{
+    width: 100%;
     position: relative;
-    display: inline-block;
-    margin-top: 20px;
-    max-height: calc(100vh - 247px);
+    z-index: 10;
+    max-height: calc(100vh - 214px);
+    min-height: calc(100vh - 214px);
     overflow: auto;
-    height: auto;
+    background-color: var(--white);
 }
 
 .pagination-wrapper{
     width: 100%;
-    position: relative;
+    position: absolute;
+    left: 0;
+    bottom: -56px;
+    z-index: 11;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 20px;
     flex-wrap: wrap;
-    margin-top: 20px;
+    margin-top: 0px;
+    box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    padding: 5px 20px 5px 20px;
 }
 
 .table-list-show{
@@ -80,14 +110,16 @@
 }
 
 .table-list-show .form-control{
-    width: 35px;
-    height: 35px;
-    min-width: 35px;
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
     padding: 0px;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
+    font-size: 13px;
+
 }
 
 nav .pagination{
@@ -95,9 +127,14 @@ nav .pagination{
 }
 
 nav .pagination .page-item .page-link{
-    min-width: 35px;
-    height: 35px;
+    min-width: 30px;
+    width: 30px;
+    height: 30px;
     color: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
 }
 
 nav .pagination .page-item.active .page-link{
@@ -112,7 +149,8 @@ button:focus, button:active{
 }
 
 .table{
-    border: 1px solid #ddd;
+    border: 1px solid #e9e9e9;
+    margin-bottom: 0px;
 }
 
 .table-head-btn{
@@ -156,23 +194,29 @@ button:focus, button:active{
 
 .table thead tr th{
     vertical-align: middle;
-    height: 53px;
-    font-size: 16px;
+    height: 40px;
+    font-size: 14px;
     position: sticky;
-    top: 1px;
-    left: 1px;
-    border-bottom: 1px solid #ddd;
+    top: 0px;
+    left: 0px;
+    border-bottom: 1px solid #e9e9e9;
 }
 
 .table tbody tr td{
     vertical-align: middle;
     color: #333333;
+    padding: .3rem .5rem;
+    box-shadow: none;
+    line-height: 20px;
+    vertical-align: middle;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    border-bottom: 1px solid #F6F7F8;
+    cursor: pointer;
 }
 
-.table tbody{
-    max-height: calc(100ch - 300px);
-    overflow: auto;
-    height: auto;
+.table tbody tr:hover td{
+    background-color: #fcfcfc;
 }
 
 .sticky-column-1 {
@@ -195,4 +239,145 @@ button:focus, button:active{
 
 .table tbody .sticky-column-2 {
   z-index: 1;
+}
+
+.tableProfileImg{
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+}
+
+.tlink{
+    text-decoration: none;
+}
+
+.table-head-btn i{
+    color: #999;
+}
+
+.tdadd-drop{
+    background-color: transparent;
+    border: none;
+    color: #999;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.table tbody tr:hover .tdadd-drop{
+    opacity: 1;
+    visibility: visible;
+}
+
+.tddropOptions{
+    right: -25px;
+    min-width: 6rem;
+}
+
+.filterbtn{
+    width: 35px;
+    height: 35px;
+    padding: 4px;
+    min-width: 35px;
+    background-color: var(--white);
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    color: #898989;
+}
+
+.filterbtn:hover {
+    background-color: #eee;
+    transition: ease-in 0.3s;
+}
+
+.filter-dropdown{
+    min-width: 18rem;
+    padding: 15px;
+    width: 18rem;
+    max-height: 400px;
+    min-height: auto;
+    height: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.filterdrop-heading{
+    font-size: 14px;
+    padding: 15px 0px;
+    margin-bottom: 0px;
+}
+
+.filter-search{
+    width: 100%;
+    position: relative;
+    display: inline-block;
+    margin-bottom: 15px;
+}
+
+.filter-search input{
+    width: 100%;
+    position: relative;
+    display: inline-block;
+    background-color: #F8F8F8;
+    border: 1px solid #dddddd;
+    border-radius: 6px;
+    height: 40px;
+    padding: 6px 10px 6px 30px;
+}
+
+.filter-search i{
+    position: absolute;
+    left: 8px;
+    font-size: 12px;
+    top: 14px;
+    opacity: 0.6;
+}
+
+.filter-select{
+    width: 100%;
+    position: relative;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.filter-select label{
+    color: #898989;
+    font-size: 12px;
+    width: 100%;
+    position: relative;
+    display: inline-block;
+}
+
+.filter-select select{
+    width: 100%;
+    position: relative;
+    display: inline-block;
+    color: #898989;
+    font-size: 12px;
+    border: none;
+    border-bottom: 1px solid #dddddd;
+    padding: 5px 0px;
+}
+
+.filter-checkbox{
+    width: 100%;
+    position: relative;
+    display: inline-block;
+}
+
+.filtercheck-wrapper{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.filtercheck-wrapper label{
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.filtercheck-wrapper label input{
+    scale: 1.2;
 }

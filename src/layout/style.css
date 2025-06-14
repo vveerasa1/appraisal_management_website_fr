@@ -3,7 +3,7 @@
     position: relative;
     display: inline-block;
     height: 100vh;
-    background-color: #FFFAF5;
+    background-color: #f9fafc;
 }
 
 .sidebar-content-wrapper{
@@ -15,6 +15,7 @@
 .content-container{
     width: 100%;
     position: relative;
-    display: inline-block;
-    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }

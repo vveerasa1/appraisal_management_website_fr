@@ -5,11 +5,11 @@ import { Link } from 'react-router-dom'
 const Reports = () => {
     return (
         <>
-            <div className='breadcrumb-wrapper'>
-                <h3 className='page-name'>Reports and Analytics</h3>
-                <ul className='breadcrumb-lists'>
-                    <li><Link to="/admin/dashboad" className="page-link">Home</Link></li>
-                    <li><p>Reports</p></li>
+            <div className='pageTanDiv'>
+                <ul className='pageTabPane'>
+                    <li className='active'>
+                        <Link to="/admin/reports">Reports</Link>
+                    </li>
                 </ul>
             </div>
             <div className='reports-lists-container'>

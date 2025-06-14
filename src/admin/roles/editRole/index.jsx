@@ -5,12 +5,11 @@ import { Link } from 'react-router-dom'
 const EditRole = () => {
     return (
         <>
-            <div className='breadcrumb-wrapper'>
-                <h3 className='page-name'>Edit Role</h3>
-                <ul className='breadcrumb-lists'>
-                    <li><Link to="/admin/dashboad" className="page-link">Home</Link></li>
-                    <li><Link to="/admin/roles" className="page-link">Roles</Link></li>
-                    <li><p>Edit Role</p></li>
+            <div className='pageTanDiv'>
+                <ul className='pageTabPane'>
+                    <li className='active'>
+                        <Link to="/admin/roles">Roles</Link>
+                    </li>
                 </ul>
             </div>
             <form className='form-list-container'>

@@ -15,12 +15,11 @@ const EditEmployee = () => {
 
     return (
         <>
-            <div className='breadcrumb-wrapper'>
-                <h3 className='page-name'>John Doe</h3>
-                <ul className='breadcrumb-lists'>
-                    <li><Link to="/admin/dashboad" className="page-link">Home</Link></li>
-                    <li><Link to="/admin/employees" className="page-link">Employees</Link></li>
-                    <li><p>John Doe</p></li>
+            <div className='pageTanDiv'>
+                <ul className='pageTabPane'>
+                    <li className='active'>
+                        <Link to="/admin/employees">Employees</Link>
+                    </li>
                 </ul>
             </div>
             <form className='form-list-container'>

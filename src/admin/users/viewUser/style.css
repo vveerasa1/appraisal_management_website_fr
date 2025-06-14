@@ -2,6 +2,7 @@
     width: 100%;
     position: relative;
     display: inline-block;
+    padding: 5px 20px 20px 20px;
 }
 
 .view-avatar-info{
@@ -35,9 +36,9 @@
     position: relative;
     display: inline-block;
     background-color: var(--white);
-    border-radius: 12px;
-    padding: 25px;
-    border: 1px solid #dddddd;
+    padding: 15px 25px;
+    box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
 }
 
 .small-heading{
@@ -45,7 +46,7 @@
     position: relative;
     display: inline-block;
     margin-bottom: 25px;
-    font-size: 18px;
+    font-size: 16px;
     padding-bottom: 15px;
     border-bottom: 1px solid #ddd;
 }
@@ -77,4 +78,130 @@
     font-size: 14px;
     margin-bottom: 0px;
     flex: 80%;
+}
+
+.viewPageTopDiv{
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: space-between;
+}
+
+.lvDiv{
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.lvDiv > a{
+    font-size: 18px;
+    color: var(--blue);
+}
+
+.lvDiv img{
+    width: 35px;
+    height: 35px;
+    min-height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.lvDiv p{
+    margin-bottom: 0px;
+}
+
+.rvDiv{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 5px;
+}
+
+.rvDiv-btns{
+    width: 35px;
+    min-width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: transparent;
+    border: 1px solid transparent;
+    font-size: 18px;
+    transition: ease-in 0.3s;
+    color: #898989;
+}
+
+.rvDiv-btns:hover{
+    background-color: #e8e8e8;
+}
+
+.rvDiv-btns.delete{
+    color: red;
+}
+
+.editform-group{
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.editform-label{
+    margin-right: 20px;
+    width: 25%
+}
+
+.editform-input{
+    width: 70%;
+    padding: 6px 35px 6px 10px;
+    border: none;
+    border-bottom: 1px solid #ddd;
+}
+
+.editform-input:active, .editform-input:focus{
+    border-color: var(--blue);
+}
+
+.editform-btn{
+    width: 30px;
+    min-width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    background-color: transparent;
+    border: none;
+    border-radius: 50%;
+    transition: ease-in 0.3s;
+    color: #898989;
+    opacity: 0;
+    visibility: hidden;
+    text-decoration: none;
+    position: absolute;
+    right: 0;
+}
+
+.editform-btn:hover{
+    background-color: #e8e8e8;
+    transition: ease-in 0.3s;
+}
+
+.editform-group:hover .editform-btn{
+    opacity: 1;
+    visibility: visible;
+    transition: ease-in 0.3s;
+}
+
+.editform-input:disabled{
+    background-color: transparent;
+    color: #000;
+}
+
+a{
+    text-decoration: none;
 }

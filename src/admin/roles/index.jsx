@@ -49,11 +49,11 @@ const Roles = () => {
 
     return (
         <>
-            <div className='breadcrumb-wrapper'>
-                <h3 className='page-name'>Roles Management</h3>
-                <ul className='breadcrumb-lists'>
-                    <li><Link to="/admin/dashboad" className="page-link">Home</Link></li>
-                    <li><p>Roles</p></li>
+            <div className='pageTanDiv'>
+                <ul className='pageTabPane'>
+                    <li className='active'>
+                        <Link to="/admin/roles">Roles</Link>
+                    </li>
                 </ul>
             </div>
             <div className='table-lists-container'>

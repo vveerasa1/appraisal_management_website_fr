@@ -48,11 +48,11 @@ const Points = () => {
 
     return (
         <>
-            <div className='breadcrumb-wrapper'>
-                <h3 className='page-name'>Point History</h3>
-                <ul className='breadcrumb-lists'>
-                    <li><Link to="/admin/dashboad" className="page-link">Home</Link></li>
-                    <li><p>Points</p></li>
+            <div className='pageTanDiv'>
+                <ul className='pageTabPane'>
+                    <li className='active'>
+                        <Link to="/admin/points">Points</Link>
+                    </li>
                 </ul>
             </div>
             <div className='table-lists-container'>

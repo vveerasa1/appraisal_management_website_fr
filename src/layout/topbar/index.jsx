@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import "./style.css"
 import { Link } from 'react-router-dom'
 import User from '../../assets/images/user.png'
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 
 const Topbar = ({ toggleSidebar }) => {
 
@@ -11,14 +12,25 @@ const Topbar = ({ toggleSidebar }) => {
     const [isNotificationDropdownOpen, setIsNotificationDropdownOpen] = useState(false);
     const notificationDropdownRef = useRef(null);
 
+    const [isaddmenuDropdownOpen, setIsAddmenuDropdownOpen] = useState(false);
+    const addmenuDropdownRef = useRef(null);
+
     const toggleDropdown = () => {
         setIsDropdownOpen((prev) => !prev);
         setIsNotificationDropdownOpen(false);
+        setIsAddmenuDropdownOpen(false);
     };
 
     const toggleNotificationDropdown = () => {
         setIsNotificationDropdownOpen((prev) => !prev);
         setIsDropdownOpen(false);
+        setIsAddmenuDropdownOpen(false);
+    };
+
+    const toggleAddmenuDropdown = () => {
+        setIsAddmenuDropdownOpen((prev) => !prev);
+        setIsDropdownOpen(false);
+        setIsNotificationDropdownOpen(false);
     };
 
     const handleClickOutside = (event) => {
@@ -26,11 +38,12 @@ const Topbar = ({ toggleSidebar }) => {
             setIsDropdownOpen(false);
         }
 
-        if (
-            notificationDropdownRef.current &&
-            !notificationDropdownRef.current.contains(event.target)
-        ) {
+        if (notificationDropdownRef.current && !notificationDropdownRef.current.contains(event.target)) {
             setIsNotificationDropdownOpen(false);
+        }
+
+        if (addmenuDropdownRef.current && !addmenuDropdownRef.current.contains(event.target)) {
+            setIsAddmenuDropdownOpen(false);
         }
     };
 
@@ -45,13 +58,33 @@ const Topbar = ({ toggleSidebar }) => {
         <nav className='topbar'>
             <div className='topbar-left'>
                 <Link to="#" className="topbar-logo">
-                    <span className='topbar-brand'>Appraisal Management</span>
+                    <h3 className='topbar-brand'>People</h3>
                 </Link>
-                <button type='button' className='navbar-toggle-btn' onClick={toggleSidebar}>
-                    <i className='fa fa-bars'></i>
-                </button>
             </div>
             <div className='topbar-right'>
+                <div className="quickactions" ref={addmenuDropdownRef}>
+                    <button type='button' className='topadd-btn' onClick={toggleAddmenuDropdown}>
+                        <AddOutlinedIcon />
+                    </button>
+
+                    <ul className={`dropdown-menu ${isaddmenuDropdownOpen ? "show" : ""}`}>
+                        <li>
+                            <Link to="/admin/employee/add" className="dropdown-item">
+                                <i className="fa fa-plus-circle"></i> Add Employee
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/admin/user/add" className="dropdown-item">
+                                <i className="fa fa-plus-circle"></i> Add User
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/admin/role/add" className="dropdown-item">
+                                <i className="fa fa-plus-circle"></i> Add Role
+                            </Link>
+                        </li>
+                    </ul>
+                </div>
                 <div className='notifications' ref={notificationDropdownRef}>
                     <span className='new-nofifications'></span>
                     <button type='button' className='notify-btn' onClick={toggleNotificationDropdown}>
@@ -80,11 +113,15 @@ const Topbar = ({ toggleSidebar }) => {
                         </li>
                     </ul>
                 </div>
+                <div className="quickactions">
+                    <Link to="/admin/settings" type='button' className='notify-btn'>
+                        <i className='fa fa-cog'></i>
+                    </Link>
+                </div>
                 {/* admin */}
-                {/* <div className='user' ref={dropdownRef}>
+                <div className='user' ref={dropdownRef}>
                     <button className='user-avatar' onClick={toggleDropdown}>
                         <img className='img-fluid' src={User} alt='Avatar' />
-                        <p>John Doe</p>
                     </button>
                     <ul className={`dropdown-menu ${isDropdownOpen ? "show" : ""}`}>
                         <li>
@@ -103,7 +140,7 @@ const Topbar = ({ toggleSidebar }) => {
                             </button>
                         </li>
                     </ul>
-                </div> */}
+                </div>
                 {/* employee */}
                 {/* <div className='user' ref={dropdownRef}>
                     <button className='user-avatar' onClick={toggleDropdown}>
@@ -129,10 +166,9 @@ const Topbar = ({ toggleSidebar }) => {
                     </ul>
                 </div> */}
                 {/* HR */}
-                <div className='user' ref={dropdownRef}>
+                {/* <div className='user' ref={dropdownRef}>
                     <button className='user-avatar' onClick={toggleDropdown}>
                         <img className='img-fluid' src={User} alt='Avatar' />
-                        <p>John Doe</p>
                     </button>
                     <ul className={`dropdown-menu ${isDropdownOpen ? "show" : ""}`}>
                         <li>
@@ -151,7 +187,7 @@ const Topbar = ({ toggleSidebar }) => {
                             </button>
                         </li>
                     </ul>
-                </div>
+                </div> */}
             </div>
         </nav>
     );

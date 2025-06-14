@@ -13,6 +13,7 @@ import ResetSuccess from './auth/resetSuccess'
 import AdminDashboard from './admin/dashboard'
 import AdminReports from './admin/reports'
 import AdminSettings from './admin/settings'
+import AdminOverview from './admin/overview'
 // admin users
 import AdminUsers from './admin/users'
 import AdminAddUser from './admin/users/addUser'
@@ -83,6 +84,10 @@ function App() {
         <Route
           path="/admin/dashboard"
           element={<AppLayout><AdminDashboard /></AppLayout>}
+        />
+        <Route
+          path="/admin/overview"
+          element={<AppLayout><AdminOverview /></AppLayout>}
         />
         <Route
           path="/admin/reports"
