@@ -29,7 +29,15 @@ const ViewUser = () => {
                                     <div className='editform-group'>
                                         <label className='editform-label'>User</label>
                                         <input type='text' className='editform-input' value="John Doe" placeholder='' />
-                                        <button className="editform-btn" type='button'><i className='fa fa-pencil'></i></button>
+                                        {/* before edit click */}
+                                        {/* <div className="ef-actionbtns">
+                                            <button className="editform-btn" type='button'><i className='fa fa-pencil'></i></button>
+                                        </div> */}
+                                        {/* after edit click */}
+                                        <div className="ef-actionbtns">
+                                            <button className="editform-btn save" type='button'><i className='fa fa-check'></i></button>
+                                            <button className="editform-btn cancel" type='button'><i className='fa fa-close'></i></button>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className='col-12 col-md-6 col-lg-4'>
@@ -48,7 +56,9 @@ const ViewUser = () => {
                                     <div className='editform-group'>
                                         <label className='editform-label'>Role</label>
                                         <input type='text' className='editform-input' value="HR" placeholder='' />
-                                        <button className="editform-btn" type='button'><i className='fa fa-pencil'></i></button>
+                                        <div className="ef-actionbtns">
+                                            <button className="editform-btn" type='button'><i className='fa fa-pencil'></i></button>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className='col-12 col-md-6 col-lg-4'>

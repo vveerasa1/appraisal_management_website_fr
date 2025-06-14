@@ -179,21 +179,11 @@
     border-radius: 50%;
     transition: ease-in 0.3s;
     color: #898989;
-    opacity: 0;
-    visibility: hidden;
     text-decoration: none;
-    position: absolute;
-    right: 0;
 }
 
 .editform-btn:hover{
     background-color: #e8e8e8;
-    transition: ease-in 0.3s;
-}
-
-.editform-group:hover .editform-btn{
-    opacity: 1;
-    visibility: visible;
     transition: ease-in 0.3s;
 }
 
@@ -204,4 +194,33 @@
 
 a{
     text-decoration: none;
+}
+
+.ef-actionbtns{
+    display: flex;
+    align-items: center;
+    position: absolute;
+    right: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: ease-in-out 0.3s;
+}
+
+.editform-group:hover .ef-actionbtns{
+    opacity: 1;
+    visibility: visible;
+    transition: ease-in-out 0.3s;
+}
+
+.editform-btn.save{
+    color: green;
+}
+
+.editform-btn.cancel{
+    color: red;
+}
+
+input:focus, select:focus{
+    outline: none;
+    box-shadow: none;
 }

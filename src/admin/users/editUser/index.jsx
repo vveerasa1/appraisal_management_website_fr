@@ -27,79 +27,85 @@ const EditUser = () => {
                                 <div className='col-12 col-md-6 col-lg-4'>
                                     <div className='editform-group'>
                                         <label className='editform-label'>User</label>
-                                        <input type='text' className='editform-input' value="John Doe" placeholder='' />
+                                        <select className='editform-input'>
+                                            <option>John Doe</option>
+                                            <option>William Smith</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div className='col-12 col-md-6 col-lg-4'>
                                     <div className='editform-group'>
                                         <label className='editform-label'>Email Address</label>
-                                        <input type='text' className='editform-input' value="john@gmail.com" placeholder='' />
+                                        <input type='text' className='editform-input' value="john@gmail.com" placeholder='' disabled />
                                     </div>
                                 </div>
                                 <div className='col-12 col-md-6 col-lg-4'>
                                     <div className='editform-group'>
                                         <label className='editform-label'>Phone Number</label>
-                                        <input type='text' className='editform-input' value="+(123)456-7890" placeholder='' />
+                                        <input type='text' className='editform-input' value="+(123)456-7890" placeholder='' disabled />
                                     </div>
                                 </div>
                                 <div className='col-12 col-md-6 col-lg-4'>
                                     <div className='editform-group'>
                                         <label className='editform-label'>Role</label>
-                                        <input type='text' className='editform-input' value="HR" placeholder='' />
+                                        <select className='editform-input'>
+                                            <option>HR</option>
+                                            <option>Employee</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div className='col-12 col-md-6 col-lg-4'>
                                     <div className='editform-group'>
                                         <label className='editform-label'>Phone Number</label>
-                                        <input type='text' className='editform-input' value="+(123)456-7890" placeholder='' />
+                                        <input type='text' className='editform-input' value="+(123)456-7890" placeholder='' disabled />
                                     </div>
                                 </div>
                                 <div className='col-12 col-md-6 col-lg-4'>
                                     <div className='editform-group'>
                                         <label className='editform-label'>Department</label>
-                                        <input type='text' className='editform-input' value="Software Development" placeholder='' />
+                                        <input type='text' className='editform-input' value="Software Development" placeholder='' disabled />
                                     </div>
                                 </div>
                                 <div className='col-12 col-md-6 col-lg-4'>
                                     <div className='editform-group'>
                                         <label className='editform-label'>Designation</label>
-                                        <input type='text' className='editform-input' value="Web Developer" placeholder='' />
+                                        <input type='text' className='editform-input' value="Web Developer" placeholder='' disabled />
                                     </div>
                                 </div>
                                 <div className='col-12 col-md-6 col-lg-4'>
                                     <div className='editform-group'>
                                         <label className='editform-label'>Employee ID</label>
-                                        <input type='text' className='editform-input' value="ABC1234" placeholder='' />
+                                        <input type='text' className='editform-input' value="ABC1234" placeholder='' disabled />
                                     </div>
                                 </div>
                                 <div className='col-12 col-md-6 col-lg-4'>
                                     <div className='editform-group'>
                                         <label className='editform-label'>Date of Joining</label>
-                                        <input type='text' className='editform-input' value="20/07/2024" placeholder='' />
+                                        <input type='text' className='editform-input' value="20/07/2024" placeholder='' disabled />
                                     </div>
                                 </div>
                                 <div className='col-12 col-md-6 col-lg-4'>
                                     <div className='editform-group'>
                                         <label className='editform-label'>Added By</label>
-                                        <input type='text' className='editform-input' value="Admin" placeholder='' />
+                                        <input type='text' className='editform-input' value="Admin" placeholder='' disabled />
                                     </div>
                                 </div>
                                 <div className='col-12 col-md-6 col-lg-4'>
                                     <div className='editform-group'>
                                         <label className='editform-label'>Added Time</label>
-                                        <input type='text' className='editform-input' value="20/07/2024" placeholder='' />
+                                        <input type='text' className='editform-input' value="20/07/2024" placeholder='' disabled />
                                     </div>
                                 </div>
                                 <div className='col-12 col-md-6 col-lg-4'>
                                     <div className='editform-group'>
                                         <label className='editform-label'>Modified By</label>
-                                        <input type='text' className='editform-input' value="Admin" placeholder='' />
+                                        <input type='text' className='editform-input' value="Admin" placeholder='' disabled />
                                     </div>
                                 </div>
                                 <div className='col-12 col-md-6 col-lg-4'>
                                     <div className='editform-group'>
                                         <label className='editform-label'>Modified Time</label>
-                                        <input type='text' className='editform-input' value="20/07/2024" placeholder='' />
+                                        <input type='text' className='editform-input' value="20/07/2024" placeholder='' disabled />
                                     </div>
                                 </div>
                                 <div className='col-12 col-md-12 col-lg-12'>
