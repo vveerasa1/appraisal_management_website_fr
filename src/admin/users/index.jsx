@@ -145,11 +145,15 @@ const Users = () => {
     return (
         <>
             <div className='pageTanDiv'>
-                <ul className='pageTabPane'>
-                    <li className='active'>
-                        <Link to="/admin/users">Users</Link>
-                    </li>
-                </ul>
+                <div className='viewPageTopDiv'>
+                    <div className='lvDiv'>
+                        <Link to="/admin/users"><i className='fa fa-angle-left'></i></Link>
+                        <p>Users</p>
+                    </div>
+                    <div className='rvDiv'>
+                        <Link to="/admin/user/add" type='button' className='theme-btn btn-blue'><i className='fa fa-plus-circle'></i>Add User</Link>
+                    </div>
+                </div>
             </div>
             <div className='table-lists-container'>
                 <div className='table-top-block'>

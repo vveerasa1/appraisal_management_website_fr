@@ -6,19 +6,18 @@ const Reports = () => {
     return (
         <>
             <div className='pageTanDiv'>
-                <ul className='pageTabPane'>
-                    <li className='active'>
-                        <Link to="/admin/reports">Reports</Link>
-                    </li>
-                </ul>
-            </div>
-            <div className='reports-lists-container'>
-                <div className='row'>
-                    <div className='col-12 col-md-12 mb-4'>
-                         <div className='table-top-block'>
-                            <button type='button' className='theme-btn btn-blue'><i className='fa fa-file'></i>Generate Report</button>
-                         </div>
+                <div className='viewPageTopDiv'>
+                    <div className='lvDiv'>
+                        <Link to="/admin/dashboard"><i className='fa fa-angle-left'></i></Link>
+                        <p>Reports</p>
                     </div>
+                    <div className='rvDiv'>
+                        <button type='button' className='theme-btn btn-blue'><i className='fa fa-file'></i>Generate Report</button>
+                    </div>
+                </div>
+            </div>
+            <div className='dashboard-wrapper'>
+                <div className='row'>
                     <div className='col-12 col-md-6 col-lg-6 mb-4'>
                         <div className='report-wrapper'>
                             <div className='report-head'>
