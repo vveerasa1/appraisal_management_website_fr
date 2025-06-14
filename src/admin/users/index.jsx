@@ -15,6 +15,9 @@ const Users = () => {
         { eid: "PB0006", name: "William Smith", role: "User", email: "williamsmith@gmail.com" },
         { eid: "PB0007", name: "Alice Manty", role: "HR", email: "alice@gmail.com" },
         { eid: "PB0008", name: "John Doe", role: "Manager", email: "johndoe@gmail.com" },
+        { eid: "PB0009", name: "William Smith", role: "User", email: "williamsmith@gmail.com" },
+        { eid: "PB00010", name: "Alice Manty", role: "HR", email: "alice@gmail.com" },
+        { eid: "PB00011", name: "John Doe", role: "Manager", email: "johndoe@gmail.com" },
     ];
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -214,7 +217,7 @@ const Users = () => {
                         <table className="table table-striped">
                             <thead>
                                 <tr>
-                                    <th><button className="table-head-btn"> <i className='fa fa-tasks'></i> </button></th>
+                                    <th style={{width: '50px'}}><button className="table-head-btn"> <i className='fa fa-tasks'></i> </button></th>
                                     <th>
                                         <input
                                             className="tablecheck"
