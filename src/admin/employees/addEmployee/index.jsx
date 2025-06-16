@@ -1,168 +1,80 @@
-import { useState } from 'react'
+// File: EmployeeForm.jsx
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import BasicDetails from './BasicDetails';
+import AddressDetails from './AddressDetails';
+import ProfilePhoto from './ProfilePhoto';
 import "./style.css"
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 
-const AddEmployee = () => {
-
-    const [fileName, setFileName] = useState("");
-
-    const handleFileChange = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            setFileName(file.name);
-        }
-    };
-
-    return (
-        <>
-            <div className='pageTanDiv'>
-                <ul className='pageTabPane'>
-                    <li className='active'>
-                        <Link to="/admin/employees">Employees</Link>
-                    </li>
-                </ul>
-            </div>
-            <form className='form-list-container'>
-                <div className='row'>
-                    <div className="col-12 col-md-12 col-lg-12">
-                        <div className='form-list-wrapper'>
-                            <div className='row'>
-                                <div className='col-12 col-md-12 col-lg-12'>
-                                    <h3 className='small-heading'>Basic Details</h3>
-                                </div>
-                                <div className='col-12 col-md-6 col-lg-4'>
-                                    <div className='forn-group'>
-                                        <label className='form-label'>First Name</label>
-                                        <input type='text' className='form-input' placeholder='' />
-                                    </div>
-                                </div>
-                                <div className='col-12 col-md-6 col-lg-4'>
-                                    <div className='forn-group'>
-                                        <label className='form-label'>Last Name</label>
-                                        <input type='text' className='form-input' placeholder='' />
-                                    </div>
-                                </div>
-                                <div className='col-12 col-md-6 col-lg-4'>
-                                    <div className='forn-group'>
-                                        <label className='form-label'>Email Address</label>
-                                        <input type='email' className='form-input' placeholder='' />
-                                    </div>
-                                </div>
-                                <div className='col-12 col-md-6 col-lg-4'>
-                                    <div className='forn-group'>
-                                        <label className='form-label'>Phone Number</label>
-                                        <input type='text' className='form-input' placeholder='' />
-                                    </div>
-                                </div>
-                                <div className='col-12 col-md-6 col-lg-4'>
-                                    <div className='forn-group'>
-                                        <label className='form-label'>Employee ID</label>
-                                        <input type='text' className='form-input' placeholder='' />
-                                    </div>
-                                </div>
-                                <div className='col-12 col-md-6 col-lg-4'>
-                                    <div className='forn-group'>
-                                        <label className='form-label'>Department</label>
-                                        <select className='form-input'>
-                                            <option>---Select Department---</option>
-                                            <option></option>
-                                            <option></option>
-                                            <option></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div className='col-12 col-md-6 col-lg-4'>
-                                    <div className='forn-group'>
-                                        <label className='form-label'>Reporting To</label>
-                                        <select className='form-input'>
-                                            <option></option>
-                                            <option></option>
-                                            <option></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div className='col-12 col-md-6 col-lg-4'>
-                                    <div className='forn-group'>
-                                        <label className='form-label'>Designation</label>
-                                        <input type='text' className='form-input' placeholder='' />
-                                    </div>
-                                </div>
-                                <div className='col-12 col-md-6 col-lg-4'>
-                                    <div className='forn-group'>
-                                        <label className='form-label'>Date of Joining</label>
-                                        <input type='date' className='form-input' placeholder='' />
-                                    </div>
-                                </div>
-                                <div className='col-12 col-md-12 col-lg-12'>
-                                    <h3 className='small-heading'>Address Details</h3>
-                                </div>
-                                <div className='col-12 col-md-6 col-lg-6'>
-                                    <div className='forn-group'>
-                                        <label className='form-label'>Address</label>
-                                        <input type='text' className='form-input' placeholder='' />
-                                    </div>
-                                </div>
-                                <div className='col-12 col-md-6 col-lg-3'>
-                                    <div className='forn-group'>
-                                        <label className='form-label'>City</label>
-                                        <input type='text' className='form-input' placeholder='' />
-                                    </div>
-                                </div>
-                                <div className='col-12 col-md-6 col-lg-3'>
-                                    <div className='forn-group'>
-                                        <label className='form-label'>Province</label>
-                                        <input type='text' className='form-input' placeholder='' />
-                                    </div>
-                                </div>
-                                <div className='col-12 col-md-6 col-lg-4'>
-                                    <div className='forn-group'>
-                                        <label className='form-label'>Postal Code</label>
-                                        <input type='text' className='form-input' placeholder='' />
-                                    </div>
-                                </div>
-                                <div className='col-12 col-md-6 col-lg-4'>
-                                    <div className='forn-group'>
-                                        <label className='form-label'>Country</label>
-                                        <input type='text' className='form-input' placeholder='' />
-                                    </div>
-                                </div>
-                                <div className='col-12 col-md-12 col-lg-12'>
-                                    <h3 className='small-heading'>Profile Photo</h3>
-                                </div>
-                                <div className='col-12 col-md-6 col-lg-3'>
-                                    <div className='forn-group'>
-                                        {/* <label className='form-label'>Upload Logo</label> */}
-                                        <div className="upload-container">
-                                            {!fileName ? (
-                                                <label htmlFor="upload" className="upload-button">
-                                                    <span>Upload</span>
-                                                    <i className='fa fa-upload'></i>
-                                                </label>
-                                            ) : (
-                                                <div className="file-name">{fileName}</div>
-                                            )}
-                                            <input
-                                                type="file"
-                                                id="upload"
-                                                className="upload-input"
-                                                onChange={handleFileChange}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className='col-12 col-md-12 col-lg-12'>
-                                    <div className='submit-btn-block'>
-                                        <button className='theme-btn btn-border' type='button'>Cancel</button>
-                                        <button className='theme-btn btn-blue' type='button'>Save Employee</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </>
-    );
+const initialValues = {
+  firstName: '',
+  lastName: '',
+  email: '',
+  phone: '',
+  employeeId: '',
+  department: '',
+  reportingTo: '',
+  designation: '',
+  dateOfJoining: '',
+  address: '',
+  city: '',
+  province: '',
+  postalCode: '',
+  country: '',
+  profilePhoto: null,
 };
 
-export default AddEmployee;
+const validationSchema = Yup.object({
+  firstName: Yup.string().required('First Name is required'),
+  lastName: Yup.string().required('Last Name is required'),
+  email: Yup.string().email('Invalid email').required('Email is required'),
+  phone: Yup.string().required('Phone number is required'),
+  employeeId: Yup.string().required('Employee ID is required'),
+  department: Yup.string().required('Department is required'),
+  reportingTo: Yup.string().required('Reporting To is required'),
+  designation: Yup.string().required('Designation is required'),
+  dateOfJoining: Yup.date().required('Date of joining is required'),
+  address: Yup.string().required('Address is required'),
+  city: Yup.string().required('City is required'),
+  province: Yup.string().required('Province is required'),
+  postalCode: Yup.string().required('Postal Code is required'),
+  country: Yup.string().required('Country is required'),
+});
+
+export default function EmployeeForm() {
+  const handleSubmit = (values) => {
+    console.log('Form values:', values);
+  };
+
+  return (
+    <>
+      <div className='pageTanDiv'>
+        <ul className='pageTabPane'>
+          <li className='active'>
+            <Link to="/admin/employees">Employees</Link>
+          </li>
+        </ul>
+      </div>
+      <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
+        {({ setFieldValue }) => (
+          <Form className='form-list-container'>
+            <div className='row'>
+              <div className='col-12'>
+                <div className='form-list-wrapper'>
+                  <BasicDetails />
+                  <AddressDetails />
+                  <ProfilePhoto setFieldValue={setFieldValue} />
+                  <div className='submit-btn-block'>
+                    <button className='theme-btn btn-border' type='button'>Cancel</button>
+                    <button className='theme-btn btn-blue' type='submit'>Save Employee</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Form>
+        )}
+      </Formik>
+    </>
+  );
+}
