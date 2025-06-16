@@ -1,6 +1,5 @@
 // 2. AddressDetails.jsx
-import React from 'react';
-import { Field, ErrorMessage } from 'formik';
+import TextInput from '../../../components/common/TextInput';
 
 const AddressDetails = () => (
   <div className='row'>
@@ -14,7 +13,7 @@ const AddressDetails = () => (
       { label: 'Country', name: 'country', col: 4 },
     ].map(({ label, name, col }) => (
       <div key={name} className={`col-12 col-md-6 col-lg-${col}`}>
-         <TextInput label={label} name={name} type='text' placeholder='' />
+         <TextInput label={label} name={name} type='text' placeholder='' isEdit={false} />
       </div>
     ))}
   </div>

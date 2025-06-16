@@ -1,0 +1,11 @@
+.form-error {
+  color: red;
+  font-size: 0.85rem;
+  margin-left: 30px; /* align under input */
+}
+
+.employee-form-error {
+  color: red;
+  font-size: 0.85rem;
+  margin-left: 5px; /* align under input */
+}
