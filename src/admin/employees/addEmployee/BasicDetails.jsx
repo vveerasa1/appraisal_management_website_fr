@@ -1,8 +1,10 @@
 import React from 'react';
 import { Field, ErrorMessage } from 'formik';
 import TextInput from '../../../components/common/TextInput';
+import SelectInput from '../../../components/common/SelectInput';
 
-const BasicDetails = () => (
+const BasicDetails = ({departments, reportingManagers,isReporterLoading, isdepartmentdataLoading,designations,isDesignationLoading }) => 
+  (
   <div className='row'>
     <div className='col-12'><h3 className='small-heading'>Basic Details</h3></div>
 
@@ -12,36 +14,22 @@ const BasicDetails = () => (
       { label: 'Email Address', name: 'email', type: 'email' },
       { label: 'Phone Number', name: 'phone', type: 'text' },
       { label: 'Employee ID', name: 'employeeId', type: 'text' },
-      { label: 'Designation', name: 'designation', type: 'text' },
       { label: 'Date of Joining', name: 'dateOfJoining', type: 'date' },
     ].map(({ label, name, type }) => (
       <div key={name} className='col-12 col-md-6 col-lg-4'>
-            <TextInput label={label} name={name} type={type} placeholder='' />
+            <TextInput label={label} name={name} type={type} placeholder='' isEdit={false} />
       </div>
     ))}
-
     <div className='col-12 col-md-6 col-lg-4'>
-      <div className='forn-group'>
-        <label className='form-label'>Department</label>
-        <Field as='select' name='department' className='form-input'>
-          <option value=''>---Select Department---</option>
-          <option value='HR'>HR</option>
-          <option value='Engineering'>Engineering</option>
-        </Field>
-        <ErrorMessage name='department' component='div' className='form-error' />
-      </div>
+      <SelectInput label='Designation' name='designation' placeholder='Select Designation' isEdit={false} options={designations} loading={isDesignationLoading} />
     </div>
 
     <div className='col-12 col-md-6 col-lg-4'>
-      <div className='forn-group'>
-        <label className='form-label'>Reporting To</label>
-        <Field as='select' name='reportingTo' className='form-input'>
-          <option value=''>---Select---</option>
-          <option value='Manager1'>Manager 1</option>
-          <option value='Manager2'>Manager 2</option>
-        </Field>
-        <ErrorMessage name='reportingTo' component='div' className='form-error' />
-      </div>
+      <SelectInput label='Department' name='department' placeholder='Select Department' isEdit={false} options={departments} loading={isdepartmentdataLoading}/>
+    </div>
+
+    <div className='col-12 col-md-6 col-lg-4'>
+      <SelectInput label='Reporting To' name='reportingTo' placeholder='Select Reporting Manager' isEdit={false} options={reportingManagers} loading={isReporterLoading}/>
     </div>
   </div>
 );

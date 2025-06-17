@@ -8,7 +8,18 @@ export const POINT_ENDPOINTS = {
   ROOT: "/points",
 };
 
+
 export const USER_ENDPOINTS = {
-  ROOT: "/users",
-  REPORTERS: "reporters",
+  ROOT: '/users',
+  REPORTERS: 'reporters',
+  ALL:'all'
 };
+
+
+export const DEPARTMENT_ENDPOINTS = {
+  ROOT: '/departments',
+};
+
+export const DESIGNATION_ENDPOINTS = {
+  ROOT: '/designations',
+}
