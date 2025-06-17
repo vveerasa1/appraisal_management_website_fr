@@ -1,8 +1,10 @@
-import { configureStore } from '@reduxjs/toolkit';
-import { authApi } from './services/features/auth/authApi';
-import { userApi } from './services/features/users/userApi';
-import usersReducer from './services/features/users/userSlice';
-import authReducer from './services/features/auth/authSlice';
+import { configureStore } from "@reduxjs/toolkit";
+import { authApi } from "./services/features/auth/authApi";
+import { userApi } from "./services/features/users/userApi";
+import { pointApi } from "./services/features/points/pointApi";
+
+import usersReducer from "./services/features/users/userSlice";
+import authReducer from "./services/features/auth/authSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +14,9 @@ export const store = configureStore({
     [userApi.reducerPath]: userApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware()
-    .concat(authApi.middleware, userApi.middleware)
+    getDefaultMiddleware().concat(
+      authApi.middleware,
+      userApi.middleware,
+      pointApi.middleware
+    ),
 });
