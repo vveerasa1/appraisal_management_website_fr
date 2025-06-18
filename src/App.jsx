@@ -35,6 +35,16 @@ import AdminRoles from './admin/roles'
 import AdminAddRoles from './admin/roles/addRole'
 import AdminEditRoles from './admin/roles/editRole'
 import AdminViewRoles from './admin/roles/viewRole'
+// admin organization
+import AdminDepartment from './admin/organization/department'
+import AdminAddDepartment from './admin/organization/department/addDepartment'
+import AdminEditDepartment from './admin/organization/department/editDepartment'
+import AdminViewDepartment from './admin/organization/department/viewDepartment'
+import AdminDesignation from './admin/organization/designation'
+import AdminAddDesignation from './admin/organization/designation/addDesignation'
+import AdminEditDesignation from './admin/organization/designation/editDesignation'
+import AdminViewDesignation from './admin/organization/designation/viewDesignation'
+import AdminOrganizationTree from './admin/organization/organizationTree'
 
 // ***** employee ***** //
 import EmployeeDashboard from './employee/dashboard'
@@ -163,8 +173,44 @@ function App() {
           element={<AppLayout><AdminViewRoles /></AppLayout>}
         />
         <Route
-          path="/admin/organization/overview"
+          path="/admin/organization"
           element={<AppLayout><AdminOrganization /></AppLayout>}
+        />
+        <Route
+          path="/admin/organization/department"
+          element={<AppLayout><AdminDepartment /></AppLayout>}
+        />
+        <Route
+          path="/admin/organization/department/add"
+          element={<AppLayout><AdminAddDepartment /></AppLayout>}
+        />
+        <Route
+          path="/admin/organization/department/edit"
+          element={<AppLayout><AdminEditDepartment /></AppLayout>}
+        />
+        <Route
+          path="/admin/organization/department/view"
+          element={<AppLayout><AdminViewDepartment /></AppLayout>}
+        />
+        <Route
+          path="/admin/organization/designation"
+          element={<AppLayout><AdminDesignation /></AppLayout>}
+        />
+        <Route
+          path="/admin/organization/designation/add"
+          element={<AppLayout><AdminAddDesignation /></AppLayout>}
+        />
+        <Route
+          path="/admin/organization/designation/edit"
+          element={<AppLayout><AdminEditDesignation /></AppLayout>}
+        />
+        <Route
+          path="/admin/organization/designation/view"
+          element={<AppLayout><AdminViewDesignation /></AppLayout>}
+        />
+        <Route
+          path="/admin/organization/tree"
+          element={<AppLayout><AdminOrganizationTree /></AppLayout>}
         />
        
         {/* employee */}

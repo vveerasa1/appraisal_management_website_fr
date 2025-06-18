@@ -67,8 +67,8 @@ const Topbar = ({ toggleSidebar }) => {
                         <li className={location.pathname === "/admin/reports" ? "active" : ""}>
                             <Link to="/admin/reports">Reports</Link>
                         </li>
-                        <li className={location.pathname === "/admin/organization/overview" ? "active" : ""}>
-                            <Link to="/admin/organization/overview">Organization</Link>
+                        <li className={location.pathname === "/admin/organization" ? "active" : ""}>
+                            <Link to="/admin/organization">Organization</Link>
                         </li>
                     </ul>
                 </div>
