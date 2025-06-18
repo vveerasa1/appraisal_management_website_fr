@@ -24,10 +24,14 @@ export const userApi = createCustomApi(
       })
     }),
     getAllUsers: builder.query({
-        query:({ id, page = '', limit = '', role = '' }) => ({
-            url: `${USER_ENDPOINTS.ROOT}/${id}/${USER_ENDPOINTS.ALL}?page=${page}&limit=${limit}&role=${role}` ,
-            method:'GET'         
-        })
+        query:({ id, ...params}) => {
+          const searchParams = new URLSearchParams(params).toString();
+          console.log(searchParams, "mysearchParamns")
+          return{
+          url: `${USER_ENDPOINTS.ROOT}/${id}/${USER_ENDPOINTS.ALL}?${searchParams}` ,
+            method:'GET'
+          }         
+        }
     }),
     updateUser: builder.mutation({
       query:({userId, formData}) => ({

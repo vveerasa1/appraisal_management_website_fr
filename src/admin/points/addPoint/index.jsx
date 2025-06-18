@@ -3,7 +3,7 @@ import "./style.css";
 import { Link } from "react-router-dom";
 import { useCreatePointMutation } from "../../../services/features/points/pointApi";
 import {
-  useGetUserByIdQuery,
+  useGetUserQuery,
   useGetAllUsersQuery,
 } from "../../../services/features/users/userApi";
 import { showSuccessToast, showErrorToast } from "../../../utils/toast";
@@ -23,7 +23,7 @@ const AddPoints = () => {
   const users = data?.data?.users || [];
 
   const { data: userDetails, isFetching: isPointsLoading } =
-    useGetUserByIdQuery(selectedUser, {
+    useGetUserQuery(selectedUser, {
       skip: !selectedUser,
     });
   const currentPoints = userDetails?.data?.totalPoints ?? 0;

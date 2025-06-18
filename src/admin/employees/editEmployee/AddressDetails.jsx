@@ -13,22 +13,6 @@ const AddressDetails = ({isEdit}) => (
       { label: "Province", name: "province", col: 3 },
       { label: "Postal Code", name: "postalCode", col: 4 },
       { label: "Country", name: "country", col: 4 },
-      { label: "Added By", name: "addedBy", type: "text", disabled: true ,col: 4 },
-      { label: "Added Time", name: "addedTime", type: "text", disabled: true , col: 4 },
-      {
-        label: "Modified By",
-        name: "modifiedBy",
-        type: "text",
-        disabled: true,
-        col: 4 
-      },
-      {
-        label: "Modified Time",
-        name: "modifiedTime",
-        type: "text",
-        disabled: true,
-        col: 4 
-      },
     ].map(({ label, name, col, disabled }) => (
       <div key={name} className={`col-12 col-md-6 col-lg-${col}`}>
         <TextInput

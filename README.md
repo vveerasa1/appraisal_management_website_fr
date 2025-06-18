@@ -5,6 +5,7 @@
     - Redux-toolkit
     - react-redux
     - rtk-query
+    - redux-persist
 
 ## Endpoints added in the constants folder
 
