@@ -147,7 +147,7 @@ const Users = () => {
             <div className='pageTanDiv'>
                 <div className='viewPageTopDiv'>
                     <div className='lvDiv'>
-                        <Link to="/admin/users"><i className='fa fa-angle-left'></i></Link>
+                        <Link to="/admin/overview"><i className='fa fa-angle-left'></i></Link>
                         <p>Users</p>
                     </div>
                     <div className='rvDiv'>

@@ -1,16 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
 import "./style.css"
 import { Link } from 'react-router-dom'
-import ProfileImg from '../../assets/images/user.png'
+import ProfileImg from '../../../assets/images/user.png'
 import Select from "react-select";
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 
-const Roles = () => {
+const Department = () => {
     const data = [
-        { rid: "1", role: "Admin", access: "Full system access", permission: "6" },
-        { rid: "2", role: "Manager", access: "Can manage users", permission: "4" },
-        { rid: "3", role: "HR", access: "Can manage users", permission: "6" },
-        { rid: "3", role: "User", access: "View personal data only", permission: "1" },
+        { eid: "1", name: "Digital Marketing", lead: "-", parent: "-", status: 'Active', addedby: 'admin', time: '11-Feb-2024 07:54 PM' },
+        { eid: "2", name: "Humar Resource", lead: "-", parent: "-", status: 'Active', addedby: 'admin', time: '11-Feb-2024 07:54 PM' },
+        { eid: "3", name: "Software Development", lead: "-", parent: "-", status: 'Active', addedby: 'admin', time: '11-Feb-2024 07:54 PM' },
     ];
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -108,8 +107,8 @@ const Roles = () => {
     }, [openDropdown, isFilterOpen]);
 
     const options = [
-        { value: "active-view", label: "Active Role View" },
-        { value: "inactive-view", label: "Inactive Role View" },
+        { value: "active-view", label: "Active Department View" },
+        { value: "inactive-view", label: "Inactive Department View" },
     ];
 
     const customStyles = {
@@ -134,19 +133,23 @@ const Roles = () => {
             padding: "6px",
         }),
     };
-
     return (
         <>
             <div className='pageTanDiv'>
-                <div className='viewPageTopDiv'>
-                    <div className='lvDiv'>
-                        <Link to="/admin/overview"><i className='fa fa-angle-left'></i></Link>
-                        <p>Users</p>
-                    </div>
-                    <div className='rvDiv'>
-                        <Link to="/admin/role/add" type='button' className='theme-btn btn-blue'><i className='fa fa-plus-circle'></i>Add Role</Link>
-                    </div>
-                </div>
+                <ul className='pageTabPane'>
+                    <li>
+                        <Link to="/admin/employees">Employee</Link>
+                    </li>
+                    <li className='active'>
+                        <Link to="/admin/organization/department">Department</Link>
+                    </li>
+                    <li>
+                        <Link to="/admin/organization/designation">Designation</Link>
+                    </li>
+                    <li>
+                        <Link to="/admin/organization/tree">Organization Tree</Link>
+                    </li>
+                </ul>
             </div>
             <div className='table-lists-container'>
                 <div className='table-top-block'>
@@ -188,19 +191,19 @@ const Roles = () => {
                                         </select>
                                     </div>
                                     <div className='filter-checkbox'>
-                                        <h3 className='filterdrop-heading'>Role Type</h3>
+                                        <h3 className='filterdrop-heading'>Fields</h3>
                                         <div className='filtercheck-wrapper'>
                                             <label>
                                                 <input type='checkbox' />
-                                                Admin
+                                                Department Name
                                             </label>
                                             <label>
                                                 <input type='checkbox' />
-                                                HR
+                                                Parent Department
                                             </label>
                                             <label>
                                                 <input type='checkbox' />
-                                                Employee
+                                                Department Lead
                                             </label>
                                         </div>
                                     </div>
@@ -211,7 +214,7 @@ const Roles = () => {
                 </div>
                 <div className='tables'>
                     <div className='table-wrapper'>
-                        <table className="table table-striped">
+                        <table className="table">
                             <thead>
                                 <tr>
                                     <th style={{ width: '50px' }}><button className="table-head-btn"> <i className='fa fa-tasks'></i> </button></th>
@@ -226,9 +229,9 @@ const Roles = () => {
                                     <th>
                                         <button
                                             className="table-head-btn"
-                                            onClick={() => handleSort("rid")}
+                                            onClick={() => handleSort("eid")}
                                         >
-                                            Role ID {sortConfig.key === "rid" && (
+                                            Department ID {sortConfig.key === "eid" && (
                                                 <span className={`ml-1 arrow ${sortConfig.direction === "asc" ? "arrow-up" : "arrow-down"}`}>
                                                     {sortConfig.direction === "asc" ? "▲" : "▼"}
                                                 </span>
@@ -238,9 +241,9 @@ const Roles = () => {
                                     <th>
                                         <button
                                             className="table-head-btn"
-                                            onClick={() => handleSort("role")}
+                                            onClick={() => handleSort("name")}
                                         >
-                                            Role {sortConfig.key === "role" && (
+                                            Department Name {sortConfig.key === "name" && (
                                                 <span className={`ml-1 arrow ${sortConfig.direction === "asc" ? "arrow-up" : "arrow-down"}`}>
                                                     {sortConfig.direction === "asc" ? "▲" : "▼"}
                                                 </span>
@@ -250,9 +253,9 @@ const Roles = () => {
                                     <th>
                                         <button
                                             className="table-head-btn"
-                                            onClick={() => handleSort("access")}
+                                            onClick={() => handleSort("lead")}
                                         >
-                                            Access {sortConfig.key === "access" && (
+                                            Department Lead {sortConfig.key === "lead" && (
                                                 <span className={`ml-1 arrow ${sortConfig.direction === "asc" ? "arrow-up" : "arrow-down"}`}>
                                                     {sortConfig.direction === "asc" ? "▲" : "▼"}
                                                 </span>
@@ -262,21 +265,56 @@ const Roles = () => {
                                     <th>
                                         <button
                                             className="table-head-btn"
-                                            onClick={() => handleSort("permission")}
+                                            onClick={() => handleSort("parent")}
                                         >
-                                            Permissions {sortConfig.key === "permission" && (
+                                            Parent Department {sortConfig.key === "parent" && (
                                                 <span className={`ml-1 arrow ${sortConfig.direction === "asc" ? "arrow-up" : "arrow-down"}`}>
                                                     {sortConfig.direction === "asc" ? "▲" : "▼"}
                                                 </span>
                                             )}
                                         </button>
                                     </th>
-                                    <th></th>
+                                    <th>
+                                        <button
+                                            className="table-head-btn"
+                                            onClick={() => handleSort("status")}
+                                        >
+                                            Status {sortConfig.key === "status" && (
+                                                <span className={`ml-1 arrow ${sortConfig.direction === "asc" ? "arrow-up" : "arrow-down"}`}>
+                                                    {sortConfig.direction === "asc" ? "▲" : "▼"}
+                                                </span>
+                                            )}
+                                        </button>
+                                    </th>
+                                    <th>
+                                        <button
+                                            className="table-head-btn"
+                                            onClick={() => handleSort("addedby")}
+                                        >
+                                            Added By {sortConfig.key === "addedby" && (
+                                                <span className={`ml-1 arrow ${sortConfig.direction === "asc" ? "arrow-up" : "arrow-down"}`}>
+                                                    {sortConfig.direction === "asc" ? "▲" : "▼"}
+                                                </span>
+                                            )}
+                                        </button>
+                                    </th>
+                                    <th>
+                                        <button
+                                            className="table-head-btn"
+                                            onClick={() => handleSort("time")}
+                                        >
+                                            Added Time {sortConfig.key === "time" && (
+                                                <span className={`ml-1 arrow ${sortConfig.direction === "asc" ? "arrow-up" : "arrow-down"}`}>
+                                                    {sortConfig.direction === "asc" ? "▲" : "▼"}
+                                                </span>
+                                            )}
+                                        </button>
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {currentRows.map((row) => (
-                                    <tr key={row.rid}>
+                                    <tr key={row.eid}>
                                         <td>
                                             <div
                                                 ref={(el) => (dropdownRefs.current[row.eid] = el)}
@@ -291,8 +329,8 @@ const Roles = () => {
                                                 </button>
                                                 {openDropdown === row.eid && (
                                                     <div className="dropdown-menu tddropOptions show">
-                                                        <Link to="/admin/role/view" className="dropdown-item">View</Link>
-                                                        <Link to="/admin/role/edit" className="dropdown-item">Edit</Link>
+                                                        <Link to="/admin/organization/department/view" className="dropdown-item">View</Link>
+                                                        <Link to="/admin/organization/department/edit" className="dropdown-item">Edit</Link>
                                                         <button className="dropdown-item">Delete</button>
                                                     </div>
                                                 )}
@@ -306,16 +344,17 @@ const Roles = () => {
                                                 checked={selectedRows.includes(row.eid)}
                                             />
                                         </td>
+                                        <td>{row.eid}</td>
                                         <td>
-                                            {row.rid}
-                                        </td>
-                                        <td>
-                                            <Link to={`/admin/role/view`} className="tlink">
-                                                {row.role}
+                                            <Link to={`/admin/organization/department/view`} className="tlink">
+                                                {row.name}
                                             </Link>
                                         </td>
-                                        <td>{row.access}</td>
-                                        <td>{row.permission}</td>
+                                        <td>{row.lead}</td>
+                                        <td>{row.parent}</td>
+                                        <td>{row.status}</td>
+                                        <td>{row.addedby}</td>
+                                        <td>{row.time}</td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -350,9 +389,13 @@ const Roles = () => {
                                 value={rowsPerPage}
                                 onChange={handleRowsPerPageChange}
                             >
-                                <option value={5}>5</option>
                                 <option value={10}>10</option>
-                                <option value={15}>15</option>
+                                <option value={20}>20</option>
+                                <option value={30}>30</option>
+                                <option value={40}>40</option>
+                                <option value={50}>50</option>
+                                <option value={75}>75</option>
+                                <option value={100}>100</option>
                             </select>
                         </div>
                     </div>
@@ -362,4 +405,4 @@ const Roles = () => {
     );
 };
 
-export default Roles;
+export default Department;
