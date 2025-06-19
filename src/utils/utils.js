@@ -10,7 +10,7 @@ export function mapToSelectOptions(data = [], keyMap = { label: 'name', value: '
 }
 
 export function createFilterObject(input = {}) {
-  const allowedKeys = ['id', 'search', 'department', 'designame', 'role'];
+  const allowedKeys = ['id', 'search', 'department', 'designation', 'role','pageSize', 'pageIndex'];
   const filterObject = {};
 
   allowedKeys.forEach((key) => {

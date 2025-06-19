@@ -12,7 +12,8 @@ const SearchInput = ({ onSearch, delay = 300, placeholder = "Search..." }) => {
 
     // Set new debounce timeout
     debounceTimeout.current = setTimeout(() => {
-      onSearch(input);
+      console.log(input, "my input")
+      onSearch('search',input);
     }, delay);
 
     // Cleanup on unmount

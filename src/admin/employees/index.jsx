@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import React from "react";
 import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
+  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
@@ -94,10 +95,12 @@ const AdminViewEmployee = () => {
   const [selectedView, setSelectedView] = useState("active-view");
 
   //Search
-  const [search, setSearch] = useState("");
-  const handleSearch = (e) => {
-    return setSearch(e.target.vlaue);
-  };
+  const handleSearch = useCallback((name,e) => {
+  setFilterValues((prev) => ({
+    ...prev,
+    [name]: e
+  }));
+  }, []);
 
   //Filter employee
 
@@ -115,12 +118,10 @@ const AdminViewEmployee = () => {
   });
 
   const handleFilterChange = (name,e) => {
-    console.log(e.target, "my target", e)
     const {  value } = e.target;
     setFilterValues((prev) => ({ ...prev, [name]: value }));
   };
 
-  console.log(filterValues, "FilterValues")
 
   const handleFilterCheckboxChange = (name, e) => {
     const { checked } = e.target;
@@ -140,11 +141,11 @@ const AdminViewEmployee = () => {
     isLoading: allUsersLoading,
     isError: isUsersError,
     error: usersError,
-  } = useGetAllUsersQuery(createFilterObject(filterValues));
+  } = useGetAllUsersQuery(createFilterObject({...filterValues,...pagination}));
 
   const tableData = useMemo(() => {
     const data = allUserData?.data?.users || [];
-
+    
     if (selectedView === "active-view") {
       return data.filter((user) => user.status === "Active");
     } else if (selectedView === "inactive-view") {
@@ -153,7 +154,7 @@ const AdminViewEmployee = () => {
 
     return data;
   }, [allUserData, selectedView]);
-  const pageCount = allUserData?.totalPages || 0;
+  const pageCount = allUserData?.data?.totalPages || 0;
 
   useApiErrorToast(isUsersError, usersError, "Failed to retrieve all users");
 
@@ -181,92 +182,89 @@ const AdminViewEmployee = () => {
 
   const columnHelper = createColumnHelper();
 
-  const columns = useMemo(
-    () => [
-      columnHelper.display({
-        id: "select",
-        header: ({ table }) => (
-          <IndeterminateCheckbox
-            {...{
-              checked: table.getIsAllRowsSelected(),
-              indeterminate: table.getIsSomeRowsSelected(),
-              onChange: table.getToggleAllRowsSelectedHandler(),
-            }}
-          />
-        ),
-        cell: ({ row }) => (
-          <IndeterminateCheckbox
-            {...{
-              checked: row.getIsSelected(),
-              disabled: !row.getCanSelect(),
-              indeterminate: row.getIsSomeSelected(),
-              onChange: row.getToggleSelectedHandler(),
-            }}
-          />
-        ),
-      }),
-      columnHelper.display({
-        id: "actions",
-        cell: ({ row }) => (
-          <ActionsCell
-            row={row}
-            openDropdown={openDropdown}
-            toggleDropdown={toggleDropdown}
-            dropdownRefs={dropdownRefs}
-          />
-        ),
-      }),
-      columnHelper.display({
-        id: "photo",
-        header: "Photo",
-        cell: () => (
-          <img
-            className="img-fluid tableProfileImg"
-            src={ProfileImg}
-            alt="User"
-          />
-        ), // Placeholder for avatar
-      }),
-      columnHelper.accessor("employeeId", {
-        header: "Employee ID",
-        cell: (info) => info.getValue(),
-      }),
-      columnHelper.accessor("firstName", {
-        header: "Name",
-        cell: (info) => info.getValue(),
-      }),
-      columnHelper.accessor("lastName", {
-        header: "Role",
-        cell: (info) => info.getValue(),
-      }),
-      columnHelper.accessor("email", {
-        header: "Email",
-        cell: (info) => info.getValue(),
-      }),
-      columnHelper.accessor("department", {
-        header: "Department",
-        cell: (info) => info.getValue().name,
-      }),
-      columnHelper.accessor("designation", {
-        header: "Designation",
-        cell: (info) => info.getValue().name,
-      }),
-      columnHelper.accessor("dateOfJoining", {
-        header: "Doj",
-        cell: (info) => dayjs(info.getValue()).format("DD-MM-YYYY"),
-      }),
-      columnHelper.accessor("phoneNumber", {
-        header: "Phone",
-        cell: (info) => info.getValue(),
-      }),
-      columnHelper.accessor("reportingTo", {
-        header: "ReportingTo",
-        cell: (info) =>
-          `${info.getValue().firstName} ${info.getValue().lastName}`,
-      }),
-    ],
-    [columnHelper]
+   const columns = useMemo(() => {
+  const renderCheckbox = (checked, indeterminate, onChange, disabled = false) => (
+    <IndeterminateCheckbox
+      {...{ checked, indeterminate, onChange, disabled }}
+    />
   );
+
+  return [
+    columnHelper.display({
+      id: "actions",
+      header: () => (
+        <button className="table-head-btn">
+          <i className="fa fa-tasks" />
+        </button>
+      ),
+      cell: ({ row }) => (
+        <ActionsCell
+          row={row}
+          openDropdown={openDropdown}
+          toggleDropdown={toggleDropdown}
+          dropdownRefs={dropdownRefs}
+        />
+      ),
+    }),
+    columnHelper.display({
+      id: "select",
+      header: ({ table }) =>
+        renderCheckbox(
+          table.getIsAllRowsSelected(),
+          table.getIsSomeRowsSelected(),
+          table.getToggleAllRowsSelectedHandler()
+        ),
+      cell: ({ row }) =>
+        renderCheckbox(
+          row.getIsSelected(),
+          row.getIsSomeSelected(),
+          row.getToggleSelectedHandler(),
+          !row.getCanSelect()
+        ),
+    }),
+    columnHelper.display({
+      id: "photo",
+      header: <button className="table-head-btn"> Photo </button>,
+      cell: () => (
+        <img
+          className="img-fluid tableProfileImg"
+          src={ProfileImg}
+          alt="User"
+        />
+      ),
+    }),
+
+    // Simple accessors
+    columnHelper.accessor("employeeId", { header: <button className="table-head-btn"> Employee id </button>}),
+    columnHelper.accessor("firstName", { header: <button className="table-head-btn"> First name </button> }),
+    columnHelper.accessor("lastName", { header: <button className="table-head-btn"> last name </button> }),
+    columnHelper.accessor("email", { header: <button className="table-head-btn"> Email </button> }),
+    columnHelper.accessor("phoneNumber", { header: <button className="table-head-btn"> Phone </button> }),
+
+    // Nested object accessors
+    columnHelper.accessor((row) => row.department?.name, {
+      id: "department",
+      header: <button className="table-head-btn">Department </button>,
+    }),
+    columnHelper.accessor((row) => row.designation?.name, {
+      id: "designation",
+      header: <button className="table-head-btn"> Designation </button>,
+    }),
+    columnHelper.accessor("dateOfJoining", {
+      header: <button className="table-head-btn"> DOJ </button>,
+      cell: (info) => dayjs(info.getValue()).format("DD-MM-YYYY"),
+    }),
+    columnHelper.accessor(
+      (row) => `${row.reportingTo?.firstName ?? ""} ${row.reportingTo?.lastName ?? ""}`,
+      {
+        id: "reportingTo",
+        header: <button className="table-head-btn"> Reporting to</button>,
+      }
+    ),
+  ];
+   }, [columnHelper, openDropdown, toggleDropdown, dropdownRefs]);
+
+  
   const table = useReactTable({
     data: tableData,
     columns,
@@ -278,14 +276,13 @@ const AdminViewEmployee = () => {
     },
     manualPagination: true,
     onPaginationChange: setPagination,
+    getPaginationRowModel: getPaginationRowModel(),
     enableRowSelection: true, //enable row selection for all rows
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
-
-  // OLD
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const filterRef = useRef(null);
@@ -320,13 +317,6 @@ const AdminViewEmployee = () => {
     };
   }, [openDropdown, isFilterOpen]);
 
-  const handleRowsPerPageChange = (e) => {
-    setPagination((prev) => ({
-      ...prev,
-      pageSize: Number(e.target.value),
-      pageIndex: 0, // reset to first page when limit changes
-    }));
-  };
 
   return (
     <>
@@ -340,13 +330,13 @@ const AdminViewEmployee = () => {
       <div className="table-lists-container">
         <div className="table-top-block">
           <div className="ttb-left">
-            <ActiveInactiveSelect
+            {/* <ActiveInactiveSelect
               options={options}
               setState={setSelectedView}
-            />
+            /> */}
           </div>
           <div className="ttb-right">
-            <SearchInput onSearch={handleSearch} />
+            <SearchInput onSearch={handleSearch}  />
             <FilterContainer
               toggleFilterDropdown={toggleFilterDropdown}
               isFilterOpen={isFilterOpen}
@@ -379,8 +369,8 @@ const AdminViewEmployee = () => {
                               header.getContext()
                             )}
                             {{
-                              asc: "▲",
-                              desc: "▼",
+                              asc: " ▲",
+                              desc: " ▼",
                             }[header.column.getIsSorted()] ?? null}
                           </div>
                         )}
@@ -409,7 +399,7 @@ const AdminViewEmployee = () => {
             <span className="table-datas">
               {/* Showing {indexOfFirstRow + 1} to{" "} */}
               {table.getState().pagination.pageIndex + 1} of{" "}
-              {table.getState().pagination.pageSize} entries
+              {table.getPageCount()} entries
             </span>
             <nav>
               <ul className="pagination">
@@ -417,7 +407,7 @@ const AdminViewEmployee = () => {
                   <li
                     key={i}
                     className={`page-item ${
-                      i + 1 === currentPage ? "active" : ""
+                      i + 1 === table.getPageCount() ? "active" : ""
                     }`}
                   >
                     <button
@@ -434,16 +424,14 @@ const AdminViewEmployee = () => {
               <label>Rows per page:</label>
               <select
                 className="form-control"
-                value={pagination.pageSize}
-                onChange={handleRowsPerPageChange}
+                value={table.getState().pagination.pageSize}
+                onChange={(e)=>{
+                  table.setPageSize(parseInt(e.target.value))
+                }}
               >
-                <option value={10}>10</option>
-                <option value={20}>20</option>
-                <option value={30}>30</option>
-                <option value={40}>40</option>
-                <option value={50}>50</option>
-                <option value={75}>75</option>
-                <option value={100}>100</option>
+                {[10,20,30,40,50,75,100].map(pageSize =>(
+                   <option value={pageSize}>{pageSize}</option>
+                ))}
               </select>
             </div>
           </div>

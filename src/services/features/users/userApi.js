@@ -26,7 +26,7 @@ export const userApi = createCustomApi(
     getAllUsers: builder.query({
         query:({ id, ...params}) => {
           const searchParams = new URLSearchParams(params).toString();
-          console.log(searchParams, "mysearchParamns")
+         
           return{
           url: `${USER_ENDPOINTS.ROOT}/${id}/${USER_ENDPOINTS.ALL}?${searchParams}` ,
             method:'GET'

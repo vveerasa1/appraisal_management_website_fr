@@ -72,8 +72,8 @@ const FilterDetails = ({
             </select>
           </div>
 
-          {/* Fields */}
-          <div className="filter-checkbox">
+          {/* Fields  will use later*/}
+          {/* <div className="filter-checkbox">
             <h3 className="filterdrop-heading">Fields</h3>
             <div className="filtercheck-wrapper">
               {Object.keys(filterValues.fields).map((key) => (
@@ -88,7 +88,7 @@ const FilterDetails = ({
                 </label>
               ))}
             </div>
-          </div>
+          </div> */}
         </div>
       )}
     </div>
