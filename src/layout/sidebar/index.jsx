@@ -16,22 +16,12 @@ const Sidebar = ({ isOpen }) => {
             <ul className="nav flex-column">
                 <li className="nav-item">
                     <Link
-                        to="/admin/overview"
+                        to="/admin/dashboard"
                         className={`nav-link ${activeMenu === "Home" ? "active" : ""}`}
                         onClick={() => handleMenuClick("Home")}
                     >
                         <i className="fa fa-home"></i>
                         Home
-                    </Link>
-                </li>
-                <li className="nav-item">
-                    <Link
-                        to="/admin/users"
-                        className={`nav-link ${activeMenu === "Users" ? "active" : ""}`}
-                        onClick={() => handleMenuClick("Users")}
-                    >
-                        <i className="fa fa-user"></i>
-                        Users
                     </Link>
                 </li>
                 <li className="nav-item">

@@ -72,6 +72,24 @@ const FilterDetails = ({
             </select>
           </div>
 
+          <div className='filter-checkbox'>
+            <h3 className='filterdrop-heading'>Roles</h3>
+            <div className='filtercheck-wrapper'>
+              <label>
+                <input type='checkbox' />
+                Admin
+              </label>
+              <label>
+                <input type='checkbox' />
+                Employee
+              </label>
+              <label>
+                <input type='checkbox' />
+                HR
+              </label>
+            </div>
+          </div>
+
           {/* Fields  will use later*/}
           {/* <div className="filter-checkbox">
             <h3 className="filterdrop-heading">Fields</h3>

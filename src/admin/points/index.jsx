@@ -148,6 +148,12 @@ const Points = () => {
     }),
   };
 
+  const [value, setValue] = useState(50);
+
+  const handleChange = (e) => {
+    setValue(e.target.value);
+  };
+
   return (
     <>
       <div className="pageTanDiv">
@@ -193,7 +199,7 @@ const Points = () => {
                     <input type="text" placeholder="" />
                     <i className="fa fa-search"></i>
                   </div> */}
-                  <div className="filter-select">
+                  {/* <div className="filter-select">
                     <label>Department</label>
                     <select>
                       <option>All Department</option>
@@ -214,30 +220,35 @@ const Points = () => {
                         </option>
                       ))}
                     </select>
-                  </div>
+                  </div> */}
                   <div className="filter-checkbox">
-                    <h3 className="filterdrop-heading">Fields</h3>
                     <div className="filtercheck-wrapper">
                       <label>
-                        <input type="checkbox" />
-                        Name
+                        <input type="radio" />
+                        Date (Old-New)
                       </label>
                       <label>
-                        <input type="checkbox" />
-                        Points
+                        <input type="radio" />
+                        Points (High-Low)
                       </label>
                       <label>
-                        <input type="checkbox" />
-                        Balance
+                        <input type="radio" />
+                        Transactions (Bonuses First)
                       </label>
-                      <label>
-                        <input type="checkbox" />
-                        Reason
-                      </label>
-                      <label>
-                        <input type="checkbox" />
-                        Date
-                      </label>
+                    </div>
+                    <div className="filter-date-range">
+                      <input className="fdateinput" type="date" />
+                    </div>
+                    <div className="frange-slider">
+                      <h3 className='filterdrop-heading'>Points Range 0-{value}</h3>
+                      <input
+                        type="range"
+                        min="0"
+                        max="200"
+                        value={value}
+                        onChange={handleChange}
+                        style={{ width: '100%' }}
+                      />
                     </div>
                   </div>
                 </div>
@@ -280,11 +291,10 @@ const Points = () => {
                         Employee ID{" "}
                         {sortConfig.key === "_id" && (
                           <span
-                            className={`ml-1 arrow ${
-                              sortConfig.direction === "asc"
+                            className={`ml-1 arrow ${sortConfig.direction === "asc"
                                 ? "arrow-up"
                                 : "arrow-down"
-                            }`}
+                              }`}
                           >
                             {sortConfig.direction === "asc" ? "▲" : "▼"}
                           </span>
@@ -299,11 +309,10 @@ const Points = () => {
                         Name{" "}
                         {sortConfig.key === "employeeId" && (
                           <span
-                            className={`ml-1 arrow ${
-                              sortConfig.direction === "asc"
+                            className={`ml-1 arrow ${sortConfig.direction === "asc"
                                 ? "arrow-up"
                                 : "arrow-down"
-                            }`}
+                              }`}
                           >
                             {sortConfig.direction === "asc" ? "▲" : "▼"}
                           </span>
@@ -318,11 +327,10 @@ const Points = () => {
                         Points{" "}
                         {sortConfig.key === "pointsChange" && (
                           <span
-                            className={`ml-1 arrow ${
-                              sortConfig.direction === "asc"
+                            className={`ml-1 arrow ${sortConfig.direction === "asc"
                                 ? "arrow-up"
                                 : "arrow-down"
-                            }`}
+                              }`}
                           >
                             {sortConfig.direction === "asc" ? "▲" : "▼"}
                           </span>
@@ -337,11 +345,10 @@ const Points = () => {
                         Balance{" "}
                         {sortConfig.key === "balanceAfter" && (
                           <span
-                            className={`ml-1 arrow ${
-                              sortConfig.direction === "asc"
+                            className={`ml-1 arrow ${sortConfig.direction === "asc"
                                 ? "arrow-up"
                                 : "arrow-down"
-                            }`}
+                              }`}
                           >
                             {sortConfig.direction === "asc" ? "▲" : "▼"}
                           </span>
@@ -356,11 +363,10 @@ const Points = () => {
                         Reason{" "}
                         {sortConfig.key === "reason" && (
                           <span
-                            className={`ml-1 arrow ${
-                              sortConfig.direction === "asc"
+                            className={`ml-1 arrow ${sortConfig.direction === "asc"
                                 ? "arrow-up"
                                 : "arrow-down"
-                            }`}
+                              }`}
                           >
                             {sortConfig.direction === "asc" ? "▲" : "▼"}
                           </span>
@@ -375,11 +381,10 @@ const Points = () => {
                         Date{" "}
                         {sortConfig.key === "date" && (
                           <span
-                            className={`ml-1 arrow ${
-                              sortConfig.direction === "asc"
+                            className={`ml-1 arrow ${sortConfig.direction === "asc"
                                 ? "arrow-up"
                                 : "arrow-down"
-                            }`}
+                              }`}
                           >
                             {sortConfig.direction === "asc" ? "▲" : "▼"}
                           </span>
@@ -455,8 +460,8 @@ const Points = () => {
                             row.pointsChange > 0
                               ? "green"
                               : row.pointsChange < 0
-                              ? "red"
-                              : "black",
+                                ? "red"
+                                : "black",
                         }}
                       >
                         {row.pointsChange > 0
@@ -482,9 +487,8 @@ const Points = () => {
                 {Array.from({ length: totalPages }, (_, i) => (
                   <li
                     key={i}
-                    className={`page-item ${
-                      i + 1 === currentPage ? "active" : ""
-                    }`}
+                    className={`page-item ${i + 1 === currentPage ? "active" : ""
+                      }`}
                   >
                     <button
                       className="page-link"

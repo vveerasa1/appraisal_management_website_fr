@@ -213,8 +213,6 @@ button:focus, button:active{
     text-overflow: ellipsis;
     border-bottom: 1px solid #F6F7F8;
     cursor: pointer;
-    min-height: 43px;
-    height: 43px;
 }
 
 .table tbody tr:hover td{
