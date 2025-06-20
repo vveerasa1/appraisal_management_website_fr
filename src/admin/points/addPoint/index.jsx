@@ -3,8 +3,8 @@ import "./style.css";
 import { Link } from "react-router-dom";
 import { useCreatePointMutation } from "../../../services/features/points/pointApi";
 import {
-  useGetUserByIdQuery,
-  useGetAllUsersQuery,
+  useGetUserQuery,
+  useGetAllUsersForListQuery,
 } from "../../../services/features/users/userApi";
 import { showSuccessToast, showErrorToast } from "../../../utils/toast";
 import { useNavigate } from "react-router-dom";
@@ -19,13 +19,15 @@ const AddPoints = () => {
   const navigate = useNavigate();
 
   const userId = "684a757980c56bf96d63bf31";
-  const { data, isLoading } = useGetAllUsersQuery(userId);
+  const { data, isLoading } = useGetAllUsersForListQuery(userId);
   const users = data?.data?.users || [];
 
-  const { data: userDetails, isFetching: isPointsLoading } =
-    useGetUserByIdQuery(selectedUser, {
+  const { data: userDetails, isFetching: isPointsLoading } = useGetUserQuery(
+    selectedUser,
+    {
       skip: !selectedUser,
-    });
+    }
+  );
   const currentPoints = userDetails?.data?.totalPoints ?? 0;
 
   const handleSave = async (e) => {
@@ -33,7 +35,7 @@ const AddPoints = () => {
     let tempErrors = {};
     if (!selectedUser) tempErrors.user = "User is required";
     if (!points || isNaN(points) || Number(points) === 0) {
-      tempErrors.points = "Points count must be a non-zero number";
+      tempErrors.points = "Points count is required";
     }
     if (!reason) tempErrors.reason = "Reason is required";
     setErrors(tempErrors);
@@ -116,12 +118,30 @@ const AddPoints = () => {
                   <div className="forn-group">
                     <label className="form-label">Points Count</label>
                     <input
-                      type="text"
+                      type="number"
                       className="form-input"
                       placeholder=""
                       value={points}
                       onChange={(e) => setPoints(e.target.value)}
                       step="1"
+                      onKeyDown={(e) => {
+                        // Allow: numbers, minus, backspace, delete, arrows, tab, home, end
+                        if (
+                          !(
+                            (e.key >= "0" && e.key <= "9") ||
+                            e.key === "-" ||
+                            e.key === "Backspace" ||
+                            e.key === "Tab" ||
+                            e.key === "Delete" ||
+                            e.key === "ArrowLeft" ||
+                            e.key === "ArrowRight" ||
+                            e.key === "Home" ||
+                            e.key === "End"
+                          )
+                        ) {
+                          e.preventDefault();
+                        }
+                      }}
                     />
                     {errors.points && (
                       <span className="error">{errors.points}</span>

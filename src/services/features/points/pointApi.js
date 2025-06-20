@@ -10,14 +10,14 @@ export const pointApi = createCustomApi("pointApi", (builder) => ({
     }),
   }),
   getPoint: builder.query({
-    query: () => ({
-      url: `${POINT_ENDPOINTS.ROOT}`,
+    query: (id) => ({
+      url: `${POINT_ENDPOINTS.ROOT}/${id}`,
       method: "GET",
     }),
   }),
   getAllPoints: builder.query({
-    query: () => ({
-      url: `${POINT_ENDPOINTS.ROOT}`,
+    query: ({ search = "", department = "", designation = "" } = {}) => ({
+      url: `${POINT_ENDPOINTS.ROOT}?search=${search}&department=${department}&designation=${designation}`,
       method: "GET",
     }),
   }),
@@ -25,6 +25,6 @@ export const pointApi = createCustomApi("pointApi", (builder) => ({
 
 export const {
   useCreatePointMutation,
-  useGetAllPointsQuery,
   useGetPointQuery,
+  useGetAllPointsQuery,
 } = pointApi;

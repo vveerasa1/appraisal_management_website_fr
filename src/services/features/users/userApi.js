@@ -1,42 +1,64 @@
 import { USER_ENDPOINTS } from "../../../constants/endpoints";
 import { createCustomApi } from "../../api";
 
-export const userApi = createCustomApi(
-  'userApi',
-  (builder) => ({
-    getReporters: builder.query({
-      query: () => ({
-        url: `${USER_ENDPOINTS.ROOT}/${USER_ENDPOINTS.REPORTERS}`,
-        method: 'GET',
-      }),
+export const userApi = createCustomApi("userApi", (builder) => ({
+  getReporters: builder.query({
+    query: () => ({
+      url: `${USER_ENDPOINTS.ROOT}/${USER_ENDPOINTS.REPORTERS}`,
+      method: "GET",
     }),
-    addUser: builder.mutation({
-      query: (user) => ({
-        url: `${USER_ENDPOINTS.ROOT}`,
-        method: 'POST',
-        data: user,
-      }),
-    }),
-    getUser: builder.query({
-      query:(userId) => ({
-        url:`${USER_ENDPOINTS.ROOT}/${userId}`,
-        method:'GET'
-      })
-    }),
-    getAllUsers: builder.query({
-        query:({ id, page = '', limit = '', role = '' }) => ({
-            url: `${USER_ENDPOINTS.ROOT}/${id}/${USER_ENDPOINTS.ALL}?page=${page}&limit=${limit}&role=${role}` ,
-            method:'GET'         
-        })
-    }),
-    updateUser: builder.mutation({
-      query:({userId, formData}) => ({
-        url:`${USER_ENDPOINTS.ROOT}/${userId}`,
-        method:'PUT',
-        data:formData
-      })
-    })
-  })
-);
+  }),
 
-export const { useGetReportersQuery, useAddUserMutation, useGetUserQuery, useUpdateUserMutation, useGetAllUsersQuery } = userApi;
+  addUser: builder.mutation({
+    query: (user) => ({
+      url: `${USER_ENDPOINTS.ROOT}`,
+      method: "POST",
+      data: user,
+    }),
+  }),
+
+  getUser: builder.query({
+    query: (userId) => ({
+      url: `${USER_ENDPOINTS.ROOT}/${userId}`,
+      method: "GET",
+    }),
+  }),
+
+  getAllUsers: builder.query({
+    query: ({ id, page = "", limit = "", role = "" }) => ({
+      url: `${USER_ENDPOINTS.ROOT}/${id}/${USER_ENDPOINTS.ALL}?page=${page}&limit=${limit}&role=${role}`,
+      method: "GET",
+    }),
+  }),
+
+  getAllUsersForList: builder.query({
+    query: (id) => ({
+      url: `${USER_ENDPOINTS.ROOT}/${id}/all`,
+      method: "GET",
+    }),
+  }),
+
+  updateUser: builder.mutation({
+    query: ({ userId, formData }) => ({
+      url: `${USER_ENDPOINTS.ROOT}/${userId}`,
+      method: "PUT",
+      data: formData,
+    }),
+  }),
+  getDashboard: builder.query({
+    query: ({ userId, role }) => ({
+      url: `${USER_ENDPOINTS.ROOT}/${userId}/dashboard?role=${role}`,
+      method: "GET",
+    }),
+  }),
+}));
+
+export const {
+  useGetDashboardQuery,
+  useGetReportersQuery,
+  useAddUserMutation,
+  useGetUserQuery,
+  useUpdateUserMutation,
+  useGetAllUsersQuery,
+  useGetAllUsersForListQuery,
+} = userApi;

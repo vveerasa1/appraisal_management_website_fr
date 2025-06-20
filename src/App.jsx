@@ -143,7 +143,7 @@ function App() {
           element={<AppLayout><AdminEditPoints /></AppLayout>}
         />
         <Route
-          path="/admin/point/view"
+          path="/admin/point/view/:id"
           element={<AppLayout><AdminViewPoints /></AppLayout>}
         />
         <Route
