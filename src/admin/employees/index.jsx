@@ -1,4 +1,14 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import React from "react";
+import {
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import dayjs from "dayjs";
 import "./style.css";
 import { Link } from "react-router-dom";
 import ProfileImg from "../../assets/images/user.png";
@@ -7,143 +17,275 @@ import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import { useGetAllUsersQuery } from "../../services/features/users/userApi";
 import { useSelector } from "react-redux";
 import { useApiErrorToast } from "../../hooks/useApiErrorToast";
+import ActiveInactiveSelect from "../../components/common/ActiveInacitve";
+import SearchInput from "../../components/common/SearchInput";
+import FilterContainer from "../../components/wrapper/FilterWrapper";
+import { createFilterObject } from "../../utils/utils";
 
-const Employees = () => {
-  const data = [
-    {
-      eid: "PB0001",
-      firstname: "Alice",
-      lastname: "Manty",
-      email: "alic2e@gmail.com",
-      department: "Software Development",
-      designation: "HR",
-      doj: "11-Jun-2025",
-      reporting: "Mary Joe ABC12345",
-      mobilenumber: "123456789",
-      address: "1234, New Winston Road, New York",
-      status: "Active",
-      addedby: "PBY01001 - Vijay Ram - Veeraswamy",
-      addedtime: "11-Jun-2025 09:00 AM",
-    },
-    {
-      eid: "PB0002",
-      firstname: "John",
-      lastname: "Doe",
-      email: "alic24e@gmail.com",
-      department: "Software Development",
-      designation: "HR",
-      doj: "11-Jun-2025",
-      reporting: "Mary Joe ABC12345",
-      mobilenumber: "123456789",
-      address: "1234, New Winston Road, New York",
-      status: "Active",
-      addedby: "PBY01001 - Vijay Ram - Veeraswamy",
-      addedtime: "11-Jun-2025 09:00 AM",
-    },
-    {
-      eid: "PB0003",
-      firstname: "William",
-      lastname: "Smith",
-      email: "alic45e@gmail.com",
-      department: "Software Development",
-      designation: "HR",
-      doj: "11-Jun-2025",
-      reporting: "Mary Joe ABC12345",
-      mobilenumber: "123456789",
-      address: "1234, New Winston Road, New York",
-      status: "Active",
-      addedby: "PBY01001 - Vijay Ram - Veeraswamy",
-      addedtime: "11-Jun-2025 09:00 AM",
-    },
-  ];
+const IndeterminateCheckbox = ({ indeterminate, className = "", ...rest }) => {
+  const ref = React.useRef(null);
+
+  React.useEffect(() => {
+    if (typeof indeterminate === "boolean" && ref.current) {
+      ref.current.indeterminate = !rest.checked && indeterminate;
+    }
+  }, [ref, indeterminate, rest.checked]);
+
+  return (
+    <input
+      type="checkbox"
+      ref={ref}
+      className={className + " cursor-pointer"}
+      {...rest}
+    />
+  );
+};
+
+const ActionsCell = ({ row, openDropdown, toggleDropdown, dropdownRefs }) => {
+
+  return (
+    <div
+      ref={(el) => (dropdownRefs.current[row.original.employeeId] = el)}
+      className="dropdown"
+    >
+      <button
+        className="tdadd-drop"
+        type="button"
+        onClick={() => toggleDropdown(row.original.employeeId)}
+      >
+        <i className="fa fa-ellipsis-h"></i>
+      </button>
+      {openDropdown === row.original.employeeId && (
+        <div className="dropdown-menu tddropOptions show">
+          <Link
+            to={`/admin/employee/view/${row.original.employeeId}`}
+            className="dropdown-item"
+          >
+            View
+          </Link>
+          <Link
+            to={`/admin/employee/edit/${row.original.employeeId}`}
+            className="dropdown-item"
+          >
+            Edit
+          </Link>
+          <button className="dropdown-item">Delete</button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const AdminViewEmployee = () => {
   const userId = useSelector((store) => store.users.id);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(50);
-  const [sortConfig, setSortConfig] = useState({
-    key: "eid",
-    direction: "asc",
-  });
-  const [selectedRows, setSelectedRows] = useState([]);
-  const [isAllSelected, setIsAllSelected] = useState(false);
 
-  const [queryParams, setQueryParams] = useState({
-    page: 1,
-    limit: 50,
-    search: "",
-    role: "",
-    status: "",
-    sortBy: "createdAt",
-    sortOrder: "desc",
+  // State for sorting and row selection
+  const [sorting, setSorting] = useState([]);
+  const [rowSelection, setRowSelection] = useState({});
+  const [pagination, setPagination] = useState({
+    pageIndex: 0, // react-table uses 0-based index
+    pageSize: 10,
   });
+
+  //Active-Inactive view
+  const options = [
+    { value: "active-view", label: "Active Employee View" },
+    { value: "inactive-view", label: "Inactive Employee View" },
+  ];
+  const [selectedView, setSelectedView] = useState("active-view");
+
+  //Search
+  const handleSearch = useCallback((name,e) => {
+  setFilterValues((prev) => ({
+    ...prev,
+    [name]: e
+  }));
+  }, []);
+
+  //Filter employee
+
+  const [filterValues, setFilterValues] = useState({
+    id:userId,
+    search: "",
+    department: "",
+    designation: "",
+    fields: {
+      employeeId: false,
+      name: false,
+      designation: false,
+      email: false,
+    },
+  });
+
+  const handleFilterChange = (name,e) => {
+    const {  value } = e.target;
+    setFilterValues((prev) => ({ ...prev, [name]: value }));
+  };
+
+
+  const handleFilterCheckboxChange = (name, e) => {
+    const { checked } = e.target;
+    setFilterValues((prev) => ({
+      ...prev,
+      fields: {
+        ...prev.fields,
+        [name]: checked,
+      },
+    }));
+  };
+
+  
 
   const {
     data: allUserData,
     isLoading: allUsersLoading,
     isError: isUsersError,
     error: usersError,
-  } = useGetAllUsersQuery({ id: "684fe62b3d87c714b1a7a360" });
+  } = useGetAllUsersQuery(createFilterObject({...filterValues,...pagination}));
+
+  const tableData = useMemo(() => {
+    const data = allUserData?.data?.users || [];
+    
+    if (selectedView === "active-view") {
+      return data.filter((user) => user.status === "Active");
+    } else if (selectedView === "inactive-view") {
+      return data.filter((user) => user.status === "Inactive");
+    }
+
+    return data;
+  }, [allUserData, selectedView]);
+  const pageCount = allUserData?.data?.totalPages || 0;
+
   useApiErrorToast(isUsersError, usersError, "Failed to retrieve all users");
-  const indexOfLastRow = currentPage * rowsPerPage;
-  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-
-  const sortedData = [...allUserData.data.users].sort((a, b) => {
-    if (a[sortConfig.key] < b[sortConfig.key]) {
-      return sortConfig.direction === "asc" ? -1 : 1;
-    }
-    if (a[sortConfig.key] > b[sortConfig.key]) {
-      return sortConfig.direction === "asc" ? 1 : -1;
-    }
-    return 0;
-  });
-
-  const currentRows = sortedData.slice(indexOfFirstRow, indexOfLastRow);
-  const totalPages = Math.ceil(data.length / rowsPerPage);
-
-  const handleSort = (key) => {
-    let direction = "asc";
-    if (sortConfig.key === key && sortConfig.direction === "asc") {
-      direction = "desc";
-    }
-    setSortConfig({ key, direction });
-  };
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
-  const handleRowsPerPageChange = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setCurrentPage(1); // Reset to the first page
-  };
-
-  const handleSelectAll = (e) => {
-    if (e.target.checked) {
-      setSelectedRows(currentRows.map((row) => row.eid));
-      setIsAllSelected(true);
-    } else {
-      setSelectedRows([]);
-      setIsAllSelected(false);
-    }
-  };
-
-  const handleCheckboxChange = (eid) => {
-    if (selectedRows.includes(eid)) {
-      setSelectedRows(selectedRows.filter((id) => id !== eid));
-      setIsAllSelected(false);
-    } else {
-      setSelectedRows([...selectedRows, eid]);
-    }
-  };
 
   const [openDropdown, setOpenDropdown] = useState(null);
   const dropdownRefs = useRef({});
 
+  const toggleDropdown = (eid) => {
+    setOpenDropdown((prev) => (prev === eid ? null : eid));
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      Object.values(dropdownRefs.current).forEach((ref) => {
+        if (ref && !ref.contains(event.target)) {
+          setOpenDropdown(null);
+        }
+      });
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const columnHelper = createColumnHelper();
+
+   const columns = useMemo(() => {
+  const renderCheckbox = (checked, indeterminate, onChange, disabled = false) => (
+    <IndeterminateCheckbox
+      {...{ checked, indeterminate, onChange, disabled }}
+    />
+  );
+
+  return [
+    columnHelper.display({
+      id: "actions",
+      header: () => (
+        <button className="table-head-btn">
+          <i className="fa fa-tasks" />
+        </button>
+      ),
+      cell: ({ row }) => (
+        <ActionsCell
+          row={row}
+          openDropdown={openDropdown}
+          toggleDropdown={toggleDropdown}
+          dropdownRefs={dropdownRefs}
+        />
+      ),
+    }),
+    columnHelper.display({
+      id: "select",
+      header: ({ table }) =>
+        renderCheckbox(
+          table.getIsAllRowsSelected(),
+          table.getIsSomeRowsSelected(),
+          table.getToggleAllRowsSelectedHandler()
+        ),
+      cell: ({ row }) =>
+        renderCheckbox(
+          row.getIsSelected(),
+          row.getIsSomeSelected(),
+          row.getToggleSelectedHandler(),
+          !row.getCanSelect()
+        ),
+    }),
+    columnHelper.display({
+      id: "photo",
+      header: <button className="table-head-btn"> Photo </button>,
+      cell: () => (
+        <img
+          className="img-fluid tableProfileImg"
+          src={ProfileImg}
+          alt="User"
+        />
+      ),
+    }),
+
+    // Simple accessors
+    columnHelper.accessor("employeeId", { header: <button className="table-head-btn"> Employee id </button>}),
+    columnHelper.accessor("firstName", { header: <button className="table-head-btn"> First name </button> }),
+    columnHelper.accessor("lastName", { header: <button className="table-head-btn"> last name </button> }),
+    columnHelper.accessor("email", { header: <button className="table-head-btn"> Email </button> }),
+    columnHelper.accessor("phoneNumber", { header: <button className="table-head-btn"> Phone </button> }),
+
+    // Nested object accessors
+    columnHelper.accessor((row) => row.department?.name, {
+      id: "department",
+      header: <button className="table-head-btn">Department </button>,
+    }),
+    columnHelper.accessor((row) => row.designation?.name, {
+      id: "designation",
+      header: <button className="table-head-btn"> Designation </button>,
+    }),
+    columnHelper.accessor("dateOfJoining", {
+      header: <button className="table-head-btn"> DOJ </button>,
+      cell: (info) => dayjs(info.getValue()).format("DD-MM-YYYY"),
+    }),
+    columnHelper.accessor(
+      (row) => `${row.reportingTo?.firstName ?? ""} ${row.reportingTo?.lastName ?? ""}`,
+      {
+        id: "reportingTo",
+        header: <button className="table-head-btn"> Reporting to</button>,
+      }
+    ),
+  ];
+   }, [columnHelper, openDropdown, toggleDropdown, dropdownRefs]);
+
+  
+  const table = useReactTable({
+    data: tableData,
+    columns,
+    pageCount,
+    state: {
+      sorting,
+      rowSelection,
+      pagination,
+    },
+    manualPagination: true,
+    onPaginationChange: setPagination,
+    getPaginationRowModel: getPaginationRowModel(),
+    enableRowSelection: true, //enable row selection for all rows
+    onRowSelectionChange: setRowSelection,
+    onSortingChange: setSorting,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+  });
+
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const filterRef = useRef(null);
-
-  const toggleDropdown = (eid) => {
-    setOpenDropdown(openDropdown === eid ? null : eid);
-  };
 
   const toggleFilterDropdown = () => {
     setIsFilterOpen(!isFilterOpen);
@@ -175,33 +317,6 @@ const Employees = () => {
     };
   }, [openDropdown, isFilterOpen]);
 
-  const options = [
-    { value: "active-view", label: "Active Employee View" },
-    { value: "inactive-view", label: "Inactive Employee View" },
-  ];
-
-  const customStyles = {
-    control: (provided) => ({
-      ...provided,
-      width: "200px",
-      borderRadius: "8px",
-      minHeight: "35px",
-    }),
-    menu: (provided) => ({
-      ...provided,
-      borderTop: "1px solid #ddd",
-      zIndex: 1000,
-    }),
-    option: (provided, { data }) => ({
-      ...provided,
-      color: data.value === "create-view" ? "gray" : provided.color,
-      zIndex: 1000,
-    }),
-    dropdownIndicator: (provided) => ({
-      ...provided,
-      padding: "6px",
-    }),
-  };
 
   return (
     <>
@@ -215,418 +330,66 @@ const Employees = () => {
       <div className="table-lists-container">
         <div className="table-top-block">
           <div className="ttb-left">
-            <Select
-              options={[...options]}
-              defaultValue={options[0]}
-              styles={customStyles}
-            />
+            {/* <ActiveInactiveSelect
+              options={options}
+              setState={setSelectedView}
+            /> */}
           </div>
           <div className="ttb-right">
-            <div className="searchblock">
-              <input
-                className="search-input"
-                type="text"
-                placeholder="Search..."
-              />
-              <i className="fa fa-search"></i>
-            </div>
-            <div className="filters">
-              <button
-                type="button"
-                className="filterbtn"
-                onClick={toggleFilterDropdown}
-              >
-                <FilterAltOutlinedIcon />
-              </button>
-              {isFilterOpen && (
-                <div
-                  ref={filterRef}
-                  className="dropdown-menu filter-dropdown show"
-                >
-                  <h3 className="filterdrop-heading">FIlter</h3>
-                  <div className="filter-search">
-                    <input type="text" placeholder="" />
-                    <i className="fa fa-search"></i>
-                  </div>
-                  <div className="filter-select">
-                    <label>Department</label>
-                    <select>
-                      <option>All Department</option>
-                    </select>
-                  </div>
-                  <div className="filter-select">
-                    <label>Designation</label>
-                    <select>
-                      <option>All Designation</option>
-                    </select>
-                  </div>
-                  <div className="filter-checkbox">
-                    <h3 className="filterdrop-heading">Fields</h3>
-                    <div className="filtercheck-wrapper">
-                      <label>
-                        <input type="checkbox" />
-                        Employee ID
-                      </label>
-                      <label>
-                        <input type="checkbox" />
-                        Name
-                      </label>
-                      <label>
-                        <input type="checkbox" />
-                        Designation
-                      </label>
-                      <label>
-                        <input type="checkbox" />
-                        Email
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
+            <SearchInput onSearch={handleSearch}  />
+            <FilterContainer
+              toggleFilterDropdown={toggleFilterDropdown}
+              isFilterOpen={isFilterOpen}
+              filterRef={filterRef}
+              filterValues={filterValues}
+              onFilterChange={handleFilterChange}
+              onCheckboxChange={handleFilterCheckboxChange}
+            />
           </div>
         </div>
         <div className="tables">
           <div className="table-wrapper">
             <table className="table large-table">
               <thead>
-                <tr>
-                  <th style={{ width: "50px" }}>
-                    <button className="table-head-btn">
-                      {" "}
-                      <i className="fa fa-tasks"></i>{" "}
-                    </button>
-                  </th>
-                  <th>
-                    <input
-                      className="tablecheck"
-                      type="checkbox"
-                      onChange={handleSelectAll}
-                      checked={isAllSelected}
-                    />
-                  </th>
-                  <th>
-                    <button className="table-head-btn"> Photo </button>
-                  </th>
-                  <th>
-                    <button
-                      className="table-head-btn"
-                      onClick={() => handleSort("eid")}
-                    >
-                      Employee ID{" "}
-                      {sortConfig.key === "eid" && (
-                        <span
-                          className={`ml-1 arrow ${
-                            sortConfig.direction === "asc"
-                              ? "arrow-up"
-                              : "arrow-down"
-                          }`}
-                        >
-                          {sortConfig.direction === "asc" ? "▲" : "▼"}
-                        </span>
-                      )}
-                    </button>
-                  </th>
-                  <th>
-                    <button
-                      className="table-head-btn"
-                      onClick={() => handleSort("firstname")}
-                    >
-                      First Name{" "}
-                      {sortConfig.key === "firstname" && (
-                        <span
-                          className={`ml-1 arrow ${
-                            sortConfig.direction === "asc"
-                              ? "arrow-up"
-                              : "arrow-down"
-                          }`}
-                        >
-                          {sortConfig.direction === "asc" ? "▲" : "▼"}
-                        </span>
-                      )}
-                    </button>
-                  </th>
-                  <th>
-                    <button
-                      className="table-head-btn"
-                      onClick={() => handleSort("lastname")}
-                    >
-                      Last Name{" "}
-                      {sortConfig.key === "lastname" && (
-                        <span
-                          className={`ml-1 arrow ${
-                            sortConfig.direction === "asc"
-                              ? "arrow-up"
-                              : "arrow-down"
-                          }`}
-                        >
-                          {sortConfig.direction === "asc" ? "▲" : "▼"}
-                        </span>
-                      )}
-                    </button>
-                  </th>
-                  <th>
-                    <button
-                      className="table-head-btn"
-                      onClick={() => handleSort("email")}
-                    >
-                      Email{" "}
-                      {sortConfig.key === "email" && (
-                        <span
-                          className={`ml-1 arrow ${
-                            sortConfig.direction === "asc"
-                              ? "arrow-up"
-                              : "arrow-down"
-                          }`}
-                        >
-                          {sortConfig.direction === "asc" ? "▲" : "▼"}
-                        </span>
-                      )}
-                    </button>
-                  </th>
-                  <th>
-                    <button
-                      className="table-head-btn"
-                      onClick={() => handleSort("department")}
-                    >
-                      Department{" "}
-                      {sortConfig.key === "department" && (
-                        <span
-                          className={`ml-1 arrow ${
-                            sortConfig.direction === "asc"
-                              ? "arrow-up"
-                              : "arrow-down"
-                          }`}
-                        >
-                          {sortConfig.direction === "asc" ? "▲" : "▼"}
-                        </span>
-                      )}
-                    </button>
-                  </th>
-                  <th>
-                    <button
-                      className="table-head-btn"
-                      onClick={() => handleSort("designation")}
-                    >
-                      Designation{" "}
-                      {sortConfig.key === "designation" && (
-                        <span
-                          className={`ml-1 arrow ${
-                            sortConfig.direction === "asc"
-                              ? "arrow-up"
-                              : "arrow-down"
-                          }`}
-                        >
-                          {sortConfig.direction === "asc" ? "▲" : "▼"}
-                        </span>
-                      )}
-                    </button>
-                  </th>
-                  <th>
-                    <button
-                      className="table-head-btn"
-                      onClick={() => handleSort("doj")}
-                    >
-                      Date of Joining{" "}
-                      {sortConfig.key === "doj" && (
-                        <span
-                          className={`ml-1 arrow ${
-                            sortConfig.direction === "asc"
-                              ? "arrow-up"
-                              : "arrow-down"
-                          }`}
-                        >
-                          {sortConfig.direction === "asc" ? "▲" : "▼"}
-                        </span>
-                      )}
-                    </button>
-                  </th>
-                  <th>
-                    <button
-                      className="table-head-btn"
-                      onClick={() => handleSort("reporting")}
-                    >
-                      Reporting to{" "}
-                      {sortConfig.key === "reporting" && (
-                        <span
-                          className={`ml-1 arrow ${
-                            sortConfig.direction === "asc"
-                              ? "arrow-up"
-                              : "arrow-down"
-                          }`}
-                        >
-                          {sortConfig.direction === "asc" ? "▲" : "▼"}
-                        </span>
-                      )}
-                    </button>
-                  </th>
-                  <th>
-                    <button
-                      className="table-head-btn"
-                      onClick={() => handleSort("mobilenumber")}
-                    >
-                      Mobile Number{" "}
-                      {sortConfig.key === "mobilenumber" && (
-                        <span
-                          className={`ml-1 arrow ${
-                            sortConfig.direction === "asc"
-                              ? "arrow-up"
-                              : "arrow-down"
-                          }`}
-                        >
-                          {sortConfig.direction === "asc" ? "▲" : "▼"}
-                        </span>
-                      )}
-                    </button>
-                  </th>
-                  <th>
-                    <button
-                      className="table-head-btn"
-                      onClick={() => handleSort("address")}
-                    >
-                      Address{" "}
-                      {sortConfig.key === "address" && (
-                        <span
-                          className={`ml-1 arrow ${
-                            sortConfig.direction === "asc"
-                              ? "arrow-up"
-                              : "arrow-down"
-                          }`}
-                        >
-                          {sortConfig.direction === "asc" ? "▲" : "▼"}
-                        </span>
-                      )}
-                    </button>
-                  </th>
-                  <th>
-                    <button
-                      className="table-head-btn"
-                      onClick={() => handleSort("status")}
-                    >
-                      Status{" "}
-                      {sortConfig.key === "status" && (
-                        <span
-                          className={`ml-1 arrow ${
-                            sortConfig.direction === "asc"
-                              ? "arrow-up"
-                              : "arrow-down"
-                          }`}
-                        >
-                          {sortConfig.direction === "asc" ? "▲" : "▼"}
-                        </span>
-                      )}
-                    </button>
-                  </th>
-                  <th>
-                    <button
-                      className="table-head-btn"
-                      onClick={() => handleSort("addedby")}
-                    >
-                      Added By{" "}
-                      {sortConfig.key === "addedby" && (
-                        <span
-                          className={`ml-1 arrow ${
-                            sortConfig.direction === "asc"
-                              ? "arrow-up"
-                              : "arrow-down"
-                          }`}
-                        >
-                          {sortConfig.direction === "asc" ? "▲" : "▼"}
-                        </span>
-                      )}
-                    </button>
-                  </th>
-                  <th>
-                    <button
-                      className="table-head-btn"
-                      onClick={() => handleSort("addedtime")}
-                    >
-                      Added Time{" "}
-                      {sortConfig.key === "addedtime" && (
-                        <span
-                          className={`ml-1 arrow ${
-                            sortConfig.direction === "asc"
-                              ? "arrow-up"
-                              : "arrow-down"
-                          }`}
-                        >
-                          {sortConfig.direction === "asc" ? "▲" : "▼"}
-                        </span>
-                      )}
-                    </button>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentRows.map((row) => (
-                  <tr key={row.eid}>
-                    <td>
-                      <div
-                        ref={(el) => (dropdownRefs.current[row.eid] = el)}
-                        className="dropdown"
-                      >
-                        <button
-                          className="tdadd-drop"
-                          type="button"
-                          onClick={() => toggleDropdown(row.eid)}
-                        >
-                          <i className="fa fa-ellipsis-h"></i>
-                        </button>
-                        {openDropdown === row.eid && (
-                          <div className="dropdown-menu tddropOptions show">
-                            <Link
-                              to="/admin/employee/view"
-                              className="dropdown-item"
-                            >
-                              View
-                            </Link>
-                            <Link
-                              to="/admin/employee/edit"
-                              className="dropdown-item"
-                            >
-                              Edit
-                            </Link>
-                            <button className="dropdown-item">Delete</button>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <tr key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => (
+                      <th key={header.id} colSpan={header.colSpan}>
+                        {header.isPlaceholder ? null : (
+                          <div
+                            {...{
+                              className: header.column.getCanSort()
+                                ? "cursor-pointer select-none"
+                                : "",
+                              onClick: header.column.getToggleSortingHandler(),
+                            }}
+                          >
+                            {flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                            {{
+                              asc: " ▲",
+                              desc: " ▼",
+                            }[header.column.getIsSorted()] ?? null}
                           </div>
                         )}
-                      </div>
-                    </td>
-                    <td>
-                      <input
-                        className="tablecheck"
-                        type="checkbox"
-                        onChange={() => handleCheckboxChange(row.eid)}
-                        checked={selectedRows.includes(row.eid)}
-                      />
-                    </td>
-                    <td>
-                      <img
-                        className="img-fluid tableProfileImg"
-                        src={ProfileImg}
-                        alt="User"
-                      />
-                    </td>
-                    <td>
-                      <Link to={`/admin/employee/view`} className="tlink">
-                        {row.eid}
-                      </Link>
-                    </td>
-                    <td>{row.firstname}</td>
-                    <td>{row.lastname}</td>
-                    <td>
-                      <a className="tlink" href="mailto:">
-                        {row.email}
-                      </a>
-                    </td>
-                    <td>{row.department}</td>
-                    <td>{row.designation}</td>
-                    <td>{row.doj}</td>
-                    <td>{row.reporting}</td>
-                    <td>{row.mobilenumber}</td>
-                    <td>{row.address}</td>
-                    <td>{row.status}</td>
-                    <td>{row.addedby}</td>
-                    <td>{row.addedtime}</td>
+                      </th>
+                    ))}
+                  </tr>
+                ))}
+              </thead>
+              <tbody>
+                {table.getRowModel()?.rows?.map((row) => (
+                  <tr key={row.id}>
+                    {row.getVisibleCells().map((cell) => (
+                      <td key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </td>
+                    ))}
                   </tr>
                 ))}
               </tbody>
@@ -634,21 +397,22 @@ const Employees = () => {
           </div>
           <div className="pagination-wrapper">
             <span className="table-datas">
-              Showing {indexOfFirstRow + 1} to{" "}
-              {Math.min(indexOfLastRow, data.length)} of {data.length} entries
+              {/* Showing {indexOfFirstRow + 1} to{" "} */}
+              {table.getState().pagination.pageIndex + 1} of{" "}
+              {table.getPageCount()} entries
             </span>
             <nav>
               <ul className="pagination">
-                {Array.from({ length: totalPages }, (_, i) => (
+                {Array.from({ length: table.getPageCount() }, (_, i) => (
                   <li
                     key={i}
                     className={`page-item ${
-                      i + 1 === currentPage ? "active" : ""
+                      i + 1 === table.getPageCount() ? "active" : ""
                     }`}
                   >
                     <button
                       className="page-link"
-                      onClick={() => handlePageChange(i + 1)}
+                      onClick={() => table.nextPage()}
                     >
                       {i + 1}
                     </button>
@@ -660,16 +424,14 @@ const Employees = () => {
               <label>Rows per page:</label>
               <select
                 className="form-control"
-                value={rowsPerPage}
-                onChange={handleRowsPerPageChange}
+                value={table.getState().pagination.pageSize}
+                onChange={(e)=>{
+                  table.setPageSize(parseInt(e.target.value))
+                }}
               >
-                <option value={10}>10</option>
-                <option value={20}>20</option>
-                <option value={30}>30</option>
-                <option value={40}>40</option>
-                <option value={50}>50</option>
-                <option value={75}>75</option>
-                <option value={100}>100</option>
+                {[10,20,30,40,50,75,100].map(pageSize =>(
+                   <option value={pageSize}>{pageSize}</option>
+                ))}
               </select>
             </div>
           </div>
@@ -679,4 +441,4 @@ const Employees = () => {
   );
 };
 
-export default Employees;
+export default AdminViewEmployee;

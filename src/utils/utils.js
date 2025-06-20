@@ -8,3 +8,16 @@ export function mapToSelectOptions(data = [], keyMap = { label: 'name', value: '
     return newItem;
   });
 }
+
+export function createFilterObject(input = {}) {
+  const allowedKeys = ['id', 'search', 'department', 'designation', 'role','pageSize', 'pageIndex'];
+  const filterObject = {};
+
+  allowedKeys.forEach((key) => {
+    if (input[key] !== undefined && input[key] !== '') {
+      filterObject[key] = input[key];
+    }
+  });
+
+  return filterObject;
+}
