@@ -22,25 +22,39 @@ export const userApi = createCustomApi("userApi", (builder) => ({
       url: `${USER_ENDPOINTS.ROOT}/${userId}`,
       method: "GET",
     }),
-    getAllUsers: builder.query({
-        query:({ id, ...params}) => {
-          const searchParams = new URLSearchParams(params).toString();
-         
-          return{
-          url: `${USER_ENDPOINTS.ROOT}/${id}/${USER_ENDPOINTS.ALL}?${searchParams}` ,
-            method:'GET'
-          }         
-        }
+  }),
+
+  getAllUsers: builder.query({
+    query: ({ id, ...params }) => {
+      const searchParams = new URLSearchParams(params).toString();
+
+      return {
+        url: `${USER_ENDPOINTS.ROOT}/${id}/${USER_ENDPOINTS.ALL}?${searchParams}`,
+        method: "GET",
+      };
+    },
+  }),
+  getAllUsersForList: builder.query({
+    query: (id) => ({
+      url: `${USER_ENDPOINTS.ROOT}/${id}/all`,
+      method: "GET",
     }),
-    updateUser: builder.mutation({
-      query:({userId, formData}) => ({
-        url:`${USER_ENDPOINTS.ROOT}/${userId}`,
-        method:'PUT',
-        data:formData
-      })
-    })
-  })
-);
+  }),
+  getDashboard: builder.query({
+    query: ({ userId, role }) => ({
+      url: `${USER_ENDPOINTS.ROOT}/${userId}/dashboard?role=${role}`,
+      method: "GET",
+    }),
+  }),
+
+  updateUser: builder.mutation({
+    query: ({ userId, formData }) => ({
+      url: `${USER_ENDPOINTS.ROOT}/${userId}`,
+      method: "PUT",
+      data: formData,
+    }),
+  }),
+}));
 
 export const {
   useGetDashboardQuery,
