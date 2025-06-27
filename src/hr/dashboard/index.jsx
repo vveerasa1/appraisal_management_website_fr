@@ -1,67 +1,187 @@
 import React, { useState } from "react";
 import "./style.css"
 import { Link } from 'react-router-dom'
+import PartyPaper from '../../assets/images/party-popper.png'
+import ProfileImg from '../../assets/images/user.png'
+import User from "../../assets/images/user-thumbnail.png";
 
 const HRDashboard = () => {
+    const [activeTab, setActiveTab] = useState("employee");
+
+    const handleTabChange = (tab) => {
+        setActiveTab(tab);
+    };
     return (
         <>
-            <div className='breadcrumb-wrapper'>
-                <h3 className='page-name'>Dashboard</h3>
-                <ul className='breadcrumb-lists'>
-                    <li><Link to="/hr/dashboard" className="page-link">Home</Link></li>
-                    <li><p>Dashboard</p></li>
+            <div className='pageTanDiv'>
+                <ul className='pageTabPane'>
+                    <li className='active'>
+                        <Link to="/hr/dashboard">Dashboard</Link>
+                    </li>
                 </ul>
             </div>
             <div className='dashboard-wrapper'>
-            <div className='dashboard-cards-wrapper'>
-                <div className='row'>
-                    <div className='col-12 col-md-6 col-lg-4 mb-4'>
-                        <div className='dashboard-count-card'>
-                            <div className='dashcard-left'>
-                                <div className='dicon'>
-                                    <i className='fa fa-user'></i>
+                <div className='dashboard-cards-wrapper'>
+                    <div className='row mt-2'>
+                        <div className='col-12 col-md-9 col-lg-9'>
+                            <div className='row'>
+                                <div className='col-12 col-md-6 col-lg-6 mb-4'>
+                                    <div className='dashbord-cards-wrapper'>
+                                        <div className='dc-head'>
+                                            <h3 className='dash-title'>New Hires</h3>
+                                        </div>
+                                        <div className='dc-body'>
+                                            <ul className='dc-list'>
+                                                <li>
+                                                    <div className='dc-list-inner'>
+                                                        <img className='img-fluid dc-list-img' src={ProfileImg} alt='Profile' />
+                                                        <div className='dc-list-info'>
+                                                            <h3>Welcome On-Board John Doe!</h3>
+                                                            <p>16 May 2020, 6:57 PM</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className='dinfo'>
-                                    <h3>350</h3>
-                                    <p>Total Team Members</p>
+                                <div className='col-12 col-md-6 col-lg-6 mb-4'>
+                                    <div className='dashbord-cards-wrapper'>
+                                        <div className='dc-head'>
+                                            <h3 className='dash-title'>Work Anniversary</h3>
+                                        </div>
+                                        <div className='dc-body'>
+                                            <ul className='dc-list'>
+                                                <li>
+                                                    <div className='dc-list-inner'>
+                                                        <img className='img-fluid dc-list-img' src={ProfileImg} alt='Profile' />
+                                                        <div className='dc-list-info'>
+                                                            <h3>Mary Joe</h3>
+                                                            <p>Completing <b>10</b> Years<img className='img-fluid small-img' src={PartyPaper} alt='Profile' /></p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className='dashcard-right'>
-                                <div>
-                                    <p>This Month</p>
-                                    <p className='up'>+20% <i className='fa fa-line-chart'></i></p>
+                                <div className='col-12 col-md-6 col-lg-6 mb-4'>
+                                    <div className='dashbord-cards-wrapper'>
+                                        <div className='dc-head'>
+                                            <h3 className='dash-title'>Birthdays</h3>
+                                        </div>
+                                        <div className='dc-body'>
+                                            <div className='no-results-wrapper'>
+                                                <p>No results found.</p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div className='col-12 col-md-6 col-lg-4 mb-4'>
-                        <div className='dashboard-count-card'>
-                            <div className='dashcard-left'>
-                                <div className='dicon'>
-                                    <i className='fa fa-pie-chart'></i>
+                        <div className='col-12 col-md-3 col-lg-3'>
+                            <div className="overview-rwrapper">
+                                <div className="overview-rhead">
+                                    <h3 className="dash-title">Your Account</h3>
                                 </div>
-                                <div className='dinfo'>
-                                    <h3>15,000</h3>
-                                    <p>Total My Points</p>
+                                <div className="ovdash-profile">
+                                    <img className="img-fluid" src={User} alt="Profile" />
+                                    <div className="ovdash-pInfo">
+                                        <h3>
+                                            <span>ABC1234 -</span> John Doe
+                                        </h3>
+                                        <p>HR</p>
+                                    </div>
+                                </div>
+                                <div className="ovdash-rprofile">
+                                    <img className="img-fluid" src={User} alt="Profile" />
+                                    <div className="ovdash-pInfo">
+                                        <p>Reporting To</p>
+                                        <h3>
+                                            <span>ABC1245 -</span> William Smith
+                                        </h3>
+                                    </div>
+                                </div>
+                                <div className="ovdash-memebrs-count">
+                                    {/* Nav Tabs */}
+                                    <ul className="nav nav-tabs">
+                                        <li className="nav-item">
+                                            <button
+                                                className={`nav-link ${activeTab === "employee" ? "active" : ""
+                                                    }`}
+                                                onClick={() => handleTabChange("employee")}
+                                            >
+                                                Employees
+                                            </button>
+                                        </li>
+                                        <li className="nav-item">
+                                            <button
+                                                className={`nav-link ${activeTab === "dmembers" ? "active" : ""
+                                                    }`}
+                                                onClick={() => handleTabChange("dmembers")}
+                                            >
+                                                Team Members
+                                            </button>
+                                        </li>
+                                        <li className="nav-item">
+                                            <button
+                                                className={`nav-link ${activeTab === "nhires" ? "active" : ""
+                                                    }`}
+                                                onClick={() => handleTabChange("nhires")}
+                                            >
+                                                New Hires
+                                            </button>
+                                        </li>
+                                    </ul>
+
+                                    {/* Tab Content */}
+                                    <div className="tab-content mt-3">
+                                        {activeTab === "employee" && (
+                                            <div className="tab-pane fade show active">
+                                                <h4>
+                                                    5
+                                                </h4>
+                                                <p>Total Employees</p>
+                                            </div>
+                                        )}
+                                        {activeTab === "dmembers" && (
+                                            <div className="tab-pane fade show active">
+                                                <h4>
+                                                    8
+                                                </h4>
+                                                <p>Team Members</p>
+                                            </div>
+                                        )}
+                                        {activeTab === "nhires" && (
+                                            <div className="tab-pane fade show active">
+                                                <h4>
+                                                    2
+                                                </h4>
+                                                <p>New Hires This Week</p>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-12 col-md-12">
-                        <h2 className='large-heading'>Latest</h2>
-                        <div className="notifications-card">
-                            <h3 className="nheading">Notifications</h3>
-                            <ul className="nlist">
-                                <li><b>2</b>&nbsp;new joiners added</li>
-                                <li><b>+2</b>&nbsp;points added to John</li>
-                            </ul>
+                            <div className="overview-tmembers">
+                                <div className="overview-rhead">
+                                    <h3 className="dash-title">Team Members</h3>
+                                </div>
+                                <ul className="dmemebers-list">
+                                    <li>
+                                        <div className="dmemebers-wrapper">
+                                            <img className="img-fluid" src={User} alt="Profile" />
+                                            <h3>
+                                                <span>ABC234 -</span> Mary Joe
+                                            </h3>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
         </>
     );
 };
