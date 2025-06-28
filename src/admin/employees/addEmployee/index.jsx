@@ -5,9 +5,14 @@ import BasicDetails from "./BasicDetails";
 import AddressDetails from "./AddressDetails";
 import ProfilePhoto from "./ProfilePhoto";
 import "./style.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useGetDepartmentsQuery } from "../../../services/features/departments/departmentApi";
-import { useAddUserMutation, useGetReportersQuery } from "../../../services/features/users/userApi";
+import { useGetRolesQuery } from "../../../services/features/roles/roleApi";
+import {
+  useAddUserMutation,
+  useGetReportersQuery,
+} from "../../../services/features/users/userApi";
+
 import { useApiErrorToast } from "../../../hooks/useApiErrorToast";
 import { mapToSelectOptions } from "../../../utils/utils";
 import { showErrorToast, showSuccessToast } from "../../../utils/toast";
@@ -21,6 +26,7 @@ const initialValues = {
   employeeId: "",
   department: "",
   reportingTo: "",
+  role: "",
   designation: "",
   dateOfJoining: "",
   address: "",
@@ -39,8 +45,11 @@ const validationSchema = Yup.object({
   employeeId: Yup.string().required("Employee ID is required"),
   department: Yup.string().required("Department is required"),
   reportingTo: Yup.string().required("Reporting To is required"),
+  role: Yup.string().required("Reporting To is required"),
   designation: Yup.string().required("Designation is required"),
-  dateOfJoining: Yup.date().max(new Date(), 'Date of joining cannot be in the future').required("Date of joining is required"),
+  dateOfJoining: Yup.date()
+    .max(new Date(), "Date of joining cannot be in the future")
+    .required("Date of joining is required"),
   address: Yup.string().required("Address is required"),
   city: Yup.string().required("City is required"),
   province: Yup.string().required("Province is required"),
@@ -49,32 +58,37 @@ const validationSchema = Yup.object({
 });
 
 export default function EmployeeForm() {
-
-  const [addUser, {isLoading:isAddEmployeeLoading}] = useAddUserMutation()
-   const [previewUrl, setPreviewUrl] = useState(null);
-    const [selectedFile, setSelectedFile] = useState(null);
-
-
+  const [addUser, { isLoading: isAddEmployeeLoading }] = useAddUserMutation();
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const navigate = useNavigate();
 
   const {
     data: designationsData,
     isLoading: isDesignationLoading,
     isError: isDesignationError,
     error: designationError,
-  } = useGetDesignationsQuery();
+  } = useGetDesignationsQuery({ search: "" });
 
   const {
     data: departmentsData,
     isLoading: isdepartmentdataLoading,
     isError: isDepartmentdataError,
     error: departmentDataError,
-  } = useGetDepartmentsQuery();
+  } = useGetDepartmentsQuery({ search: "" });
   const {
     data: reportersData,
     isLoading: isReporterLoading,
     isError: isReporterError,
     error: reporterError,
   } = useGetReportersQuery();
+
+  const {
+    data: rolesData,
+    isLoading: isRoleLoading,
+    isError: isRoleError,
+    error: roleError,
+  } = useGetRolesQuery({ search: "" });
 
   useApiErrorToast(
     isDepartmentdataError,
@@ -86,13 +100,14 @@ export default function EmployeeForm() {
     reporterError,
     "Failed to load reporting managers"
   );
+  useApiErrorToast(isRoleError, roleError, "Failed to load roles");
 
   useApiErrorToast(
     isDesignationError,
     designationError,
-    "Failed to load designations" 
+    "Failed to load designations"
   );
-  const designations = useMemo(() => {  
+  const designations = useMemo(() => {
     if (!designationsData || !designationsData.data) return [];
     return mapToSelectOptions(designationsData?.data, {
       label: "name",
@@ -117,19 +132,32 @@ export default function EmployeeForm() {
     });
   }, [reportersData]);
 
-    const handleSubmit = async(values) => {
-   try {
-    const { profilePhoto, ...rest } = values;
-    const formData = new FormData();
-    formData.append("user", JSON.stringify(rest));
-    formData.append("image", profilePhoto);
-    const response = await addUser(formData).unwrap();
-    console.log("Response:", response);
-    showSuccessToast("Employee added successfully!");
-   } catch (error) {
-    console.warn("Error submitting form:", error);
-    showErrorToast(`Failed to add employee. ${error?.data?.message || ''}`);
-   }
+  const roles = useMemo(() => {
+    if (!rolesData || !rolesData.data) return [];
+    return mapToSelectOptions(rolesData?.data, {
+      label: (item) => `${item.name}`,
+      value: "_id",
+    });
+  }, [reportersData]);
+
+  const handleSubmit = async (values) => {
+    try {
+      const { profilePhoto, ...rest } = values;
+      const formData = new FormData();
+      formData.append("user", JSON.stringify(rest));
+      formData.append("image", profilePhoto);
+      const response = await addUser(formData).unwrap();
+      console.log("Response:", response);
+      showSuccessToast("Employee added successfully!");
+      navigate("/admin/employees");
+    } catch (err) {
+      showErrorToast(
+        err?.data?.message ||
+          err?.error ||
+          err?.message ||
+          "Failed to add role."
+      );
+    }
   };
 
   const handleRemove = () => {
@@ -137,8 +165,6 @@ export default function EmployeeForm() {
     setPreviewUrl(null);
     // handleFileChange(null);
   };
-
-
 
   return (
     <>
@@ -153,7 +179,6 @@ export default function EmployeeForm() {
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
-       
       >
         {({ setFieldValue, values, isSubmitting, resetForm }) => (
           <Form className="form-list-container">
@@ -165,6 +190,8 @@ export default function EmployeeForm() {
                     isdepartmentdataLoading={isdepartmentdataLoading}
                     reportingManagers={reportingManagers}
                     isReporterLoading={isReporterLoading}
+                    roles={roles}
+                    isroledataLoading={isRoleLoading}
                     designations={designations}
                     isDesignationLoading={isDesignationLoading}
                   />
@@ -179,14 +206,24 @@ export default function EmployeeForm() {
                     handleRemove={handleRemove}
                   />
                   <div className="submit-btn-block">
-                    <button className="theme-btn btn-border" type="button" onClick={() =>{ 
-                      resetForm(initialValues)
-                      handleRemove();
-                    }}>
+                    <button
+                      className="theme-btn btn-border"
+                      type="button"
+                      onClick={() => {
+                        resetForm(initialValues);
+                        handleRemove();
+                      }}
+                    >
                       Cancel
                     </button>
-                    <button className="theme-btn btn-blue" type="submit" disabled={isSubmitting || isAddEmployeeLoading}>
-                      {isSubmitting || isAddEmployeeLoading ? 'Saving...' : 'Save Employee'}
+                    <button
+                      className="theme-btn btn-blue"
+                      type="submit"
+                      disabled={isSubmitting || isAddEmployeeLoading}
+                    >
+                      {isSubmitting || isAddEmployeeLoading
+                        ? "Saving..."
+                        : "Save Employee"}
                     </button>
                   </div>
                 </div>

@@ -1,0 +1,20 @@
+.editform-group {
+  display: block; /* or flex-direction: column if you use flex */
+}
+
+.editform-group .editform-label {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.editform-input {
+  display: block;
+  width: 100%;
+}
+
+.error {
+  color: #d32f2f;
+  font-size: 0.9em;
+  margin-top: 4px;
+  display: block;
+}

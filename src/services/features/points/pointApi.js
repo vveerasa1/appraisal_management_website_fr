@@ -8,6 +8,7 @@ export const pointApi = createCustomApi("pointApi", (builder) => ({
       method: "POST",
       data: point,
     }),
+    invalidatesTags: ["Points"], // <-- Add this
   }),
   getPoint: builder.query({
     query: (id) => ({
@@ -16,10 +17,11 @@ export const pointApi = createCustomApi("pointApi", (builder) => ({
     }),
   }),
   getAllPoints: builder.query({
-    query: ({ search = "", department = "", designation = "" } = {}) => ({
-      url: `${POINT_ENDPOINTS.ROOT}?search=${search}&department=${department}&designation=${designation}`,
+    query: ({ search = "", dateRange = "", pointsRange = "" } = {}) => ({
+      url: `${POINT_ENDPOINTS.ROOT}?search=${search}&dateRange=${dateRange}&pointsRange=${pointsRange}`,
       method: "GET",
     }),
+    providesTags: ["Points"], // <-- Add this
   }),
 }));
 

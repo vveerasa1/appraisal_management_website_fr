@@ -10,6 +10,7 @@ import { departmentApi } from "./services/features/departments/departmentApi";
 import usersReducer from "./services/features/users/userSlice";
 import authReducer from "./services/features/auth/authSlice";
 import { designationApi } from "./services/features/designation/designationApi";
+import { roleApi } from "./services/features/roles/roleApi";
 
 // Combine reducers
 const rootReducer = combineReducers({
@@ -20,6 +21,7 @@ const rootReducer = combineReducers({
   [pointApi.reducerPath]: pointApi.reducer,
   [departmentApi.reducerPath]: departmentApi.reducer,
   [designationApi.reducerPath]: designationApi.reducer,
+  [roleApi.reducerPath]: roleApi.reducer,
 });
 
 // Persist configuration
@@ -33,6 +35,7 @@ const persistConfig = {
     pointApi.reducerPath,
     departmentApi.reducerPath,
     designationApi.reducerPath,
+    roleApi.reducerPath,
   ], // Don't persist RTK Query API slices
 };
 
@@ -51,7 +54,8 @@ export const store = configureStore({
       userApi.middleware,
       departmentApi.middleware,
       designationApi.middleware,
-      pointApi.middleware
+      pointApi.middleware,
+      roleApi.middleware
     ),
 });
 

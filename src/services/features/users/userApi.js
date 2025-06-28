@@ -47,11 +47,24 @@ export const userApi = createCustomApi("userApi", (builder) => ({
     }),
   }),
 
-  updateUser: builder.mutation({
-    query: ({ userId, formData }) => ({
-      url: `${USER_ENDPOINTS.ROOT}/${userId}`,
-      method: "PUT",
-      data: formData,
+  getEmployeeTree: builder.query({
+    query: () => ({
+      url: `${USER_ENDPOINTS.ROOT}/tree`,
+      method: "GET",
+    }),
+  }),
+  getDepartmentTree: builder.query({
+    query: () => ({
+      url: `${USER_ENDPOINTS.ROOT}/departments/users`,
+      method: "GET",
+    }),
+  }),
+
+  resetPassword: builder.mutation({
+    query: (body) => ({
+      url: `${USER_ENDPOINTS.ROOT}/reset/password`,
+      method: "POST",
+      data: body,
     }),
   }),
 }));
@@ -61,7 +74,9 @@ export const {
   useGetReportersQuery,
   useAddUserMutation,
   useGetUserQuery,
-  useUpdateUserMutation,
   useGetAllUsersQuery,
   useGetAllUsersForListQuery,
+  useGetEmployeeTreeQuery,
+  useGetDepartmentTreeQuery,
+  useResetPasswordMutation,
 } = userApi;

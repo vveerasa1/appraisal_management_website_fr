@@ -5,28 +5,47 @@ import ProfileImg from "../../assets/images/user.png";
 import Select from "react-select";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import { useGetAllPointsQuery } from "../../services/features/points/pointApi";
-import { useGetDepartmentsQuery } from "../../services/features/departments/departmentApi";
-import { useGetDesignationsQuery } from "../../services/features/designation/designationApi";
 
 const Points = () => {
-  const { data: apiData, isLoading, error } = useGetAllPointsQuery();
+  const [search, setSearch] = useState("");
+  const [searchInput, setSearchInput] = useState("");
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setSearch(searchInput.trim());
+    }, 400); // 400ms debounce
+    return () => clearTimeout(timeout);
+  }, [searchInput]);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
+  const dateRange =
+    startDate && endDate
+      ? `${startDate} 00:00:00.000 - ${endDate} 00:00:00.000`
+      : "";
+
+  const [maxPoints, setMaxPoints] = useState(200);
+
+  const pointsRange = `-200-${maxPoints}`;
+  const {
+    data: apiData,
+    isLoading,
+    error,
+  } = useGetAllPointsQuery({
+    search,
+    dateRange,
+    pointsRange,
+  });
   const data = apiData?.data || [];
 
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(50);
   const [sortConfig, setSortConfig] = useState({
     key: "_id",
-    direction: "asc",
+    direction: "desc", // or "asc" for ascending
   });
   const [selectedRows, setSelectedRows] = useState([]);
   const [isAllSelected, setIsAllSelected] = useState(false);
-
-  const { data: deptData, isLoading: isDeptLoading } = useGetDepartmentsQuery();
-  const { data: desgData, isLoading: isDesgLoading } =
-    useGetDesignationsQuery();
-
-  const departments = deptData?.data || [];
-  const designations = desgData?.data || [];
 
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
@@ -166,11 +185,11 @@ const Points = () => {
       <div className="table-lists-container">
         <div className="table-top-block">
           <div className="ttb-left">
-            <Select
+            {/* <Select
               options={options}
               defaultValue={options[0]}
               styles={customStyles}
-            />
+            /> */}
           </div>
           <div className="ttb-right">
             <div className="searchblock">
@@ -178,8 +197,16 @@ const Points = () => {
                 className="search-input"
                 type="text"
                 placeholder="Search..."
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
               />
-              <i className="fa fa-search"></i>
+              <button
+                type="button"
+                style={{ background: "none", border: "none", padding: 0 }}
+                tabIndex={-1}
+              >
+                <i className="fa fa-search"></i>
+              </button>
             </div>
             <div className="filters">
               <button
@@ -194,62 +221,40 @@ const Points = () => {
                   ref={filterRef}
                   className="dropdown-menu filter-dropdown show"
                 >
-                  <h3 className="filterdrop-heading">FIlter</h3>
-                  {/* <div className="filter-search">
-                    <input type="text" placeholder="" />
-                    <i className="fa fa-search"></i>
-                  </div> */}
-                  {/* <div className="filter-select">
-                    <label>Department</label>
-                    <select>
-                      <option>All Department</option>
-                      {departments.map((dept) => (
-                        <option key={dept._id} value={dept._id}>
-                          {dept.name}
-                        </option>
-                      ))}
-                    </select>
+                  <h3 className="filterdrop-heading">Filter</h3>
+
+                  <div
+                    className="filter-date-range"
+                    style={{ display: "flex", alignItems: "center", gap: 8 }}
+                  >
+                    <input
+                      className="fdateinput"
+                      type="date"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      style={{ width: 120 }}
+                    />
+                    <span style={{ margin: "0 4px" }}>-</span>
+                    <input
+                      className="fdateinput"
+                      type="date"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      style={{ width: 120 }}
+                    />
                   </div>
-                  <div className="filter-select">
-                    <label>Designation</label>
-                    <select>
-                      <option>All Designation</option>
-                      {designations.map((desg) => (
-                        <option key={desg._id} value={desg._id}>
-                          {desg.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div> */}
-                  <div className="filter-checkbox">
-                    <div className="filtercheck-wrapper">
-                      <label>
-                        <input type="radio" />
-                        Date (Old-New)
-                      </label>
-                      <label>
-                        <input type="radio" />
-                        Points (High-Low)
-                      </label>
-                      <label>
-                        <input type="radio" />
-                        Transactions (Bonuses First)
-                      </label>
-                    </div>
-                    <div className="filter-date-range">
-                      <input className="fdateinput" type="date" />
-                    </div>
-                    <div className="frange-slider">
-                      <h3 className='filterdrop-heading'>Points Range 0-{value}</h3>
-                      <input
-                        type="range"
-                        min="0"
-                        max="200"
-                        value={value}
-                        onChange={handleChange}
-                        style={{ width: '100%' }}
-                      />
-                    </div>
+                  <div className="frange-slider">
+                    <h3 className="filterdrop-heading">
+                      Points Range 0-{maxPoints}
+                    </h3>
+                    <input
+                      type="range"
+                      min="0"
+                      max="200"
+                      value={maxPoints}
+                      onChange={(e) => setMaxPoints(Number(e.target.value))}
+                      style={{ width: "100%" }}
+                    />
                   </div>
                 </div>
               )}
@@ -291,10 +296,11 @@ const Points = () => {
                         Employee ID{" "}
                         {sortConfig.key === "_id" && (
                           <span
-                            className={`ml-1 arrow ${sortConfig.direction === "asc"
+                            className={`ml-1 arrow ${
+                              sortConfig.direction === "asc"
                                 ? "arrow-up"
                                 : "arrow-down"
-                              }`}
+                            }`}
                           >
                             {sortConfig.direction === "asc" ? "▲" : "▼"}
                           </span>
@@ -309,10 +315,11 @@ const Points = () => {
                         Name{" "}
                         {sortConfig.key === "employeeId" && (
                           <span
-                            className={`ml-1 arrow ${sortConfig.direction === "asc"
+                            className={`ml-1 arrow ${
+                              sortConfig.direction === "asc"
                                 ? "arrow-up"
                                 : "arrow-down"
-                              }`}
+                            }`}
                           >
                             {sortConfig.direction === "asc" ? "▲" : "▼"}
                           </span>
@@ -327,10 +334,11 @@ const Points = () => {
                         Points{" "}
                         {sortConfig.key === "pointsChange" && (
                           <span
-                            className={`ml-1 arrow ${sortConfig.direction === "asc"
+                            className={`ml-1 arrow ${
+                              sortConfig.direction === "asc"
                                 ? "arrow-up"
                                 : "arrow-down"
-                              }`}
+                            }`}
                           >
                             {sortConfig.direction === "asc" ? "▲" : "▼"}
                           </span>
@@ -345,10 +353,11 @@ const Points = () => {
                         Balance{" "}
                         {sortConfig.key === "balanceAfter" && (
                           <span
-                            className={`ml-1 arrow ${sortConfig.direction === "asc"
+                            className={`ml-1 arrow ${
+                              sortConfig.direction === "asc"
                                 ? "arrow-up"
                                 : "arrow-down"
-                              }`}
+                            }`}
                           >
                             {sortConfig.direction === "asc" ? "▲" : "▼"}
                           </span>
@@ -363,10 +372,11 @@ const Points = () => {
                         Reason{" "}
                         {sortConfig.key === "reason" && (
                           <span
-                            className={`ml-1 arrow ${sortConfig.direction === "asc"
+                            className={`ml-1 arrow ${
+                              sortConfig.direction === "asc"
                                 ? "arrow-up"
                                 : "arrow-down"
-                              }`}
+                            }`}
                           >
                             {sortConfig.direction === "asc" ? "▲" : "▼"}
                           </span>
@@ -381,10 +391,11 @@ const Points = () => {
                         Date{" "}
                         {sortConfig.key === "date" && (
                           <span
-                            className={`ml-1 arrow ${sortConfig.direction === "asc"
+                            className={`ml-1 arrow ${
+                              sortConfig.direction === "asc"
                                 ? "arrow-up"
                                 : "arrow-down"
-                              }`}
+                            }`}
                           >
                             {sortConfig.direction === "asc" ? "▲" : "▼"}
                           </span>
@@ -460,8 +471,8 @@ const Points = () => {
                             row.pointsChange > 0
                               ? "green"
                               : row.pointsChange < 0
-                                ? "red"
-                                : "black",
+                              ? "red"
+                              : "black",
                         }}
                       >
                         {row.pointsChange > 0
@@ -487,8 +498,9 @@ const Points = () => {
                 {Array.from({ length: totalPages }, (_, i) => (
                   <li
                     key={i}
-                    className={`page-item ${i + 1 === currentPage ? "active" : ""
-                      }`}
+                    className={`page-item ${
+                      i + 1 === currentPage ? "active" : ""
+                    }`}
                   >
                     <button
                       className="page-link"

@@ -72,7 +72,7 @@ const FilterDetails = ({
             </select>
           </div>
 
-          <div className='filter-checkbox'>
+          {/* <div className='filter-checkbox'>
             <h3 className='filterdrop-heading'>Roles</h3>
             <div className='filtercheck-wrapper'>
               <label>
@@ -88,7 +88,7 @@ const FilterDetails = ({
                 HR
               </label>
             </div>
-          </div>
+          </div> */}
 
           {/* Fields  will use later*/}
           {/* <div className="filter-checkbox">

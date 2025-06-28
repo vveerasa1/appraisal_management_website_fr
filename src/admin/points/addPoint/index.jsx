@@ -8,17 +8,17 @@ import {
 } from "../../../services/features/users/userApi";
 import { showSuccessToast, showErrorToast } from "../../../utils/toast";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const AddPoints = () => {
   const [createPoint, { isLoading: isSaving }] = useCreatePointMutation();
-
+  const userId = useSelector((state) => state.users.id);
   const [selectedUser, setSelectedUser] = useState("");
   const [points, setPoints] = useState("");
   const [reason, setReason] = useState("");
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
-  const userId = "684a757980c56bf96d63bf31";
   const { data, isLoading } = useGetAllUsersForListQuery(userId);
   const users = data?.data?.users || [];
 
@@ -48,7 +48,7 @@ const AddPoints = () => {
           pointsChange: Number(points),
           balanceAfter,
           reason,
-          createdBy: "684a757980c56bf96d63bf31",
+          createdBy: userId,
         };
         await createPoint(payload).unwrap();
         showSuccessToast("Points saved successfully!");
