@@ -20,7 +20,7 @@
 .topbar-brand {
   font-size: 20px;
   margin-bottom: 0px;
-  color: var(--white);
+  color: var(--heading-color);
 }
 
 .topbar-logo {
@@ -35,7 +35,7 @@
 }
 
 .topbar-menu .pageTabPane li a{
-  color: var(--white);
+  color: var(--fobt-color);
 }
 
 .navbar-toggle-btn {
@@ -82,7 +82,7 @@
   font-size: 20px;
   background-color: transparent;
   border: none;
-  color: #fff;
+  color: #999999;
   border-radius: 50%;
   transition: ease-in 0.3s;
   text-decoration: none;
@@ -91,6 +91,7 @@
 .notify-btn:hover {
   background-color: #8c96b6;
   transition: ease-in 0.3s;
+  color: var(--white);
 }
 
 .new-nofifications {
@@ -125,6 +126,10 @@
   color: #333;
   text-decoration: none;
   font-size: 14px;
+}
+
+.dropdown-item i{
+  color: var(--theme-color-secondary);
 }
 
 .dropdown-item:hover {
@@ -192,7 +197,7 @@
   border-radius: 8px;
   transition: ease-in 0.3s;
   text-decoration: none;
-  background-color: #D6AD41;
+  background-color: #009688;
 }
 
 /* media queries */

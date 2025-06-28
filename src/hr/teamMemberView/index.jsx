@@ -6,59 +6,172 @@ import ProfileImg from '../../assets/images/user.png'
 const TeamMemberView = () => {
     return (
         <>
-            <div className='breadcrumb-wrapper'>
-                <h3 className='page-name'>John Doe</h3>
-                <ul className='breadcrumb-lists'>
-                    <li><Link to="/employee/dashboard" className="page-link">Home</Link></li>
-                    <li><p>John Doe</p></li>
+            <div className="pageTanDiv">
+                <ul className="pageTabPane">
+                    <div className='lvDiv'>
+                        <Link to="/hr/team-members"><i className='fa fa-angle-left'></i></Link>
+                        <img className="img-fluid" src={ProfileImg} alt='Profile' />
+                        <p>ABC1234 - John Doe</p>
+                    </div>
+                    <li>
+                        <Link to="/hr/adjust-points">Adjust Points</Link>
+                    </li>
+                    <li>
+                        <Link to="/hr/points">Points History</Link>
+                    </li>
                 </ul>
             </div>
             <div className='view-container'>
                 <div className='row'>
-                    <div className='col-12 col-md-4 col-lg-4 mb-4'>
-                        <div className='view-avatar-info'>
-                            <img className='img-fluid' src={ProfileImg} alt='Profile' />
-                            <h3>John Doe</h3>
-                            <p>Designation: <b>Web Developer</b></p>
-                            <p>Employee ID: <b>ABC1234</b></p>
-                        </div>
-                    </div>
-                    <div className='col-12 col-md-4 col-lg-8'>
+                    <div className='col-12 col-md-12 col-lg-12'>
                         <div className='view-other-info'>
                             <h3 className='small-heading'>Employee Details</h3>
-                            <ul className='otherInfo-lists'>
-                                <li>
-                                    <p>Email:</p>
-                                    <h4>john@company.com</h4>
-                                </li>
-                                <li>
-                                    <p>Mobile Number:</p>
-                                    <h4>+1(234) 567-8901</h4>
-                                </li>
-                                <li>
-                                    <p>Department:</p>
-                                    <h4>Software Development</h4>
-                                </li>
-                                <li>
-                                    <p>DOJ:</p>
-                                    <h4>12 Jan, 2024</h4>
-                                </li>
-                                <li>
-                                    <p>Reporting to:</p>
-                                    <h4>Manager Name</h4>
-                                </li>
-                                <li>
-                                    <p>Address:</p>
-                                    <h4>1234, New Winston Road, New York, NY A567</h4>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div className='col-12 col-md-12 col-lg-12'>
-                        <div className='submit-btn-block'>
-                            <Link to="/hr/adjust-points" className='theme-btn btn-blue' type='button'>Adjust Points</Link>
-                            <Link to="/hr/points" className='theme-btn btn-blue' type='button'>Points History</Link>
+                            <div className='row'>
+                                <div className='col-12 col-md-6 col-lg-4'>
+                                    <div className='editform-group'>
+                                        <label className='editform-label'>First Name</label>
+                                        <input type='text' className='editform-input' value="John" placeholder='' />
+                                        {/* before edit click */}
+                                        <div className="ef-actionbtns">
+                                            <button className="editform-btn" type='button'><i className='fa fa-pencil'></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='col-12 col-md-6 col-lg-4'>
+                                    <div className='editform-group'>
+                                        <label className='editform-label'>Last Name</label>
+                                        <input type='text' className='editform-input' value="Doe" placeholder='' />
+                                        {/* before edit click */}
+                                        <div className="ef-actionbtns">
+                                            <button className="editform-btn" type='button'><i className='fa fa-pencil'></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='col-12 col-md-6 col-lg-4'>
+                                    <div className='editform-group'>
+                                        <label className='editform-label'>Email Address</label>
+                                        <input type='text' className='editform-input' value="john@gmail.com" placeholder='' disabled />
+                                    </div>
+                                </div>
+                                <div className='col-12 col-md-6 col-lg-4'>
+                                    <div className='editform-group'>
+                                        <label className='editform-label'>Phone Number</label>
+                                        <input type='text' className='editform-input' value="123456789" placeholder='' />
+                                        {/* before edit click */}
+                                        <div className="ef-actionbtns">
+                                            <button className="editform-btn" type='button'><i className='fa fa-pencil'></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='col-12 col-md-6 col-lg-4'>
+                                    <div className='editform-group'>
+                                        <label className='editform-label'>Employee ID</label>
+                                        <input type='text' className='editform-input' value="ABC1234" placeholder='' />
+                                        {/* before edit click */}
+                                        <div className="ef-actionbtns">
+                                            <button className="editform-btn" type='button'><i className='fa fa-pencil'></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='col-12 col-md-6 col-lg-4'>
+                                    <div className='editform-group'>
+                                        <label className='editform-label'>Department</label>
+                                        <input type='text' className='editform-input' value="Software Development" placeholder='' />
+                                        {/* before edit click */}
+                                        <div className="ef-actionbtns">
+                                            <button className="editform-btn" type='button'><i className='fa fa-pencil'></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='col-12 col-md-6 col-lg-4'>
+                                    <div className='editform-group'>
+                                        <label className='editform-label'>Reporting to</label>
+                                        <input type='text' className='editform-input' value="ABC1234 - William Smith" placeholder='' />
+                                        {/* before edit click */}
+                                        <div className="ef-actionbtns">
+                                            <button className="editform-btn" type='button'><i className='fa fa-pencil'></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='col-12 col-md-6 col-lg-4'>
+                                    <div className='editform-group'>
+                                        <label className='editform-label'>Designation</label>
+                                        <input type='text' className='editform-input' value="Web Developer" placeholder='' />
+                                        {/* before edit click */}
+                                        <div className="ef-actionbtns">
+                                            <button className="editform-btn" type='button'><i className='fa fa-pencil'></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='col-12 col-md-6 col-lg-4'>
+                                    <div className='editform-group'>
+                                        <label className='editform-label'>Date of Joining</label>
+                                        <input type='text' className='editform-input' value="20/07/2024" placeholder='' />
+                                        {/* before edit click */}
+                                        <div className="ef-actionbtns">
+                                            <button className="editform-btn" type='button'><i className='fa fa-pencil'></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='col-12 col-md-12 col-lg-12'>
+                                    <h3 className='small-heading'>Address Details</h3>
+                                </div>
+                                <div className='col-12 col-md-6 col-lg-6'>
+                                    <div className='editform-group'>
+                                        <label className='editform-label'>Address</label>
+                                        <input type='text' className='editform-input' value="1234, New Winston Road" placeholder='' />
+                                        {/* before edit click */}
+                                        <div className="ef-actionbtns">
+                                            <button className="editform-btn" type='button'><i className='fa fa-pencil'></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='col-12 col-md-6 col-lg-3'>
+                                    <div className='editform-group'>
+                                        <label className='editform-label'>City</label>
+                                        <input type='text' className='editform-input' value="New York" placeholder='' />
+                                        {/* before edit click */}
+                                        <div className="ef-actionbtns">
+                                            <button className="editform-btn" type='button'><i className='fa fa-pencil'></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='col-12 col-md-6 col-lg-3'>
+                                    <div className='editform-group'>
+                                        <label className='editform-label'>Province</label>
+                                        <input type='text' className='editform-input' value="NY" placeholder='' />
+                                        {/* before edit click */}
+                                        <div className="ef-actionbtns">
+                                            <button className="editform-btn" type='button'><i className='fa fa-pencil'></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='col-12 col-md-6 col-lg-4'>
+                                    <div className='editform-group'>
+                                        <label className='editform-label'>Postal Code</label>
+                                        <input type='text' className='editform-input' value="12345" placeholder='' />
+                                        {/* before edit click */}
+                                        <div className="ef-actionbtns">
+                                            <button className="editform-btn" type='button'><i className='fa fa-pencil'></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='col-12 col-md-6 col-lg-4'>
+                                    <div className='editform-group'>
+                                        <label className='editform-label'>Country</label>
+                                        <input type='text' className='editform-input' value="USA" placeholder='' />
+                                        {/* before edit click */}
+                                        <div className="ef-actionbtns">
+                                            <button className="editform-btn" type='button'><i className='fa fa-pencil'></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='col-12 col-md-12 col-lg-12'>
+                                    <div className='submit-btn-block'>
+                                        <button className='theme-btn btn-blue' type='button'>Save Changes</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

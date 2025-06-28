@@ -52,32 +52,28 @@ import AdminViewDesignation from "./admin/organization/designation/viewDesignati
 import AdminOrganizationTree from "./admin/organization/organizationTree";
 
 // ***** employee ***** //
-import EmployeeDashboard from "./employee/dashboard";
-import EmployeePoints from "./employee/points";
-import EmployeeProfile from "./employee/profile";
-import EmployeeEditProfile from "./employee/profile/editProfile";
-import EmployeeChangePassword from "./employee/profile/changePassword";
+import EmployeeDashboard from './employee/dashboard'
+import EmployeePoints from './employee/points'
 
 // ***** hr ***** //
-import HRDashboard from "./hr/dashboard";
-import HRTeamMembers from "./hr/teamMembers";
-import HRTeamMemberView from "./hr/teamMemberView";
-import HRMyPoints from "./hr/myPoints";
-import HRProfile from "./hr/profile";
-import HREditProfile from "./hr/profile/editProfile";
-import HRChangePassword from "./hr/profile/changePassword";
-import HRAdjustPoints from "./hr/adjustPoint";
-import HRPointsHistory from "./hr/pointsHistory";
+import HRDashboard from './hr/dashboard'
+import HRTeamMembers from './hr/teamMembers'
+import HRTeamMemberView from './hr/teamMemberView'
+import HRMyPoints from './hr/myPoints'
+import HRAdjustPoints from './hr/adjustPoint'
 
 import HREmployees from "./hr/employees";
 import HRAddEmployee from "./hr/employees/addEmployee";
 import HREditEmployee from "./hr/employees/editEmployee";
 import HRViewEmployee from "./hr/employees/viewEmployee";
 
-import HRPoints from "./hr/points";
-import HRAddPoints from "./hr/points/addPoint";
-import HREditPoints from "./hr/points/editPoint";
-import HRViewPoints from "./hr/points/viewPoint";
+import HRPoints from './hr/points'
+import HRAddPoints from './hr/points/addPoint'
+import HREditPoints from './hr/points/editPoint'
+import HRViewPoints from './hr/points/viewPoint'
+
+import Profile from './components/profile'
+import ChangePassword from './components/profile/changePassword'
 
 function App() {
   return (
@@ -94,6 +90,14 @@ function App() {
         <Route path="/reset-success" element={<ResetSuccess />} />
 
         {/* Routes for pages with Sidebar and Topbar */}
+        <Route
+          path="/profile"
+          element={<AppLayout><Profile /></AppLayout>}
+        />
+        <Route
+          path="/profile/change-password"
+          element={<AppLayout><ChangePassword /></AppLayout>}
+        />
         {/* admin */}
         <Route
           path="/admin/dashboard"
@@ -347,35 +351,7 @@ function App() {
         />
         <Route
           path="/employee/points"
-          element={
-            <AppLayout>
-              <EmployeePoints />
-            </AppLayout>
-          }
-        />
-        <Route
-          path="/employee/profile"
-          element={
-            <AppLayout>
-              <EmployeeProfile />
-            </AppLayout>
-          }
-        />
-        <Route
-          path="/employee/profile/edit"
-          element={
-            <AppLayout>
-              <EmployeeEditProfile />
-            </AppLayout>
-          }
-        />
-        <Route
-          path="/employee/profile/change-password"
-          element={
-            <AppLayout>
-              <EmployeeChangePassword />
-            </AppLayout>
-          }
+          element={<AppLayout><EmployeePoints /></AppLayout>}
         />
 
         {/* hr */}
@@ -405,36 +381,8 @@ function App() {
         />
         <Route
           path="/hr/my-points"
-          element={
-            <AppLayout>
-              <HRMyPoints />
-            </AppLayout>
-          }
-        />
-        <Route
-          path="/hr/profile"
-          element={
-            <AppLayout>
-              <HRProfile />
-            </AppLayout>
-          }
-        />
-        <Route
-          path="/hr/profile/edit"
-          element={
-            <AppLayout>
-              <HREditProfile />
-            </AppLayout>
-          }
-        />
-        <Route
-          path="/hr/profile/change-password"
-          element={
-            <AppLayout>
-              <HRChangePassword />
-            </AppLayout>
-          }
-        />
+          element={<AppLayout><HRMyPoints /></AppLayout>}
+        /> 
         <Route
           path="/hr/adjust-points"
           element={
