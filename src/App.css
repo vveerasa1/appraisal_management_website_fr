@@ -35,7 +35,7 @@
 
 :root{
   --theme-color-blue: #143361;
-  --theme-color-secondary: #D6AD41;
+  --theme-color-secondary: #009688;
   --body-bg: #f9fafc;
   --bloack: #000000;
   --white: #ffffff;
@@ -45,7 +45,7 @@
   --border-color: #DDDDDD;
   --line-color: #EEEEEE;
   --bg1: #E8F1FF;
-  --top-bg: #012355;
+  --top-bg: #ebebed;
   --red: #FA475B;
   --blue: #478BFA;
   --green: #0FAC1C;

@@ -152,13 +152,13 @@ const Topbar = ({ toggleSidebar }) => {
                     </button>
                     <ul className={`dropdown-menu ${isDropdownOpen ? "show" : ""}`}>
                         <li>
-                            <Link to="/admin/profile" className="dropdown-item">
+                            <Link to="/profile" className="dropdown-item">
                                 <i className="fa fa-user"></i> Profile
                             </Link>
                         </li>
                         <li>
-                            <Link to="/admin/settings" className="dropdown-item">
-                                <i className="fa fa-cog"></i> Settings
+                            <Link to="/profile/change-password" className="dropdown-item">
+                                <i className="fa fa-cog"></i> Change Password
                             </Link>
                         </li>
                         <li>

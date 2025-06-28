@@ -58,11 +58,7 @@ import HRDashboard from './hr/dashboard'
 import HRTeamMembers from './hr/teamMembers'
 import HRTeamMemberView from './hr/teamMemberView'
 import HRMyPoints from './hr/myPoints'
-import HRProfile from './hr/profile'
-import HREditProfile from './hr/profile/editProfile'
-import HRChangePassword from './hr/profile/changePassword'
 import HRAdjustPoints from './hr/adjustPoint'
-import HRPointsHistory from './hr/pointsHistory'
 
 import HREmployees from './hr/employees'
 import HRAddEmployee from './hr/employees/addEmployee'
@@ -73,6 +69,9 @@ import HRPoints from './hr/points'
 import HRAddPoints from './hr/points/addPoint'
 import HREditPoints from './hr/points/editPoint'
 import HRViewPoints from './hr/points/viewPoint'
+
+import Profile from './components/profile'
+import ChangePassword from './components/profile/changePassword'
 
 function App() {
 
@@ -91,6 +90,14 @@ function App() {
         <Route path="/reset-success" element={<ResetSuccess />} />
 
         {/* Routes for pages with Sidebar and Topbar */}
+        <Route
+          path="/profile"
+          element={<AppLayout><Profile /></AppLayout>}
+        />
+        <Route
+          path="/profile/change-password"
+          element={<AppLayout><ChangePassword /></AppLayout>}
+        />
         {/* admin */}
         <Route
           path="/admin/dashboard"
@@ -251,18 +258,6 @@ function App() {
         <Route
           path="/hr/my-points"
           element={<AppLayout><HRMyPoints /></AppLayout>}
-        />
-        <Route
-          path="/hr/profile"
-          element={<AppLayout><HRProfile /></AppLayout>}
-        />
-        <Route
-          path="/hr/profile/edit"
-          element={<AppLayout><HREditProfile /></AppLayout>}
-        />
-        <Route
-          path="/hr/profile/change-password"
-          element={<AppLayout><HRChangePassword /></AppLayout>}
         /> 
         <Route
           path="/hr/adjust-points"
