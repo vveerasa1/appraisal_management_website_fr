@@ -17,7 +17,7 @@ const AppLayout = ({ children }) => {
         <div className='main-container'>
             <Topbar toggleSidebar={toggleSidebar} />
             <div className='sidebar-content-wrapper'>
-                <EmployeeSidebar isOpen={isSidebarOpen} />
+                <HRSidebar isOpen={isSidebarOpen} />
                 <div className='content-container'>
                 {children}
                 </div>
