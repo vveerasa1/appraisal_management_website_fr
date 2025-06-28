@@ -1,195 +1,127 @@
-import { useState } from 'react'
+import React, { useState } from "react";
 import "./style.css"
 import { Link } from 'react-router-dom'
-import Person from "../../assets/images/person.png"
-import Coin from "../../assets/images/coin.png"
+import PartyPaper from '../../assets/images/party-popper.png'
+import ProfileImg from '../../assets/images/user.png'
+import User from "../../assets/images/user-thumbnail.png";
 
 const Dashboard = () => {
+    const [activeTab, setActiveTab] = useState("employee");
+
+    const handleTabChange = (tab) => {
+        setActiveTab(tab);
+    };
     return (
         <>
-        <div className='breadcrumb-wrapper'>
-            <h3 className='page-name'>Dashboard</h3>
-            <ul className='breadcrumb-lists'>
-                <li><Link to="/employee/dashboard" className="page-link">Home</Link></li>
-                <li><p>Dashboard</p></li>
-            </ul>
-        </div>
-        <div className='page-wrapper'>
-            <div className='dashboard-cards-wrapper'>
-                <div className='row'>
-                    <div className='col-12 col-md-6 col-lg-4 mb-4'>
-                        <div className='dashboard-count-card'>
-                            <div className='dashcard-left'>
-                                <div className='dicon'>
-                                    <i className='fa fa-pie-chart'></i>
+            <div className='pageTanDiv'>
+                <ul className='pageTabPane'>
+                    <li className='active'>
+                        <Link to="/hr/dashboard">Dashboard</Link>
+                    </li>
+                </ul>
+            </div>
+            <div className='dashboard-wrapper'>
+                <div className='dashboard-cards-wrapper'>
+                    <div className='row mt-2'>
+                        <div className='col-12 col-md-9 col-lg-9'>
+                            <div className='row'>
+                                <div className='col-12 col-md-6 col-lg-6 mb-4'>
+                                    <div className='dashbord-cards-wrapper'>
+                                        <div className='dc-head'>
+                                            <h3 className='dash-title'>New Hires</h3>
+                                        </div>
+                                        <div className='dc-body'>
+                                            <ul className='dc-list'>
+                                                <li>
+                                                    <div className='dc-list-inner'>
+                                                        <img className='img-fluid dc-list-img' src={ProfileImg} alt='Profile' />
+                                                        <div className='dc-list-info'>
+                                                            <h3>Welcome On-Board John Doe!</h3>
+                                                            <p>16 May 2020, 6:57 PM</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className='dinfo'>
-                                    <h3>15,000</h3>
-                                    <p>Total Points</p>
+                                <div className='col-12 col-md-6 col-lg-6 mb-4'>
+                                    <div className='dashbord-cards-wrapper'>
+                                        <div className='dc-head'>
+                                            <h3 className='dash-title'>Work Anniversary</h3>
+                                        </div>
+                                        <div className='dc-body'>
+                                            <ul className='dc-list'>
+                                                <li>
+                                                    <div className='dc-list-inner'>
+                                                        <img className='img-fluid dc-list-img' src={ProfileImg} alt='Profile' />
+                                                        <div className='dc-list-info'>
+                                                            <h3>Mary Joe</h3>
+                                                            <p>Completing <b>10</b> Years<img className='img-fluid small-img' src={PartyPaper} alt='Profile' /></p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='col-12 col-md-6 col-lg-6 mb-4'>
+                                    <div className='dashbord-cards-wrapper'>
+                                        <div className='dc-head'>
+                                            <h3 className='dash-title'>Birthdays</h3>
+                                        </div>
+                                        <div className='dc-body'>
+                                            <div className='no-results-wrapper'>
+                                                <p>No results found.</p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div className='dashcard-right'>
-                                <div>
-                                    <button className='refresh-btn' type='button'><i className='fa fa-refresh'></i></button>
-                                    <p>Last updated today<br />10:30AM</p>
+                        </div>
+                        <div className='col-12 col-md-3 col-lg-3'>
+                            <div className="overview-rwrapper">
+                                <div className="overview-rhead">
+                                    <h3 className="dash-title">Your Account</h3>
                                 </div>
+                                <div className="ovdash-profile">
+                                    <img className="img-fluid" src={User} alt="Profile" />
+                                    <div className="ovdash-pInfo">
+                                        <h3>
+                                            <span>ABC1234 -</span> John Doe
+                                        </h3>
+                                        <p>HR</p>
+                                    </div>
+                                </div>
+                                <div className="ovdash-rprofile">
+                                    <img className="img-fluid" src={User} alt="Profile" />
+                                    <div className="ovdash-pInfo">
+                                        <p>Reporting To</p>
+                                        <h3>
+                                            <span>ABC1245 -</span> William Smith
+                                        </h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="overview-tmembers">
+                                <div className="overview-rhead">
+                                    <h3 className="dash-title">Team Members</h3>
+                                </div>
+                                <ul className="dmemebers-list">
+                                    <li>
+                                        <div className="dmemebers-wrapper">
+                                            <img className="img-fluid" src={User} alt="Profile" />
+                                            <h3>
+                                                <span>ABC234 -</span> Mary Joe
+                                            </h3>
+                                        </div>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div className='employee-recents'>
-                <h2 className='large-heading'>Latest</h2>
-                <div className='recents-list-wrapper'>
-                    <div className='row'>
-                        <div className='col-12 col-md-12 col-lg-6 mb-3'>
-                            <div className='recents-item'>
-                                <div className='ri-left'>
-                                    <div className='ri-employee-avatar'>
-                                        <img className='img-fluid' src={Person} alt='Avatar' />
-                                    </div>
-                                    <div className='ri-info'>
-                                        <h3>Project Completion <span className='ri-status'>New!</span></h3>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing eli Morbi dignissim eros in odio eleifend</p>
-                                        <span>Today, 04:32 AM </span>
-                                    </div>
-                                </div>
-                                <div className='ri-right'>
-                                    <div className='ri-points'>
-                                        <img className='img-fluid' src={Coin} alt='Coin' />
-                                        <p className='add'>+20</p>
-                                    </div>
-                                    <div className='ri-points'>
-                                        <img className='img-fluid' src={Coin} alt='Coin' />
-                                        <p className='text'>Bal: 1220</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='col-12 col-md-12 col-lg-6 mb-3'>
-                            <div className='recents-item'>
-                                <div className='ri-left'>
-                                    <div className='ri-employee-avatar'>
-                                        <img className='img-fluid' src={Person} alt='Avatar' />
-                                    </div>
-                                    <div className='ri-info'>
-                                        <h3>Project Completion <span className='ri-status'>New!</span></h3>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing eli Morbi dignissim eros in odio eleifend</p>
-                                        <span>Today, 04:32 AM </span>
-                                    </div>
-                                </div>
-                                <div className='ri-right'>
-                                    <div className='ri-points'>
-                                        <img className='img-fluid' src={Coin} alt='Coin' />
-                                        <p className='add'>+20</p>
-                                    </div>
-                                    <div className='ri-points'>
-                                        <img className='img-fluid' src={Coin} alt='Coin' />
-                                        <p className='text'>Bal: 1220</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='col-12 col-md-12 col-lg-6 mb-3'>
-                            <div className='recents-item'>
-                                <div className='ri-left'>
-                                    <div className='ri-employee-avatar'>
-                                        <img className='img-fluid' src={Person} alt='Avatar' />
-                                    </div>
-                                    <div className='ri-info'>
-                                        <h3>Project Completion <span className='ri-status'>New!</span></h3>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing eli Morbi dignissim eros in odio eleifend</p>
-                                        <span>Today, 04:32 AM </span>
-                                    </div>
-                                </div>
-                                <div className='ri-right'>
-                                    <div className='ri-points'>
-                                        <img className='img-fluid' src={Coin} alt='Coin' />
-                                        <p className='add'>+20</p>
-                                    </div>
-                                    <div className='ri-points'>
-                                        <img className='img-fluid' src={Coin} alt='Coin' />
-                                        <p className='text'>Bal: 1220</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='col-12 col-md-12 col-lg-6 mb-3'>
-                            <div className='recents-item'>
-                                <div className='ri-left'>
-                                    <div className='ri-employee-avatar'>
-                                        <img className='img-fluid' src={Person} alt='Avatar' />
-                                    </div>
-                                    <div className='ri-info'>
-                                        <h3>Project Completion <span className='ri-status'>New!</span></h3>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing eli Morbi dignissim eros in odio eleifend</p>
-                                        <span>Today, 04:32 AM </span>
-                                    </div>
-                                </div>
-                                <div className='ri-right'>
-                                    <div className='ri-points'>
-                                        <img className='img-fluid' src={Coin} alt='Coin' />
-                                        <p className='add'>+20</p>
-                                    </div>
-                                    <div className='ri-points'>
-                                        <img className='img-fluid' src={Coin} alt='Coin' />
-                                        <p className='text'>Bal: 1220</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='col-12 col-md-12 col-lg-6 mb-3'>
-                            <div className='recents-item'>
-                                <div className='ri-left'>
-                                    <div className='ri-employee-avatar'>
-                                        <img className='img-fluid' src={Person} alt='Avatar' />
-                                    </div>
-                                    <div className='ri-info'>
-                                        <h3>Project Completion <span className='ri-status'>New!</span></h3>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing eli Morbi dignissim eros in odio eleifend</p>
-                                        <span>Today, 04:32 AM </span>
-                                    </div>
-                                </div>
-                                <div className='ri-right'>
-                                    <div className='ri-points'>
-                                        <img className='img-fluid' src={Coin} alt='Coin' />
-                                        <p className='add'>+20</p>
-                                    </div>
-                                    <div className='ri-points'>
-                                        <img className='img-fluid' src={Coin} alt='Coin' />
-                                        <p className='text'>Bal: 1220</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='col-12 col-md-12 col-lg-6 mb-3'>
-                            <div className='recents-item'>
-                                <div className='ri-left'>
-                                    <div className='ri-employee-avatar'>
-                                        <img className='img-fluid' src={Person} alt='Avatar' />
-                                    </div>
-                                    <div className='ri-info'>
-                                        <h3>Project Completion <span className='ri-status'>New!</span></h3>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing eli Morbi dignissim eros in odio eleifend</p>
-                                        <span>Today, 04:32 AM </span>
-                                    </div>
-                                </div>
-                                <div className='ri-right'>
-                                    <div className='ri-points'>
-                                        <img className='img-fluid' src={Coin} alt='Coin' />
-                                        <p className='add'>+20</p>
-                                    </div>
-                                    <div className='ri-points'>
-                                        <img className='img-fluid' src={Coin} alt='Coin' />
-                                        <p className='text'>Bal: 1220</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>        
-            </div>
-        </div>
         </>
     );
 };

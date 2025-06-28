@@ -31,11 +31,11 @@ const Points = () => {
 
     return (
         <>
-            <div className='breadcrumb-wrapper'>
-                <h3 className='page-name'>Points</h3>
-                <ul className='breadcrumb-lists'>
-                    <li><Link to="/employee/dashboard" className="page-link">Home</Link></li>
-                    <li><p>Point History</p></li>
+            <div className="pageTanDiv">
+                <ul className="pageTabPane">
+                    <li className="active">
+                        <Link to="/hr/my-points">Points</Link>
+                    </li>
                 </ul>
             </div>
             <div className='page-wrapper'>
@@ -77,27 +77,29 @@ const Points = () => {
                                         </div>
                                     </div>
                                 </div>
-
-                                <div className='pagination-wrapper mt-2'>
-                                    <nav>
-                                        <ul className="pagination">
-                                            <li className="page-item active">
-                                                <button className="page-link">
-                                                    1
-                                                </button>
-                                            </li>
-                                            <li className="page-item">
-                                                <button className="page-link">
-                                                    2
-                                                </button>
-                                            </li>
-                                            <li className="page-item">
-                                                <button className="page-link">
-                                                    3
-                                                </button>
-                                            </li>
-                                        </ul>
-                                    </nav>
+                                <div className="col-md-12">
+                                    {/* pagination */}
+                                    <div className='pagination-wrapper mypoints'>
+                                        <nav>
+                                            <ul className="pagination">
+                                                <li className="page-item active">
+                                                    <button className="page-link">
+                                                        1
+                                                    </button>
+                                                </li>
+                                                <li className="page-item">
+                                                    <button className="page-link">
+                                                        2
+                                                    </button>
+                                                </li>
+                                                <li className="page-item">
+                                                    <button className="page-link">
+                                                        3
+                                                    </button>
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    </div>
                                 </div>
                             </div>
                         </div>

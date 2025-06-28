@@ -49,9 +49,6 @@ import AdminOrganizationTree from './admin/organization/organizationTree'
 // ***** employee ***** //
 import EmployeeDashboard from './employee/dashboard'
 import EmployeePoints from './employee/points'
-import EmployeeProfile from './employee/profile'
-import EmployeeEditProfile from './employee/profile/editProfile'
-import EmployeeChangePassword from './employee/profile/changePassword'
 
 // ***** hr ***** //
 import HRDashboard from './hr/dashboard'
@@ -229,18 +226,6 @@ function App() {
           path="/employee/points"
           element={<AppLayout><EmployeePoints /></AppLayout>}
         />
-        <Route
-          path="/employee/profile"
-          element={<AppLayout><EmployeeProfile /></AppLayout>}
-        />
-        <Route
-          path="/employee/profile/edit"
-          element={<AppLayout><EmployeeEditProfile /></AppLayout>}
-        />
-        <Route
-          path="/employee/profile/change-password"
-          element={<AppLayout><EmployeeChangePassword /></AppLayout>}
-        /> 
 
         {/* hr */}
         <Route 
