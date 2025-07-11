@@ -3,25 +3,37 @@ import * as Yup from "yup";
 import "./style.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useLoginMutation } from "../../services/features/auth/authApi";
+import { useLazyGetRoleByIdQuery } from "../../services/features/roles/roleApi";
 import { showErrorToast, showSuccessToast } from "../../utils/toast";
 import { useDispatch } from "react-redux";
-import { addToken } from "../../services/features/auth/authSlice";
+import {
+  addToken,
+  setPermissions,
+} from "../../services/features/auth/authSlice";
 import { addUserInfo } from "../../services/features/users/userSlice";
 
 const Signin = () => {
   const [login, { isLoading }] = useLoginMutation();
+  const [getRoleDetails, { isLoading: isRoleLoading }] =
+    useLazyGetRoleByIdQuery();
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const validationSchema = Yup.object({
-    email: Yup.string().email("Invalid email address").required("Required"),
-    password: Yup.string().min(6, "Minimum 6 characters").required("Required"),
+    email: Yup.string()
+      .email("Invalid email address")
+      .required("Email is required"),
+    password: Yup.string()
+      .min(6, "Minimum 6 characters")
+      .required("Password is required"),
   });
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       const response = await login(values).unwrap();
       const { access_token, role, user } = response.data;
+      localStorage.setItem("authUser", JSON.stringify(response.data));
       dispatch(addToken({ role, accessToken: access_token }));
       const { _id, firstName, lastName, email, status } = user;
       dispatch(
@@ -32,14 +44,18 @@ const Signin = () => {
           status: status,
         })
       );
-      showSuccessToast("Success");
+      const roleDetailsResponse = await getRoleDetails(
+        user?.role?._id
+      ).unwrap();
+      const fetchedPermissions = roleDetailsResponse.data?.permissions || []; // Adjust path as needed!
+      console.log("fetchedPermissions :" + fetchedPermissions);
+      dispatch(setPermissions(fetchedPermissions));
+
+      showSuccessToast("Login Successfully");
       navigate("/admin/dashboard");
     } catch (err) {
       showErrorToast(
-        err?.data?.message ||
-          err?.error ||
-          err?.message ||
-          "Failed to add department."
+        err?.data?.message || err?.error || err?.message || "Login Failed."
       );
     }
     setSubmitting(false);

@@ -9,6 +9,8 @@ const PERMISSIONS = [
   { entity: "Department", actions: ["Add", "Edit", "View", "Delete"] },
   { entity: "Designation", actions: ["Add", "Edit", "View", "Delete"] },
   { entity: "Appraisal", actions: ["Add", "Edit", "View", "Delete"] },
+    { entity: "Team", actions: ["Add", "Edit", "View", "Delete"] },
+
 ];
 
 const permissionMap = {
@@ -35,6 +37,12 @@ const permissionMap = {
     Edit: "appraisal:update",
     View: "appraisal:view",
     Delete: "appraisal:delete",
+  },
+  Team: {
+    Add: "team:create",
+    Edit: "team:update",
+    View: "team:view",
+    Delete: "team:delete",
   },
 };
 

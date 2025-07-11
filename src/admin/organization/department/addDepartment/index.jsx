@@ -9,7 +9,6 @@ import { useGetReportersQuery } from "../../../../services/features/users/userAp
 import { showSuccessToast, showErrorToast } from "../../../../utils/toast";
 import { useSelector } from "react-redux";
 
-
 const AddDepartment = () => {
   const [name, setName] = useState("");
   const [departmentLead, setDepartmentLead] = useState("");
@@ -38,7 +37,7 @@ const AddDepartment = () => {
         name,
         userId: userId, // static userId
         departmentLead,
-        parentDepartment,
+        parentDepartment
       }).unwrap();
       showSuccessToast("Department added successfully!");
       navigate("/admin/organization/department");

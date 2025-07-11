@@ -16,7 +16,7 @@ const Dashboard = () => {
             <div className='pageTanDiv'>
                 <ul className='pageTabPane'>
                     <li className='active'>
-                        <Link to="/hr/dashboard">Dashboard</Link>
+                        <Link to="/dashboard">Dashboard</Link>
                     </li>
                 </ul>
             </div>

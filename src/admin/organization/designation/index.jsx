@@ -1,26 +1,44 @@
 import { useState, useEffect, useRef } from "react";
 import "./style.css";
 import { Link } from "react-router-dom";
-import ProfileImg from "../../../assets/images/user.png";
+import ProfileImg from "../../../assets/images/user.png"; // Keeping for consistency, though likely not used directly here
 import Select from "react-select";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import { useGetDesignationsQuery } from "../../../services/features/designation/designationApi";
+import { usePermission } from "../../../hooks/usePermission";
 
 const Designation = () => {
+  // State for search query
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
+  const { hasPermission } = usePermission();
+  const CAN_VIEW_DEPARTMENT = "department:view";
+
+  // State for status filter (frontend controlled)
+  const [selectedStatus, setSelectedStatus] = useState("Active"); // Default to 'Active'
+
   useEffect(() => {
     const timeout = setTimeout(() => {
       setSearch(searchInput.trim());
     }, 400);
     return () => clearTimeout(timeout);
   }, [searchInput]);
+
+  // Fetch all designations from API (no status filter passed here)
   const {
     data: apiData,
     isLoading,
     error,
   } = useGetDesignationsQuery({ search });
-  const designations = apiData?.data || [];
+
+  // Get all designations from API data
+  const allDesignations = apiData?.data || [];
+
+  // Frontend filtering by status
+  const designations = allDesignations.filter(
+    (designation) => designation.status === selectedStatus
+  );
+  // IMPORTANT: Ensure your 'designation' object has a 'status' field (e.g., 'Active', 'Inactive')
 
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(50);
@@ -31,21 +49,45 @@ const Designation = () => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [isAllSelected, setIsAllSelected] = useState(false);
 
+  // Reset pagination when any filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, selectedStatus]); // Added selectedStatus to dependencies
+
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
 
+  // Sorting logic - now applies to the `designations` (filtered) array
   const sortedData = [...designations].sort((a, b) => {
-    if (!a[sortConfig.key] || !b[sortConfig.key]) return 0;
-    if (a[sortConfig.key] < b[sortConfig.key]) {
+    let aValue, bValue;
+
+    if (sortConfig.key === "addedBy") {
+      aValue = a.addedBy ? `${a.addedBy.firstName} ${a.addedBy.lastName}` : "";
+      bValue = b.addedBy ? `${b.addedBy.firstName} ${b.addedBy.lastName}` : "";
+    } else if (sortConfig.key === "createdAt") {
+      aValue = new Date(a.createdAt).getTime(); // Compare timestamps for date sorting
+      bValue = new Date(b.createdAt).getTime();
+    } else {
+      aValue = a[sortConfig.key];
+      bValue = b[sortConfig.key];
+    }
+
+    if (aValue === null || aValue === undefined)
+      return sortConfig.direction === "asc" ? 1 : -1;
+    if (bValue === null || bValue === undefined)
+      return sortConfig.direction === "asc" ? -1 : 1;
+
+    if (aValue < bValue) {
       return sortConfig.direction === "asc" ? -1 : 1;
     }
-    if (a[sortConfig.key] > b[sortConfig.key]) {
+    if (aValue > bValue) {
       return sortConfig.direction === "asc" ? 1 : -1;
     }
     return 0;
   });
+
   const currentRows = sortedData.slice(indexOfFirstRow, indexOfLastRow);
-  const totalPages = Math.ceil(designations.length / rowsPerPage);
+  const totalPages = Math.ceil(designations.length / rowsPerPage); // Total pages based on filtered 'designations'
 
   const handleSort = (key) => {
     let direction = "asc";
@@ -66,7 +108,8 @@ const Designation = () => {
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
-      setSelectedRows(currentRows.map((row) => row.eid));
+      // Changed to row._id as per your existing checkbox logic
+      setSelectedRows(currentRows.map((row) => row._id));
       setIsAllSelected(true);
     } else {
       setSelectedRows([]);
@@ -74,23 +117,25 @@ const Designation = () => {
     }
   };
 
-  const handleCheckboxChange = (eid) => {
-    if (selectedRows.includes(eid)) {
-      setSelectedRows(selectedRows.filter((id) => id !== eid));
+  const handleCheckboxChange = (_id) => {
+    // Changed to _id as per your existing checkbox logic
+    if (selectedRows.includes(_id)) {
+      setSelectedRows(selectedRows.filter((id) => id !== _id));
       setIsAllSelected(false);
     } else {
-      setSelectedRows([...selectedRows, eid]);
+      setSelectedRows([...selectedRows, _id]);
     }
   };
 
   const [openDropdown, setOpenDropdown] = useState(null);
   const dropdownRefs = useRef({});
 
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false); // filter dropdown, currently commented out
   const filterRef = useRef(null);
 
-  const toggleDropdown = (eid) => {
-    setOpenDropdown(openDropdown === eid ? null : eid);
+  const toggleDropdown = (_id) => {
+    // Changed to _id
+    setOpenDropdown(openDropdown === _id ? null : _id);
   };
 
   const toggleFilterDropdown = () => {
@@ -123,9 +168,10 @@ const Designation = () => {
     };
   }, [openDropdown, isFilterOpen]);
 
-  const options = [
-    { value: "active-view", label: "Active Designation View" },
-    { value: "inactive-view", label: "Inactive Designation View" },
+  // Options for the status dropdown
+  const statusOptions = [
+    { value: "Active", label: "Active Designation View" },
+    { value: "Inactive", label: "Inactive Designation View" },
   ];
 
   const customStyles = {
@@ -142,7 +188,7 @@ const Designation = () => {
     }),
     option: (provided, { data }) => ({
       ...provided,
-      color: data.value === "create-view" ? "gray" : provided.color,
+      color: data.value === "create-view" ? "gray" : provided.color, // Keeping this if you have a 'create-view' option
       zIndex: 1000,
     }),
     dropdownIndicator: (provided) => ({
@@ -150,16 +196,21 @@ const Designation = () => {
       padding: "6px",
     }),
   };
+
+  // Handler for status select change
+  const handleStatusChange = (selectedOption) => {
+    setSelectedStatus(selectedOption.value);
+  };
+
   return (
     <>
       <div className="pageTanDiv">
         <ul className="pageTabPane">
-          {/* <li>
-            <Link to="/admin/employees">Employees</Link>
-          </li> */}
-          <li>
-            <Link to="/admin/organization/department">Department</Link>
-          </li>
+          {hasPermission(CAN_VIEW_DEPARTMENT) && (
+            <li>
+              <Link to="/admin/organization/department">Department</Link>
+            </li>
+          )}
           <li className="active">
             <Link to="/admin/organization/designation">Designation</Link>
           </li>
@@ -171,11 +222,12 @@ const Designation = () => {
       <div className="table-lists-container">
         <div className="table-top-block">
           <div className="ttb-left">
-            {/* <Select
-              options={[...options]}
-              defaultValue={options[0]}
+            <Select
+              options={statusOptions}
+              defaultValue={statusOptions[0]} // Default to Active Designation View
               styles={customStyles}
-            /> */}
+              onChange={handleStatusChange} // Handle status change
+            />
           </div>
           <div className="ttb-right">
             <div className="searchblock">
@@ -188,39 +240,6 @@ const Designation = () => {
               />
               <i className="fa fa-search"></i>
             </div>
-            {/* <div className="filters">
-              <button
-                type="button"
-                className="filterbtn"
-                onClick={toggleFilterDropdown}
-              >
-                <FilterAltOutlinedIcon />
-              </button>
-              {isFilterOpen && (
-                <div
-                  ref={filterRef}
-                  className="dropdown-menu filter-dropdown show"
-                >
-                  <h3 className="filterdrop-heading">FIlter</h3>
-                  <div className="filter-search">
-                    <input type="text" placeholder="" />
-                    <i className="fa fa-search"></i>
-                  </div>
-                  <div className="filter-select">
-                    <label>Department</label>
-                    <select>
-                      <option>All Department</option>
-                    </select>
-                  </div>
-                  <div className="filter-select">
-                    <label>Designation</label>
-                    <select>
-                      <option>All Designation</option>
-                    </select>
-                  </div>
-                </div>
-              )}
-            </div> */}
           </div>
         </div>
         <div className="tables">
@@ -265,7 +284,18 @@ const Designation = () => {
                       className="table-head-btn"
                       onClick={() => handleSort("status")}
                     >
-                      Status
+                      Status{" "}
+                      {sortConfig.key === "status" && (
+                        <span
+                          className={`ml-1 arrow ${
+                            sortConfig.direction === "asc"
+                              ? "arrow-up"
+                              : "arrow-down"
+                          }`}
+                        >
+                          {sortConfig.direction === "asc" ? "▲" : "▼"}
+                        </span>
+                      )}
                     </button>
                   </th>
                   <th>
@@ -273,7 +303,18 @@ const Designation = () => {
                       className="table-head-btn"
                       onClick={() => handleSort("addedBy")}
                     >
-                      Added By
+                      Added By{" "}
+                      {sortConfig.key === "addedBy" && (
+                        <span
+                          className={`ml-1 arrow ${
+                            sortConfig.direction === "asc"
+                              ? "arrow-up"
+                              : "arrow-down"
+                          }`}
+                        >
+                          {sortConfig.direction === "asc" ? "▲" : "▼"}
+                        </span>
+                      )}
                     </button>
                   </th>
                   <th>
@@ -281,7 +322,18 @@ const Designation = () => {
                       className="table-head-btn"
                       onClick={() => handleSort("createdAt")}
                     >
-                      Added Time
+                      Added Time{" "}
+                      {sortConfig.key === "createdAt" && (
+                        <span
+                          className={`ml-1 arrow ${
+                            sortConfig.direction === "asc"
+                              ? "arrow-up"
+                              : "arrow-down"
+                          }`}
+                        >
+                          {sortConfig.direction === "asc" ? "▲" : "▼"}
+                        </span>
+                      )}
                     </button>
                   </th>
                 </tr>
@@ -289,11 +341,13 @@ const Designation = () => {
               <tbody>
                 {isLoading ? (
                   <tr>
-                    <td colSpan={6}>Loading...</td>
+                    <td colSpan={6}>Loading designations...</td>
                   </tr>
                 ) : error ? (
                   <tr>
-                    <td colSpan={6}>Failed to load designations.</td>
+                    <td colSpan={6}>
+                      Error: {error.message || "Failed to load designations."}
+                    </td>
                   </tr>
                 ) : (
                   currentRows.map((row) => (
@@ -345,10 +399,8 @@ const Designation = () => {
                           {row.name}
                         </Link>
                       </td>
-                      <td>
-                        {/* No status in your API, so show Active or - */}
-                        Active
-                      </td>
+                      <td>{row.status || "Active"}</td>{" "}
+                      {/* Display row.status or default to "Active" */}
                       <td>
                         {row.addedBy
                           ? `${row.addedBy.firstName} ${row.addedBy.lastName}`

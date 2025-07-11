@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { useCreatePointMutation } from "../../../services/features/points/pointApi";
 import {
   useGetUserQuery,
-  useGetAllUsersForListQuery,
+  useGetAllUsersForAppraisalQuery,
 } from "../../../services/features/users/userApi";
 import { showSuccessToast, showErrorToast } from "../../../utils/toast";
 import { useNavigate } from "react-router-dom";
@@ -19,15 +19,16 @@ const AddPoints = () => {
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
-  const { data, isLoading } = useGetAllUsersForListQuery(userId);
+  const { data, isLoading } = useGetAllUsersForAppraisalQuery(userId);
   const users = data?.data?.users || [];
 
-  const { data: userDetails, isFetching: isPointsLoading } = useGetUserQuery(
-    selectedUser,
-    {
-      skip: !selectedUser,
-    }
-  );
+  const {
+    data: userDetails,
+    isFetching: isPointsLoading,
+    refetch,
+  } = useGetUserQuery(selectedUser, {
+    skip: !selectedUser,
+  });
   const currentPoints = userDetails?.data?.totalPoints ?? 0;
 
   const handleSave = async (e) => {
@@ -42,16 +43,17 @@ const AddPoints = () => {
 
     if (Object.keys(tempErrors).length === 0) {
       try {
-        const balanceAfter = Number(currentPoints) + Number(points);
+        const balanceAfter = Number(currentPoints);
         const payload = {
           employeeId: selectedUser,
           pointsChange: Number(points),
           balanceAfter,
           reason,
-          createdBy: userId,
+          userId: userId,
         };
         await createPoint(payload).unwrap();
         showSuccessToast("Points saved successfully!");
+        await refetch();
         navigate("/admin/points");
       } catch (error) {
         showErrorToast("Failed to save points.");

@@ -4,30 +4,38 @@ import { useParams, Link } from "react-router-dom";
 import {
   useGetDepartmentByIdQuery,
   useGetDepartmentsQuery,
-  useAddDepartmentMutation,
+  useAddDepartmentMutation, // Assuming this handles update as well
   useDeleteDepartmentMutation,
 } from "../../../../services/features/departments/departmentApi";
 import { useSelector } from "react-redux";
 import { showSuccessToast, showErrorToast } from "../../../../utils/toast";
 import { useGetReportersQuery } from "../../../../services/features/users/userApi";
-import ProfileImg from "../../../../assets/images/user.png";
-import Select from "react-select";
-import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
+import { usePermission } from "../../../../hooks/usePermission";
+
+// Removed unused imports
+// import ProfileImg from "../../../../assets/images/user.png";
+// import Select from "react-select";
+// import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 
 const ViewDepartment = () => {
   const { id } = useParams();
   const { data, isLoading, error, refetch } = useGetDepartmentByIdQuery(id);
   const department = data?.data;
   const userId = useSelector((state) => state.users.id);
+  const { hasPermission } = usePermission();
+
+  const CAN_UPDATE_DEPARTMENT = "department:update";
+  const CAN_DELETE_DEPARTMENT = "department:delete";
 
   // Fetch all departments for Parent Department dropdown
-  const { data: departmentsData } = useGetDepartmentsQuery();
+  const { data: departmentsData } = useGetDepartmentsQuery({search: ""});
   const departments = departmentsData?.data || [];
 
   // Fetch all employees for Department Lead dropdown
   const { data: reportersData, isLoading: reportersLoading } =
     useGetReportersQuery();
   const reporters = reportersData?.data || [];
+
   const [deleteDepartment, { isLoading: isDeleting }] =
     useDeleteDepartmentMutation();
 
@@ -36,9 +44,16 @@ const ViewDepartment = () => {
     name: "",
     departmentLead: "",
     parentDepartment: "",
+    status: "Active", // Add status to form state, default to "Active"
   });
 
   const [addDepartment, { isLoading: isSaving }] = useAddDepartmentMutation();
+
+  // Options for the Status dropdown
+  const statusOptions = [
+    { value: "Active", label: "Active" },
+    { value: "Inactive", label: "Inactive" },
+  ];
 
   useEffect(() => {
     if (department) {
@@ -46,6 +61,7 @@ const ViewDepartment = () => {
         name: department.name || "",
         departmentLead: department.departmentLead?._id || "",
         parentDepartment: department.parentDepartment?._id || "",
+        status: department.status || "Active", // Initialize status from fetched data
       });
     }
   }, [department]);
@@ -62,9 +78,11 @@ const ViewDepartment = () => {
         name: department.name || "",
         departmentLead: department.departmentLead?._id || "",
         parentDepartment: department.parentDepartment?._id || "",
+        status: department.status || "Active", // Reset status on cancel
       });
     }
   };
+
   const handleDelete = async () => {
     if (!department?._id) return;
     if (!window.confirm("Are you sure you want to delete this department?"))
@@ -84,22 +102,20 @@ const ViewDepartment = () => {
     }
   };
 
-  // TODO: Implement save logic with API call
   const handleSave = async () => {
     try {
       await addDepartment({
-        id: department._id,
+        id: department._id, // Pass ID for update operation
         name: form.name,
-        userId: userId, // static userId
-        departmentLead: form.departmentLead,
-        parentDepartment: form.parentDepartment,
+        departmentLead: form.departmentLead || null, // Send null if no lead selected
+        parentDepartment: form.parentDepartment || null, // Send null if no parent selected
+        status: form.status, // Include status in the payload
+        modifiedBy: userId, // Add modifiedBy for tracking changes
       }).unwrap();
       setEditMode(false);
-      // Optionally show a success message or refetch data
       showSuccessToast("Department updated successfully!");
-      refetch();
+      refetch(); // Refetch data to display updated information
     } catch (err) {
-      // Optionally handle error
       const errorMsg =
         err?.data?.message ||
         err?.error ||
@@ -110,13 +126,27 @@ const ViewDepartment = () => {
     }
   };
 
+  // Display loading, error, or no department found messages
+  if (isLoading) {
+    return <p>Loading department details...</p>;
+  }
+
+  if (error) {
+    return (
+      <p>
+        Failed to load department details: {error.message || "Unknown error"}
+      </p>
+    );
+  }
+
+  if (!department) {
+    return <p>No department found with this ID.</p>;
+  }
+
   return (
     <>
       <div className="pageTanDiv">
         <ul className="pageTabPane">
-          {/* <li>
-            <Link to="/admin/employees">Employee</Link>
-          </li> */}
           <li className="active">
             <Link to="/admin/organization/department">Department</Link>
           </li>
@@ -128,22 +158,27 @@ const ViewDepartment = () => {
           </li>
         </ul>
         <div className="rvDiv">
-          <button
-            className="rvDiv-btns"
-            type="button"
-            onClick={() => setEditMode(true)}
-            title="Edit"
-          >
-            <i className="fa fa-pencil"></i>
-          </button>
-          <button
-            className="rvDiv-btns delete"
-            type="button"
-            onClick={handleDelete}
-            disabled={isDeleting}
-          >
-            <i className="fa fa-trash"></i>
-          </button>
+          {hasPermission(CAN_UPDATE_DEPARTMENT) && (
+            <button
+              className="rvDiv-btns"
+              type="button"
+              onClick={handleEdit} // Use handleEdit directly
+              title="Edit"
+            >
+              <i className="fa fa-pencil"></i>
+            </button>
+          )}
+          {hasPermission(CAN_DELETE_DEPARTMENT) && (
+            <button
+              className="rvDiv-btns delete"
+              type="button"
+              onClick={handleDelete}
+              disabled={isDeleting}
+              title="Delete"
+            >
+              <i className="fa fa-trash"></i>
+            </button>
+          )}
         </div>
       </div>
       <div className="view-container">
@@ -151,222 +186,217 @@ const ViewDepartment = () => {
           <div className="col-12 col-md-12 col-lg-12">
             <div className="view-other-info">
               <h3 className="small-heading">Department Details</h3>
-              {isLoading ? (
-                <p>Loading...</p>
-              ) : error ? (
-                <p>Failed to load department details.</p>
-              ) : (
-                <div className="row">
-                  {/* Department Name */}
-                  <div className="col-12 col-md-6 col-lg-4">
-                    <div className="editform-group">
-                      <label className="editform-label">Department Name</label>
-                      {editMode ? (
-                        <input
-                          type="text"
-                          className="editform-input"
-                          name="name"
-                          value={form.name}
-                          onChange={handleChange}
-                        />
-                      ) : (
-                        <input
-                          type="text"
-                          className="editform-input"
-                          value={department?.name || ""}
-                          disabled
-                        />
-                      )}
-                      {!editMode && (
-                        <div className="ef-actionbtns">
-                          <button
-                            className="editform-btn"
-                            type="button"
-                            onClick={handleEdit}
-                          >
-                            <i className="fa fa-pencil"></i>
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  {/* Department Lead */}
-                  <div className="col-12 col-md-6 col-lg-4">
-                    <div className="editform-group">
-                      <label className="editform-label">Department Lead</label>
-                      {editMode ? (
-                        <select
-                          className="editform-input"
-                          name="departmentLead"
-                          value={form.departmentLead}
-                          onChange={handleChange}
-                          disabled={reportersLoading}
-                        >
-                          <option value="">Select Lead</option>
-                          {reporters.map((rep) => (
-                            <option key={rep._id} value={rep._id}>
-                              {rep.firstName} {rep.lastName}
-                            </option>
-                          ))}
-                        </select>
-                      ) : (
-                        <input
-                          type="text"
-                          className="editform-input"
-                          value={
-                            department?.departmentLead
-                              ? `${department.departmentLead.firstName} ${department.departmentLead.lastName}`
-                              : "-"
-                          }
-                          disabled
-                        />
-                      )}
-                      {!editMode && (
-                        <div className="ef-actionbtns">
-                          <button
-                            className="editform-btn"
-                            type="button"
-                            onClick={handleEdit}
-                          >
-                            <i className="fa fa-pencil"></i>
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  {/* Parent Department */}
-                  <div className="col-12 col-md-6 col-lg-4">
-                    <div className="editform-group">
-                      <label className="editform-label">
-                        Parent Department
-                      </label>
-                      {editMode ? (
-                        <select
-                          className="editform-input"
-                          name="parentDepartment"
-                          value={form.parentDepartment}
-                          onChange={handleChange}
-                        >
-                          <option value="">Select Parent</option>
-                          {departments
-                            .filter((d) => d._id !== department?._id)
-                            .map((dept) => (
-                              <option key={dept._id} value={dept._id}>
-                                {dept.name}
-                              </option>
-                            ))}
-                        </select>
-                      ) : (
-                        <input
-                          type="text"
-                          className="editform-input"
-                          value={department?.parentDepartment?.name || "-"}
-                          disabled
-                        />
-                      )}
-                      {!editMode && (
-                        <div className="ef-actionbtns">
-                          <button
-                            className="editform-btn"
-                            type="button"
-                            onClick={handleEdit}
-                          >
-                            <i className="fa fa-pencil"></i>
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  {/* Added By */}
-                  <div className="col-12 col-md-6 col-lg-4">
-                    <div className="editform-group">
-                      <label className="editform-label">Added By</label>
+              <div className="row">
+                {/* Department Name */}
+                <div className="col-12 col-md-6 col-lg-4">
+                  <div className="editform-group">
+                    <label className="editform-label">Department Name</label>
+                    {editMode ? (
                       <input
                         type="text"
                         className="editform-input"
-                        value={
-                          department?.addedBy
-                            ? `${department.addedBy.firstName} ${department.addedBy.lastName}`
-                            : "-"
-                        }
-                        disabled
+                        name="name"
+                        value={form.name}
+                        onChange={handleChange}
                       />
-                    </div>
-                  </div>
-                  {/* Added Time */}
-                  <div className="col-12 col-md-6 col-lg-4">
-                    <div className="editform-group">
-                      <label className="editform-label">Added Time</label>
+                    ) : (
                       <input
                         type="text"
                         className="editform-input"
-                        value={
-                          department?.createdAt
-                            ? new Date(department.createdAt).toLocaleString()
-                            : "-"
-                        }
+                        value={department?.name || ""}
                         disabled
                       />
-                    </div>
-                  </div>
-                  {/* Modified By */}
-                  <div className="col-12 col-md-6 col-lg-4">
-                    <div className="editform-group">
-                      <label className="editform-label">Modified By</label>
-                      <input
-                        type="text"
-                        className="editform-input"
-                        value={
-                          department?.modifiedBy
-                            ? `${department.modifiedBy.firstName} ${department.modifiedBy.lastName}`
-                            : "-"
-                        }
-                        disabled
-                      />
-                    </div>
-                  </div>
-                  {/* Modified Time */}
-                  <div className="col-12 col-md-6 col-lg-4">
-                    <div className="editform-group">
-                      <label className="editform-label">Modified Time</label>
-                      <input
-                        type="text"
-                        className="editform-input"
-                        value={
-                          department?.updatedAt
-                            ? new Date(department.updatedAt).toLocaleString()
-                            : "-"
-                        }
-                        disabled
-                      />
-                    </div>
-                  </div>
-                  {/* Save/Cancel Buttons */}
-                  <div className="col-12 col-md-12 col-lg-12">
-                    <div className="submit-btn-block">
-                      {editMode && (
-                        <>
-                          <button
-                            className="theme-btn btn-blue"
-                            type="button"
-                            onClick={handleSave}
-                            disabled={isSaving}
-                          >
-                            Save Changes
-                          </button>
-                          <button
-                            className="theme-btn btn-grey"
-                            type="button"
-                            onClick={handleCancel}
-                          >
-                            Cancel
-                          </button>
-                        </>
-                      )}
-                    </div>
+                    )}
                   </div>
                 </div>
-              )}
+
+                {/* Department Lead */}
+                <div className="col-12 col-md-6 col-lg-4">
+                  <div className="editform-group">
+                    <label className="editform-label">Department Lead</label>
+                    {editMode ? (
+                      <select
+                        className="editform-input"
+                        name="departmentLead"
+                        value={form.departmentLead}
+                        onChange={handleChange}
+                        disabled={reportersLoading} // Disable if reporters are still loading
+                      >
+                        <option value="">Select Lead</option>
+                        {reporters.map((rep) => (
+                          <option key={rep._id} value={rep._id}>
+                            {rep.firstName} {rep.lastName}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input
+                        type="text"
+                        className="editform-input"
+                        value={
+                          department?.departmentLead
+                            ? `${department.departmentLead.firstName} ${department.departmentLead.lastName}`
+                            : "-"
+                        }
+                        disabled
+                      />
+                    )}
+                  </div>
+                </div>
+
+                {/* Parent Department */}
+                <div className="col-12 col-md-6 col-lg-4">
+                  <div className="editform-group">
+                    <label className="editform-label">Parent Department</label>
+                    {editMode ? (
+                      <select
+                        className="editform-input"
+                        name="parentDepartment"
+                        value={form.parentDepartment}
+                        onChange={handleChange}
+                      >
+                        <option value="">Select Parent</option>
+                        {departments
+                          .filter((d) => d._id !== department?._id) // Prevent a department from being its own parent
+                          .map((dept) => (
+                            <option key={dept._id} value={dept._id}>
+                              {dept.name}
+                            </option>
+                          ))}
+                      </select>
+                    ) : (
+                      <input
+                        type="text"
+                        className="editform-input"
+                        value={department?.parentDepartment?.name || "-"}
+                        disabled
+                      />
+                    )}
+                  </div>
+                </div>
+
+                {/* Status Dropdown - NEWLY ADDED */}
+                <div className="col-12 col-md-6 col-lg-4">
+                  <div className="editform-group">
+                    <label className="editform-label">Status</label>
+                    {editMode ? (
+                      <select
+                        className="editform-input"
+                        name="status"
+                        value={form.status}
+                        onChange={handleChange} // Re-use the existing handleChange
+                      >
+                        {statusOptions.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input
+                        type="text"
+                        className="editform-input"
+                        value={department?.status || "-"}
+                        disabled
+                      />
+                    )}
+                  </div>
+                </div>
+
+                {/* Added By */}
+                <div className="col-12 col-md-6 col-lg-4">
+                  <div className="editform-group">
+                    <label className="editform-label">Added By</label>
+                    <input
+                      type="text"
+                      className="editform-input"
+                      value={
+                        department?.addedBy
+                          ? `${department.addedBy.firstName} ${department.addedBy.lastName}`
+                          : "-"
+                      }
+                      disabled
+                    />
+                  </div>
+                </div>
+
+                {/* Added Time */}
+                <div className="col-12 col-md-6 col-lg-4">
+                  <div className="editform-group">
+                    <label className="editform-label">Added Time</label>
+                    <input
+                      type="text"
+                      className="editform-input"
+                      value={
+                        department?.createdAt
+                          ? new Date(department.createdAt).toLocaleString()
+                          : "-"
+                      }
+                      disabled
+                    />
+                  </div>
+                </div>
+
+                {/* Modified By */}
+                <div className="col-12 col-md-6 col-lg-4">
+                  <div className="editform-group">
+                    <label className="editform-label">Modified By</label>
+                    <input
+                      type="text"
+                      className="editform-input"
+                      value={
+                        department?.modifiedBy
+                          ? `${department.modifiedBy.firstName} ${department.modifiedBy.lastName}`
+                          : "-"
+                      }
+                      disabled
+                    />
+                  </div>
+                </div>
+
+                {/* Modified Time */}
+                <div className="col-12 col-md-6 col-lg-4">
+                  <div className="editform-group">
+                    <label className="editform-label">Modified Time</label>
+                    <input
+                      type="text"
+                      className="editform-input"
+                      value={
+                        department?.updatedAt // Use 'updatedAt' for last modification time
+                          ? new Date(department.updatedAt).toLocaleString()
+                          : "-"
+                      }
+                      disabled
+                    />
+                  </div>
+                </div>
+
+                {/* Save/Cancel Buttons */}
+                <div className="col-12 col-md-12 col-lg-12">
+                  <div className="submit-btn-block">
+                    {editMode && (
+                      <>
+                        <button
+                          className="theme-btn btn-blue"
+                          type="button"
+                          onClick={handleSave}
+                          disabled={isSaving}
+                        >
+                          {isSaving ? "Saving..." : "Save Changes"}
+                        </button>
+                        <button
+                          className="theme-btn btn-grey"
+                          type="button"
+                          onClick={handleCancel}
+                          disabled={isSaving}
+                        >
+                          Cancel
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

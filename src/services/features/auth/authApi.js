@@ -23,6 +23,7 @@ export const authApi = createCustomApi("authApi", (builder) => ({
       data: data,
     }),
   }),
+  
 }));
 
 export const {

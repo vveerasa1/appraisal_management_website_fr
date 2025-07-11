@@ -10,7 +10,7 @@ import {
 } from "@tanstack/react-table";
 import dayjs from "dayjs";
 import "./style.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ProfileImg from "../../assets/images/user.png";
 import Select from "react-select";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
@@ -44,31 +44,36 @@ const IndeterminateCheckbox = ({ indeterminate, className = "", ...rest }) => {
 const ActionsCell = ({ row, openDropdown, toggleDropdown, dropdownRefs }) => {
   return (
     <div
-      ref={(el) => (dropdownRefs.current[row.original.employeeId] = el)}
+      ref={(el) => (dropdownRefs.current[row.original._id] = el)} 
       className="dropdown"
     >
       <button
         className="tdadd-drop"
         type="button"
-        onClick={() => toggleDropdown(row.original.employeeId)}
+        onClick={(e) => {
+          e.stopPropagation(); // Prevent row click from firing
+          toggleDropdown(row.original._id); // Corrected to _id
+        }}
       >
         <i className="fa fa-ellipsis-h"></i>
       </button>
-      {openDropdown === row.original.employeeId && (
+      {openDropdown === row.original._id && ( 
         <div className="dropdown-menu tddropOptions show">
           <Link
-            to={`/admin/employee/view/${row.original.employeeId}`}
+            to={`/admin/employee/view/${row.original._id}`} 
             className="dropdown-item"
+            onClick={(e) => e.stopPropagation()} // Prevent row click from firing
           >
             View
           </Link>
           <Link
-            to={`/admin/employee/edit/${row.original.employeeId}`}
+            to={`/admin/employee/edit/${row.original._id}`} 
             className="dropdown-item"
+            onClick={(e) => e.stopPropagation()} // Prevent row click from firing
           >
             Edit
           </Link>
-          <button className="dropdown-item">Delete</button>
+          <button className="dropdown-item" onClick={(e) => e.stopPropagation()}>Delete</button>
         </div>
       )}
     </div>
@@ -77,21 +82,23 @@ const ActionsCell = ({ row, openDropdown, toggleDropdown, dropdownRefs }) => {
 
 const AdminViewEmployee = () => {
   const userId = useSelector((store) => store.users.id);
+  const navigate = useNavigate();
 
   // State for sorting and row selection
   const [sorting, setSorting] = useState([]);
   const [rowSelection, setRowSelection] = useState({});
   const [pagination, setPagination] = useState({
     pageIndex: 0, // react-table uses 0-based index
-    pageSize: 3,
+    pageSize: 16,
   });
 
   //Active-Inactive view
   const options = [
+    { value: "all-view", label: "All Employees View" },
     { value: "active-view", label: "Active Employee View" },
     { value: "inactive-view", label: "Inactive Employee View" },
   ];
-  const [selectedView, setSelectedView] = useState("active-view");
+  const [selectedView, setSelectedView] = useState("all-view");
 
   //Search
   const handleSearch = useCallback((name, e) => {
@@ -102,7 +109,6 @@ const AdminViewEmployee = () => {
   }, []);
 
   //Filter employee
-
   const [filterValues, setFilterValues] = useState({
     id: userId,
     search: "",
@@ -149,7 +155,6 @@ const AdminViewEmployee = () => {
     } else if (selectedView === "inactive-view") {
       return data.filter((user) => user.status === "Inactive");
     }
-
     return data;
   }, [allUserData, selectedView]);
   const pageCount = allUserData?.data?.totalPages || 0;
@@ -159,8 +164,8 @@ const AdminViewEmployee = () => {
   const [openDropdown, setOpenDropdown] = useState(null);
   const dropdownRefs = useRef({});
 
-  const toggleDropdown = (eid) => {
-    setOpenDropdown((prev) => (prev === eid ? null : eid));
+  const toggleDropdown = (id) => { // Parameter changed to 'id' for clarity
+    setOpenDropdown((prev) => (prev === id ? null : id));
   };
 
   useEffect(() => {
@@ -239,29 +244,14 @@ const AdminViewEmployee = () => {
 
       // Simple accessors
       columnHelper.accessor("employeeId", {
-        header: <button className="table-head-btn"> Employee id </button>,
-        cell: (info) => {
-          const row = info.row.original;
-          return (
-            <Link
-              to={`/admin/employee/view/${row._id}`}
-              className="tlink"
-              style={{
-                color: "#007bff",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-            >
-              {info.getValue()}
-            </Link>
-          );
-        },
+        header: <button className="table-head-btn"> Employee ID </button>,
+        // No Link here, row click handles navigation
       }),
       columnHelper.accessor("firstName", {
-        header: <button className="table-head-btn"> First name </button>,
+        header: <button className="table-head-btn"> First Name </button>,
       }),
       columnHelper.accessor("lastName", {
-        header: <button className="table-head-btn"> last name </button>,
+        header: <button className="table-head-btn"> Last Name </button>,
       }),
       columnHelper.accessor("email", {
         header: <button className="table-head-btn"> Email </button>,
@@ -290,9 +280,21 @@ const AdminViewEmployee = () => {
           }`,
         {
           id: "reportingTo",
-          header: <button className="table-head-btn"> Reporting to</button>,
+          header: <button className="table-head-btn"> Reporting To</button>,
         }
       ),
+      columnHelper.accessor("status", {
+        header: <button className="table-head-btn"> Status </button>,
+        cell: (info) => (
+          <span className={`status-${info.getValue().toLowerCase()}`}>
+            {info.getValue()}
+          </span>
+        ),
+      }),
+      columnHelper.accessor((row) => row.role?.name, {
+        id: "role",
+        header: <button className="table-head-btn"> Role </button>,
+      }),
     ];
   }, [columnHelper, openDropdown, toggleDropdown, dropdownRefs]);
 
@@ -363,6 +365,7 @@ const AdminViewEmployee = () => {
             <ActiveInactiveSelect
               options={options}
               setState={setSelectedView}
+              defaultValue={options[0]}
             />
           </div>
           <div className="ttb-right">
@@ -411,7 +414,11 @@ const AdminViewEmployee = () => {
               </thead>
               <tbody>
                 {table.getRowModel()?.rows?.map((row) => (
-                  <tr key={row.id}>
+                  <tr
+                    key={row.id}
+                    onClick={() => navigate(`/admin/employee/view/${row.original._id}`)} 
+                    style={{ cursor: "pointer" }}
+                  >
                     {row.getVisibleCells().map((cell) => (
                       <td key={cell.id}>
                         {flexRender(
@@ -427,7 +434,6 @@ const AdminViewEmployee = () => {
           </div>
           <div className="pagination-wrapper">
             <span className="table-datas">
-              {/* Showing {indexOfFirstRow + 1} to{" "} */}
               {table.getState().pagination.pageIndex + 1} of{" "}
               {table.getPageCount()} entries
             </span>

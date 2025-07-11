@@ -14,6 +14,7 @@ const PERMISSIONS = [
   { entity: "Department", actions: ["Add", "Edit", "View", "Delete"] },
   { entity: "Designation", actions: ["Add", "Edit", "View", "Delete"] },
   { entity: "Appraisal", actions: ["Add", "Edit", "View", "Delete"] },
+  { entity: "Team", actions: ["Add", "Edit", "View", "Delete"] },
 ];
 
 const permissionMap = {
@@ -41,6 +42,12 @@ const permissionMap = {
     View: "appraisal:view",
     Delete: "appraisal:delete",
   },
+  Team: {
+    Add: "team:create",
+    Edit: "team:update",
+    View: "team:view",
+    Delete: "team:delete",
+  },
 };
 
 const getDefaultChecked = (rolePermissions = []) => {
@@ -66,6 +73,12 @@ const getPermissionsArray = (checked) => {
   return perms;
 };
 
+// Options for the Status dropdown
+const statusOptions = [
+  { value: "Active", label: "Active" },
+  { value: "Inactive", label: "Inactive" },
+];
+
 const ViewRole = () => {
   const { id } = useParams();
   const { data, isLoading, error, refetch } = useGetRoleByIdQuery(id);
@@ -73,9 +86,13 @@ const ViewRole = () => {
   const navigate = useNavigate();
 
   const [editMode, setEditMode] = useState(false);
-  const [form, setForm] = useState({ name: "", description: "" });
+  const [form, setForm] = useState({
+    name: "",
+    description: "",
+    status: "Active",
+  }); // Added status to form state
   const [checked, setChecked] = useState(getDefaultChecked(role?.permissions));
-  const [addRole, { isLoading: isSaving }] = useAddRoleMutation();
+  const [addRole, { isLoading: isSaving }] = useAddRoleMutation(); // Assuming this mutation also handles updates
 
   const [deleteDesignation, { isLoading: isDeleting }] =
     useDeleteRoleMutation();
@@ -85,6 +102,7 @@ const ViewRole = () => {
       setForm({
         name: role.name || "",
         description: role.description || "",
+        status: role.status || "Active", // Initialize status from fetched data
       });
       setChecked(getDefaultChecked(role.permissions));
     }
@@ -113,7 +131,7 @@ const ViewRole = () => {
   };
 
   const handleInputChange = (e) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setForm((prevForm) => ({ ...prevForm, [e.target.name]: e.target.value }));
   };
 
   const handleDelete = async () => {
@@ -122,8 +140,7 @@ const ViewRole = () => {
     try {
       await deleteDesignation(role._id).unwrap();
       showSuccessToast("Role deleted successfully!");
-      // Optionally redirect after delete:
-      navigate("/admin/roles");
+      navigate("/admin/roles"); // Redirect after delete
     } catch (err) {
       const errorMsg =
         err?.data?.message ||
@@ -137,14 +154,15 @@ const ViewRole = () => {
   const handleSave = async () => {
     try {
       await addRole({
-        id: role._id,
+        id: role._id, // Pass ID for update operation
         name: form.name,
         description: form.description,
         permissions: getPermissionsArray(checked),
+        status: form.status, // Include status in the payload
       }).unwrap();
       setEditMode(false);
       showSuccessToast("Role updated successfully!");
-      refetch();
+      refetch(); // Refetch data to display updated information
     } catch (err) {
       const errorMsg =
         err?.data?.message ||
@@ -152,7 +170,7 @@ const ViewRole = () => {
         err?.message ||
         "Failed to update role.";
       showErrorToast(errorMsg);
-      console.log(errorMsg);
+      console.error("Failed to update role:", errorMsg);
     }
   };
 
@@ -164,7 +182,9 @@ const ViewRole = () => {
       <div className="pageTanDiv">
         <div className="viewPageTopDiv">
           <div className="lvDiv">
-            <Link to="/admin/users">
+            <Link to="/admin/roles">
+              {" "}
+              {/* Corrected link to roles page */}
               <i className="fa fa-angle-left"></i>
             </Link>
             <img className="img-fluid" src={ProfileImg} alt="Profile" />
@@ -225,13 +245,44 @@ const ViewRole = () => {
                     />
                   </div>
                 </div>
+                {/* Status Dropdown */}
+                <div className="col-12 col-md-6 col-lg-4">
+                  <div className="editform-group">
+                    <label className="editform-label">Status</label>
+                    {editMode ? (
+                      <select
+                        className="editform-input"
+                        name="status"
+                        value={form.status}
+                        onChange={handleInputChange}
+                      >
+                        {statusOptions.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input
+                        type="text"
+                        className="editform-input"
+                        value={role.status || "-"}
+                        disabled
+                      />
+                    )}
+                  </div>
+                </div>
                 <div className="col-12 col-md-6 col-lg-4">
                   <div className="editform-group">
                     <label className="editform-label">Added By</label>
                     <input
                       type="text"
                       className="editform-input"
-                      value="Admin"
+                      value={
+                        role.addedBy
+                          ? `${role.addedBy.firstName} ${role.addedBy.lastName}`
+                          : "-"
+                      }
                       placeholder=""
                       disabled
                     />
@@ -259,7 +310,11 @@ const ViewRole = () => {
                     <input
                       type="text"
                       className="editform-input"
-                      value="Admin"
+                      value={
+                        role.modifiedBy
+                          ? `${role.modifiedBy.firstName} ${role.modifiedBy.lastName}`
+                          : "-"
+                      }
                       placeholder=""
                       disabled
                     />
@@ -338,6 +393,7 @@ const ViewRole = () => {
                           setForm({
                             name: role.name || "",
                             description: role.description || "",
+                            status: role.status || "Active", // Reset status on cancel
                           });
                           setChecked(getDefaultChecked(role.permissions));
                         }}

@@ -1,16 +1,44 @@
-import { useParams, Link } from "react-router-dom";
-import { useGetUserQuery } from "../../../services/features/users/userApi";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import {
+  useGetUserQuery,
+  useDeleteUserMutation,
+} from "../../../services/features/users/userApi";
 import ProfileImg from "../../../assets/images/user.png";
+import { usePermission } from "../../../hooks/usePermission";
+import { showErrorToast, showSuccessToast } from "../../../utils/toast";
 import "./style.css";
 
 const ViewEmployee = () => {
   const { id } = useParams();
   const { data, isLoading, isError } = useGetUserQuery(id);
+  const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
+  const { hasPermission } = usePermission(); // Initialize usePermission hook
+
+  const CAN_UPDATE_USER = "user:update";
+  const CAN_DELETE_USER = "user:delete";
+
+  const navigate = useNavigate(); // Initialize useNavigate hook
 
   if (isLoading) return <div>Loading...</div>;
   if (isError || !data?.data) return <div>Failed to load employee data.</div>;
-
   const user = data.data;
+
+  const handleDelete = async () => {
+    if (!user?._id) return;
+    if (!window.confirm("Are you sure you want to delete this User?")) return;
+    try {
+      await deleteUser(id).unwrap();
+      showSuccessToast("User deleted successfully!");
+      navigate("/admin/employees");
+    } catch (err) {
+      const errorMsg =
+        err?.data?.message ||
+        err?.error ||
+        err?.message ||
+        "Failed to delete User.";
+      showErrorToast(errorMsg);
+    }
+  };
 
   return (
     <>
@@ -26,16 +54,26 @@ const ViewEmployee = () => {
             </p>
           </div>
           <div className="rvDiv">
-            <Link
-              to={`/admin/employee/edit/${user._id}`}
-              className="rvDiv-btns"
-              type="button"
-            >
-              <i className="fa fa-pencil"></i>
-            </Link>
-            <button className="rvDiv-btns delete" type="button">
-              <i className="fa fa-trash"></i>
-            </button>
+            {hasPermission(CAN_UPDATE_USER) && (
+              <Link
+                to={`/admin/employee/edit/${user._id}`}
+                className="rvDiv-btns"
+                type="button"
+              >
+                <i className="fa fa-pencil"></i>
+              </Link>
+            )}
+            {hasPermission(CAN_DELETE_USER) && (
+              <button
+                className="rvDiv-btns delete"
+                type="button"
+                onClick={handleDelete}
+                disabled={isDeleting}
+                title="Delete"
+              >
+                <i className="fa fa-trash"></i>
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -150,6 +188,17 @@ const ViewEmployee = () => {
                 </div>
                 <div className="col-12 col-md-6 col-lg-4">
                   <div className="editform-group">
+                    <label className="editform-label">Date of Birth</label>
+                    <input
+                      type="text"
+                      className="editform-input"
+                      value={user.dob ? user.dob.slice(0, 10) : ""}
+                      disabled
+                    />
+                  </div>
+                </div>
+                <div className="col-12 col-md-6 col-lg-4">
+                  <div className="editform-group">
                     <label className="editform-label">Date of Joining</label>
                     <input
                       type="text"
@@ -159,6 +208,17 @@ const ViewEmployee = () => {
                           ? user.dateOfJoining.slice(0, 10)
                           : ""
                       }
+                      disabled
+                    />
+                  </div>
+                </div>
+                <div className="col-12 col-md-6 col-lg-4">
+                  <div className="editform-group">
+                    <label className="editform-label">Status</label>
+                    <input
+                      type="text"
+                      className="editform-input"
+                      value={user.status}
                       disabled
                     />
                   </div>

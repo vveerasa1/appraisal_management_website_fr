@@ -17,44 +17,73 @@ import { useApiErrorToast } from "../../../hooks/useApiErrorToast";
 import { mapToSelectOptions } from "../../../utils/utils";
 import { showErrorToast, showSuccessToast } from "../../../utils/toast";
 import { useGetDesignationsQuery } from "../../../services/features/designation/designationApi";
+import { useSelector } from "react-redux";
 
 const initialValues = {
   firstName: "",
   lastName: "",
   email: "",
-  phone: "",
+  phoneNumber: "",
   employeeId: "",
   department: "",
   reportingTo: "",
   role: "",
   designation: "",
   dateOfJoining: "",
+  dob: "", // NEW: Add date of birth
   address: "",
   city: "",
   province: "",
   postalCode: "",
   country: "",
+  createdBy: "",
   profilePhoto: null,
 };
 
 const validationSchema = Yup.object({
-  firstName: Yup.string().required("First Name is required"),
-  lastName: Yup.string().required("Last Name is required"),
+  firstName: Yup.string()
+    .required("First Name is required")
+    .matches(/^[a-zA-Z ]+$/, "First Name must contain only letters and spaces"),
+
+  lastName: Yup.string()
+    .required("Last Name is required")
+    .matches(/^[a-zA-Z ]+$/, "Last Name must contain only letters and spaces"),
   email: Yup.string().email("Invalid email").required("Email is required"),
-  phone: Yup.string().required("Phone number is required"),
+  phoneNumber: Yup.string()
+    .matches(
+      /^[0-9]{10}$/,
+      "Phone number must be exactly 10 digits and contain only numbers"
+    )
+    .required("Phone number is required"),
   employeeId: Yup.string().required("Employee ID is required"),
-  department: Yup.string().required("Department is required"),
-  reportingTo: Yup.string().required("Reporting To is required"),
-  role: Yup.string().required("Reporting To is required"),
-  designation: Yup.string().required("Designation is required"),
+  department: Yup.string(),
+  reportingTo: Yup.string().required("Reporting to is required"),
+  role: Yup.string().required("Role is required"),
+  designation: Yup.string(),
   dateOfJoining: Yup.date()
     .max(new Date(), "Date of joining cannot be in the future")
     .required("Date of joining is required"),
-  address: Yup.string().required("Address is required"),
-  city: Yup.string().required("City is required"),
-  province: Yup.string().required("Province is required"),
-  postalCode: Yup.string().required("Postal Code is required"),
-  country: Yup.string().required("Country is required"),
+  dob: Yup.date() // NEW: Validation for DOB
+    .max(new Date(), "Date of birth cannot be in the future"),
+  address: Yup.string(),
+  city: Yup.string()
+    .matches(/^[a-zA-Z ]*$/, "City must contain only letters and spaces")
+    .nullable(), // Or .optional() if it's not always required
+
+  province: Yup.string()
+    .matches(/^[a-zA-Z ]*$/, "Province must contain only letters and spaces")
+    .nullable(), // Or .optional()
+
+  postalCode: Yup.string()
+    .matches(
+      /^[a-zA-Z0-9]*$/,
+      "Postal Code must contain only letters and numbers"
+    )
+    .nullable(), // Or .optional()
+
+  country: Yup.string()
+    .matches(/^[a-zA-Z ]*$/, "Country must contain only letters and spaces")
+    .nullable(), // Or .optional()
 });
 
 export default function EmployeeForm() {
@@ -62,6 +91,7 @@ export default function EmployeeForm() {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const navigate = useNavigate();
+  const userId = useSelector((state) => state.users.id);
 
   const {
     data: designationsData,
@@ -76,6 +106,7 @@ export default function EmployeeForm() {
     isError: isDepartmentdataError,
     error: departmentDataError,
   } = useGetDepartmentsQuery({ search: "" });
+
   const {
     data: reportersData,
     isLoading: isReporterLoading,
@@ -107,44 +138,63 @@ export default function EmployeeForm() {
     designationError,
     "Failed to load designations"
   );
+
+  // Filter and map only active designations
   const designations = useMemo(() => {
     if (!designationsData || !designationsData.data) return [];
-    return mapToSelectOptions(designationsData?.data, {
+    // Filter by status === 'Active'
+    const activeDesignations = designationsData.data.filter(
+      (item) => item.status === "Active"
+    );
+    return mapToSelectOptions(activeDesignations, {
       label: "name",
       value: "_id",
     });
   }, [designationsData]);
 
+  // Filter and map only active departments
   const departments = useMemo(() => {
     if (!departmentsData || !departmentsData.data) return [];
-    return mapToSelectOptions(departmentsData?.data, {
+    // Filter by status === 'Active'
+    const activeDepartments = departmentsData.data.filter(
+      (item) => item.status === "Active"
+    );
+    return mapToSelectOptions(activeDepartments, {
       label: "name",
       value: "_id",
     });
   }, [departmentsData]);
 
+  // Reporting managers don't have a 'status' field in your context,
+  // so we keep this as is. If they did, you'd apply a similar filter.
   const reportingManagers = useMemo(() => {
     if (!reportersData || !reportersData.data) return [];
-    return mapToSelectOptions(reportersData?.data, {
+    return mapToSelectOptions(reportersData.data, {
       label: (item) =>
         `${item.firstName} ${item.lastName} (${item.designation?.name})`,
       value: "_id",
     });
   }, [reportersData]);
 
+  // Filter and map only active roles
   const roles = useMemo(() => {
     if (!rolesData || !rolesData.data) return [];
-    return mapToSelectOptions(rolesData?.data, {
+    // Filter by status === 'Active'
+    const activeRoles = rolesData.data.filter(
+      (item) => item.status === "Active"
+    );
+    return mapToSelectOptions(activeRoles, {
       label: (item) => `${item.name}`,
       value: "_id",
     });
-  }, [reportersData]);
+  }, [rolesData]); // Dependency changed from reportersData to rolesData
 
   const handleSubmit = async (values) => {
     try {
-      const { profilePhoto, ...rest } = values;
+      values.createdBy = userId;
+      const { profilePhoto, ...rest } = values; // 'rest' now includes dob
       const formData = new FormData();
-      formData.append("user", JSON.stringify(rest));
+      formData.append("user", JSON.stringify(rest)); // 'rest' sent as 'user' object
       formData.append("image", profilePhoto);
       const response = await addUser(formData).unwrap();
       console.log("Response:", response);
@@ -155,7 +205,7 @@ export default function EmployeeForm() {
         err?.data?.message ||
           err?.error ||
           err?.message ||
-          "Failed to add role."
+          "Failed to add employee." // Changed from 'role' to 'employee'
       );
     }
   };
@@ -163,7 +213,6 @@ export default function EmployeeForm() {
   const handleRemove = () => {
     setSelectedFile(null);
     setPreviewUrl(null);
-    // handleFileChange(null);
   };
 
   return (
@@ -186,6 +235,7 @@ export default function EmployeeForm() {
               <div className="col-12">
                 <div className="form-list-wrapper">
                   <BasicDetails
+                    // Existing props
                     departments={departments}
                     isdepartmentdataLoading={isdepartmentdataLoading}
                     reportingManagers={reportingManagers}
@@ -194,6 +244,9 @@ export default function EmployeeForm() {
                     isroledataLoading={isRoleLoading}
                     designations={designations}
                     isDesignationLoading={isDesignationLoading}
+                    // Pass setFieldValue and values to BasicDetails
+                    setFieldValue={setFieldValue} // Pass to BasicDetails
+                    values={values} // Pass to BasicDetails
                   />
                   <AddressDetails />
                   <ProfilePhoto

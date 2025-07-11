@@ -112,3 +112,7 @@
 .ri-points .add{
     color: var(--green);
 }
+
+.ri-points .deduct{
+    color: var(--red);
+}

@@ -1,22 +1,38 @@
 import { useState, useEffect, useRef } from "react";
 import "./style.css";
 import { Link } from "react-router-dom";
-import ProfileImg from "../../../assets/images/user.png";
+import ProfileImg from "../../../assets/images/user.png"; // This might not be needed for departments, but keeping for now
 import Select from "react-select";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import { useGetDepartmentsQuery } from "../../../services/features/departments/departmentApi";
+import { usePermission } from "../../../hooks/usePermission";
 
 const Department = () => {
-  // Fetch departments from API
-
+  // State for search query
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
+  const { hasPermission } = usePermission();
+
+  const CAN_VIEW_DESIGNATION = "designation:view";
+
+  // State for status filter (frontend controlled)
+  const [selectedStatus, setSelectedStatus] = useState("Active"); // Default to 'Active'
+
+  // Fetch all departments from API (no status filter passed here)
   const {
     data: apiData,
     isLoading,
     error,
   } = useGetDepartmentsQuery({ search });
-  const departments = apiData?.data || [];
+
+  // Get all departments from API data
+  const allDepartments = apiData?.data || [];
+
+  // Frontend filtering by status
+  const departments = allDepartments.filter(
+    (department) => department.status === selectedStatus
+  );
+  // IMPORTANT: Ensure your 'department' object has a 'status' field (e.g., 'Active', 'Inactive')
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -34,23 +50,55 @@ const Department = () => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [isAllSelected, setIsAllSelected] = useState(false);
 
+  // Reset pagination when any filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, selectedStatus]); // Added selectedStatus to dependencies
+
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
 
-  // Sorting logic
+  // Sorting logic - now applies to the `departments` (filtered) array
   const sortedData = [...departments].sort((a, b) => {
-    if (!a[sortConfig.key] || !b[sortConfig.key]) return 0;
-    if (a[sortConfig.key] < b[sortConfig.key]) {
+    let aValue, bValue;
+
+    if (sortConfig.key === "departmentLead") {
+      aValue = a.departmentLead
+        ? `${a.departmentLead.firstName} ${a.departmentLead.lastName}`
+        : "";
+      bValue = b.departmentLead
+        ? `${b.departmentLead.firstName} ${b.departmentLead.lastName}`
+        : "";
+    } else if (sortConfig.key === "parentDepartment") {
+      aValue = a.parentDepartment?.name || "";
+      bValue = b.parentDepartment?.name || "";
+    } else if (sortConfig.key === "addedBy") {
+      aValue = a.addedBy ? `${a.addedBy.firstName} ${a.addedBy.lastName}` : "";
+      bValue = b.addedBy ? `${b.addedBy.firstName} ${b.addedBy.lastName}` : "";
+    } else if (sortConfig.key === "createdAt") {
+      aValue = new Date(a.createdAt).getTime(); // Compare timestamps for date sorting
+      bValue = new Date(b.createdAt).getTime();
+    } else {
+      aValue = a[sortConfig.key];
+      bValue = b[sortConfig.key];
+    }
+
+    if (aValue === null || aValue === undefined)
+      return sortConfig.direction === "asc" ? 1 : -1;
+    if (bValue === null || bValue === undefined)
+      return sortConfig.direction === "asc" ? -1 : 1;
+
+    if (aValue < bValue) {
       return sortConfig.direction === "asc" ? -1 : 1;
     }
-    if (a[sortConfig.key] > b[sortConfig.key]) {
+    if (aValue > bValue) {
       return sortConfig.direction === "asc" ? 1 : -1;
     }
     return 0;
   });
 
   const currentRows = sortedData.slice(indexOfFirstRow, indexOfLastRow);
-  const totalPages = Math.ceil(departments.length / rowsPerPage);
+  const totalPages = Math.ceil(departments.length / rowsPerPage); // Total pages based on filtered 'departments'
 
   const handleSort = (key) => {
     let direction = "asc";
@@ -128,9 +176,10 @@ const Department = () => {
     };
   }, [openDropdown, isFilterOpen]);
 
-  const options = [
-    { value: "active-view", label: "Active Department View" },
-    { value: "inactive-view", label: "Inactive Department View" },
+  // Options for the status dropdown
+  const statusOptions = [
+    { value: "Active", label: "Active Department View" },
+    { value: "Inactive", label: "Inactive Department View" },
   ];
 
   const customStyles = {
@@ -156,19 +205,23 @@ const Department = () => {
     }),
   };
 
+  // Handler for status select change
+  const handleStatusChange = (selectedOption) => {
+    setSelectedStatus(selectedOption.value);
+  };
+
   return (
     <>
       <div className="pageTanDiv">
         <ul className="pageTabPane">
-          {/* <li>
-            <Link to="/admin/employees">Employees</Link>
-          </li> */}
           <li className="active">
             <Link to="/admin/organization/department">Department</Link>
           </li>
-          <li>
-            <Link to="/admin/organization/designation">Designation</Link>
-          </li>
+          {hasPermission(CAN_VIEW_DESIGNATION) && (
+            <li>
+              <Link to="/admin/organization/designation">Designation</Link>
+            </li>
+          )}
           <li>
             <Link to="/admin/organization/tree">Organization Tree</Link>
           </li>
@@ -177,11 +230,12 @@ const Department = () => {
       <div className="table-lists-container">
         <div className="table-top-block">
           <div className="ttb-left">
-            {/* <Select
-              options={options}
-              defaultValue={options[0]}
+            <Select
+              options={statusOptions}
+              defaultValue={statusOptions[0]} // Default to Active Department View
               styles={customStyles}
-            /> */}
+              onChange={handleStatusChange} // Handle status change
+            />
           </div>
           <div className="ttb-right">
             <div className="searchblock">
@@ -194,69 +248,14 @@ const Department = () => {
               />
               <i className="fa fa-search"></i>
             </div>
-            {/* <div className="filters">
-              <button
-                type="button"
-                className="filterbtn"
-                onClick={toggleFilterDropdown}
-              >
-                <FilterAltOutlinedIcon />
-              </button>
-              {isFilterOpen && (
-                <div
-                  ref={filterRef}
-                  className="dropdown-menu filter-dropdown show"
-                >
-                  <h3 className="filterdrop-heading">FIlter</h3>
-                  <div className="filter-search">
-                    <input type="text" placeholder="" />
-                    <i className="fa fa-search"></i>
-                  </div>
-                  <div className="filter-select">
-                    <label>Department</label>
-                    <select>
-                      <option>All Department</option>
-                      {departments.map((dept) => (
-                        <option key={dept._id} value={dept._id}>
-                          {dept.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="filter-select">
-                    <label>Designation</label>
-                    <select>
-                      <option>All Designation</option>
-                    </select>
-                  </div>
-                  <div className="filter-checkbox">
-                    <h3 className="filterdrop-heading">Fields</h3>
-                    <div className="filtercheck-wrapper">
-                      <label>
-                        <input type="checkbox" />
-                        Department Name
-                      </label>
-                      <label>
-                        <input type="checkbox" />
-                        Parent Department
-                      </label>
-                      <label>
-                        <input type="checkbox" />
-                        Department Lead
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div> */}
           </div>
         </div>
         <div className="tables">
           <div className="table-wrapper">
             {isLoading ? (
-              <div>Loading...</div>
+              <div>Loading departments...</div>
             ) : error ? (
-              <div>Failed to load departments.</div>
+              <div>Error: {error.message || "Failed to load departments."}</div>
             ) : (
               <table className="table">
                 <thead>
@@ -336,7 +335,18 @@ const Department = () => {
                         className="table-head-btn"
                         onClick={() => handleSort("status")}
                       >
-                        Status
+                        Status{" "}
+                        {sortConfig.key === "status" && (
+                          <span
+                            className={`ml-1 arrow ${
+                              sortConfig.direction === "asc"
+                                ? "arrow-up"
+                                : "arrow-down"
+                            }`}
+                          >
+                            {sortConfig.direction === "asc" ? "▲" : "▼"}
+                          </span>
+                        )}
                       </button>
                     </th>
                     <th>
@@ -435,7 +445,7 @@ const Department = () => {
                           : "-"}
                       </td>
                       <td>{row.parentDepartment?.name || "-"}</td>
-                      <td>Active</td>
+                      <td>{row.status}</td>
                       <td>
                         {row.addedBy
                           ? `${row.addedBy.firstName} ${row.addedBy.lastName}`

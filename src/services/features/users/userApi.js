@@ -15,6 +15,18 @@ export const userApi = createCustomApi("userApi", (builder) => ({
       method: "POST",
       data: user,
     }),
+    invalidatesTags: ["Users", "TeamMembers"], // Invalidate generic 'Users' and 'TeamMembers' list
+  }),
+
+  updateUserProfile: builder.mutation({
+    query: ({ userId, formData }) => ({
+      url: `${USER_ENDPOINTS.ROOT}/${userId}/number`,
+      method: "PUT",
+      data: formData,
+    }),
+    invalidatesTags: (result, error, { userId }) => [
+      { type: "Users", id: userId },
+    ],
   }),
 
   getUser: builder.query({
@@ -22,6 +34,7 @@ export const userApi = createCustomApi("userApi", (builder) => ({
       url: `${USER_ENDPOINTS.ROOT}/${userId}`,
       method: "GET",
     }),
+    providesTags: (result, error, userId) => [{ type: "Users", id: userId }],
   }),
 
   getAllUsers: builder.query({
@@ -33,6 +46,19 @@ export const userApi = createCustomApi("userApi", (builder) => ({
         method: "GET",
       };
     },
+    providesTags: ["Users"], // <-- Add this
+  }),
+
+  getAllUsersForAppraisal: builder.query({
+    query: (id) => {
+      // const searchParams = new URLSearchParams(params).toString();
+
+      return {
+        url: `${USER_ENDPOINTS.ROOT}/${id}/employees`,
+        method: "GET",
+      };
+    },
+    providesTags: ["Users"], // <-- Add this
   }),
   getAllUsersForList: builder.query({
     query: (id) => ({
@@ -67,6 +93,46 @@ export const userApi = createCustomApi("userApi", (builder) => ({
       data: body,
     }),
   }),
+
+  updatePassword: builder.mutation({
+    query: ({ id, ...body }) => ({
+      url: `${USER_ENDPOINTS.ROOT}/update/password/${id}`, // Append '/${id}' to the URL
+      method: "POST",
+      data: body,
+    }),
+  }),
+
+  getTeamMembers: builder.query({
+    // Accept new parameters: department and designation
+    query: ({ userId, search, department, designation }) => {
+      const params = new URLSearchParams();
+      if (search) {
+        params.append("search", search);
+      }
+      if (department) {
+        params.append("department", department); // Append department ID
+      }
+      if (designation) {
+        params.append("designation", designation); // Append designation ID
+      }
+      return {
+        // Construct the URL with all relevant parameters
+        url: `${
+          USER_ENDPOINTS.ROOT
+        }/${userId}/team-members?${params.toString()}`,
+        method: "GET",
+      };
+    },
+    providesTags: ["TeamMembers"], // <-- Add this
+  }),
+
+  deleteUser: builder.mutation({
+    query: (id) => ({
+      url: `${USER_ENDPOINTS.ROOT}/${id}`,
+      method: "DELETE",
+    }),
+    invalidatesTags: ["Users"], // Add this
+  }),
 }));
 
 export const {
@@ -79,4 +145,9 @@ export const {
   useGetEmployeeTreeQuery,
   useGetDepartmentTreeQuery,
   useResetPasswordMutation,
+  useGetTeamMembersQuery,
+  useUpdatePasswordMutation,
+  useUpdateUserProfileMutation,
+  useDeleteUserMutation,
+  useGetAllUsersForAppraisalQuery,
 } = userApi;

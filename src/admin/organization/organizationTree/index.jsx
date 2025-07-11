@@ -5,6 +5,7 @@ import {
   useGetEmployeeTreeQuery,
   useGetDepartmentTreeQuery,
 } from "../../../services/features/users/userApi";
+import { usePermission } from "../../../hooks/usePermission";
 
 import ProfileImg from "../../../assets/images/user.png";
 import Select from "react-select";
@@ -115,6 +116,9 @@ const renderDepartmentTree = (departments) => {
 const OrganizationTree = () => {
   const [activeTab, setActiveTab] = useState("dmembers");
   const { data, isLoading, error } = useGetEmployeeTreeQuery();
+  const { hasPermission } = usePermission();
+  const CAN_VIEW_DEPARTMENT = "department:view";
+  const CAN_VIEW_DESIGNATION = "designation:view";
 
   const {
     data: deptData,
@@ -130,15 +134,16 @@ const OrganizationTree = () => {
     <>
       <div className="pageTanDiv">
         <ul className="pageTabPane">
-          {/* <li>
-            <Link to="/admin/employees">Employees</Link>
-          </li> */}
-          <li>
-            <Link to="/admin/organization/department">Department</Link>
-          </li>
-          <li>
-            <Link to="/admin/organization/designation">Designation</Link>
-          </li>
+          {hasPermission(CAN_VIEW_DEPARTMENT) && (
+            <li>
+              <Link to="/admin/organization/department">Department</Link>
+            </li>
+          )}
+          {hasPermission(CAN_VIEW_DESIGNATION) && (
+            <li>
+              <Link to="/admin/organization/designation">Designation</Link>
+            </li>
+          )}
           <li className="active">
             <Link to="/admin/organization/tree">Organization Tree</Link>
           </li>

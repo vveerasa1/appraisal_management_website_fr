@@ -6,11 +6,13 @@ import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import { useGetRolesQuery } from "../../services/features/roles/roleApi";
 
 const Roles = () => {
-  // Fetch roles from API
-
+  // State for search and status filters
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
+  // State for status filter, default to "Active"
+  const [statusFilter, setStatusFilter] = useState("Active");
 
+  // Debounce search input
   useEffect(() => {
     const timeout = setTimeout(() => {
       setSearch(searchInput.trim());
@@ -18,8 +20,24 @@ const Roles = () => {
     return () => clearTimeout(timeout);
   }, [searchInput]);
 
-  const { data, isLoading, error } = useGetRolesQuery({ search });
-  const roles = data?.data || [];
+  // Fetch roles from API. We are NO LONGER passing 'status' to the query.
+  const { data, isLoading, error } = useGetRolesQuery({
+    search,
+    // We assume the backend now returns ALL roles (or handles search only)
+    // status: statusFilter, // REMOVE THIS LINE if backend doesn't support status param
+  });
+
+  // Get raw roles data from the API response
+  const allRoles = data?.data || [];
+
+  // --- NEW: Client-Side Filtering by Status ---
+  const filteredRolesByStatus = allRoles.filter((role) => {
+    if (statusFilter === "All") {
+      // Added 'All' option for status dropdown
+      return true;
+    }
+    return role.status === statusFilter;
+  });
 
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(50);
@@ -30,10 +48,8 @@ const Roles = () => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [isAllSelected, setIsAllSelected] = useState(false);
 
-  const indexOfLastRow = currentPage * rowsPerPage;
-  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-
-  const sortedData = [...roles].sort((a, b) => {
+  // Sorting logic now applies to filtered data
+  const sortedData = [...filteredRolesByStatus].sort((a, b) => {
     if (a[sortConfig.key] < b[sortConfig.key]) {
       return sortConfig.direction === "asc" ? -1 : 1;
     }
@@ -43,8 +59,11 @@ const Roles = () => {
     return 0;
   });
 
+  // Pagination logic now applies to filtered and sorted data
+  const indexOfLastRow = currentPage * rowsPerPage;
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const currentRows = sortedData.slice(indexOfFirstRow, indexOfLastRow);
-  const totalPages = Math.ceil(roles.length / rowsPerPage);
+  const totalPages = Math.ceil(filteredRolesByStatus.length / rowsPerPage); // Total pages based on filtered count
 
   const handleSort = (key) => {
     let direction = "asc";
@@ -82,6 +101,7 @@ const Roles = () => {
     }
   };
 
+  // Dropdown and filter UI logic
   const [openDropdown, setOpenDropdown] = useState(null);
   const dropdownRefs = useRef({});
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -119,10 +139,22 @@ const Roles = () => {
     };
   }, [openDropdown, isFilterOpen]);
 
+  // Options for the React-Select dropdown, now including "All"
   const options = [
-    { value: "active-view", label: "Active Role View" },
-    { value: "inactive-view", label: "Inactive Role View" },
+    { value: "Active", label: "Active Roles" },
+    { value: "Inactive", label: "Inactive Roles" },
+    { value: "All", label: "All Roles" }, // NEW: Option to view all roles
   ];
+
+  // Determine the current default value for the Select component based on statusFilter
+  const defaultSelectValue = options.find(
+    (option) => option.value === statusFilter
+  );
+
+  const handleSelectChange = (selectedOption) => {
+    setStatusFilter(selectedOption.value);
+    setCurrentPage(1); // Reset to first page when filter changes
+  };
 
   const customStyles = {
     control: (provided) => ({
@@ -155,7 +187,7 @@ const Roles = () => {
             <Link to="/admin/overview">
               <i className="fa fa-angle-left"></i>
             </Link>
-            <p>Users</p>
+            <p>Roles</p>
           </div>
           <div className="rvDiv">
             <Link
@@ -171,11 +203,12 @@ const Roles = () => {
       <div className="table-lists-container">
         <div className="table-top-block">
           <div className="ttb-left">
-            {/* <Select
+            <Select
               options={options}
-              defaultValue={options[0]}
+              value={defaultSelectValue}
+              onChange={handleSelectChange}
               styles={customStyles}
-            /> */}
+            />
           </div>
           <div className="ttb-right">
             <div className="searchblock">
@@ -188,56 +221,6 @@ const Roles = () => {
               />
               <i className="fa fa-search"></i>
             </div>
-            {/* <div className="filters">
-              <button
-                type="button"
-                className="filterbtn"
-                onClick={toggleFilterDropdown}
-              >
-                <FilterAltOutlinedIcon />
-              </button>
-              {isFilterOpen && (
-                <div
-                  ref={filterRef}
-                  className="dropdown-menu filter-dropdown show"
-                >
-                  <h3 className="filterdrop-heading">FIlter</h3>
-                  <div className="filter-search">
-                    <input type="text" placeholder="" />
-                    <i className="fa fa-search"></i>
-                  </div>
-                  <div className="filter-select">
-                    <label>Department</label>
-                    <select>
-                      <option>All Department</option>
-                    </select>
-                  </div>
-                  <div className="filter-select">
-                    <label>Designation</label>
-                    <select>
-                      <option>All Designation</option>
-                    </select>
-                  </div>
-                  <div className="filter-checkbox">
-                    <h3 className="filterdrop-heading">Role Type</h3>
-                    <div className="filtercheck-wrapper">
-                      <label>
-                        <input type="checkbox" />
-                        Admin
-                      </label>
-                      <label>
-                        <input type="checkbox" />
-                        HR
-                      </label>
-                      <label>
-                        <input type="checkbox" />
-                        Employee
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div> */}
           </div>
         </div>
         <div className="tables">
@@ -321,6 +304,25 @@ const Roles = () => {
                         )}
                       </button>
                     </th>
+                    <th>
+                      <button
+                        className="table-head-btn"
+                        onClick={() => handleSort("status")}
+                      >
+                        Status{" "}
+                        {sortConfig.key === "status" && (
+                          <span
+                            className={`ml-1 arrow ${
+                              sortConfig.direction === "asc"
+                                ? "arrow-up"
+                                : "arrow-down"
+                            }`}
+                          >
+                            {sortConfig.direction === "asc" ? "▲" : "▼"}
+                          </span>
+                        )}
+                      </button>
+                    </th>{" "}
                     <th></th>
                   </tr>
                 </thead>
@@ -380,6 +382,8 @@ const Roles = () => {
                           ? row.permissions.length
                           : 0}
                       </td>
+                      <td>{row.status}</td> {/* Display Role Status */}
+                      <td></td>
                     </tr>
                   ))}
                 </tbody>
@@ -389,7 +393,8 @@ const Roles = () => {
           <div className="pagination-wrapper">
             <span className="table-datas">
               Showing {indexOfFirstRow + 1} to{" "}
-              {Math.min(indexOfLastRow, roles.length)} of {roles.length} entries
+              {Math.min(indexOfLastRow, filteredRolesByStatus.length)} of{" "}
+              {filteredRolesByStatus.length} entries
             </span>
             <nav>
               <ul className="pagination">

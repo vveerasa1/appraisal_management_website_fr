@@ -22,8 +22,9 @@ const BasicDetails = ({
       { label: "First Name", name: "firstName", type: "text" },
       { label: "Last Name", name: "lastName", type: "text" },
       { label: "Email Address", name: "email", type: "email" },
-      { label: "Phone Number", name: "phone", type: "text" },
+      { label: "Phone Number", name: "phoneNumber", type: "text" },
       { label: "Employee ID", name: "employeeId", type: "text" },
+      { label: "Date of Birth", name: "dob", type: "date" },
       { label: "Date of Joining", name: "dateOfJoining", type: "date" },
     ].map(({ label, name, type }) => (
       <div key={name} className="col-12 col-md-6 col-lg-4">

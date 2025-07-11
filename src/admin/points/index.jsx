@@ -7,8 +7,11 @@ import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import { useGetAllPointsQuery } from "../../services/features/points/pointApi";
 
 const Points = () => {
+
   const [search, setSearch] = useState("");
   const [searchInput, setSearchInput] = useState("");
+  // State for employee status filter (frontend controlled)
+  const [selectedStatus, setSelectedStatus] = useState("Active"); // Default to 'Active'
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -16,6 +19,7 @@ const Points = () => {
     }, 400); // 400ms debounce
     return () => clearTimeout(timeout);
   }, [searchInput]);
+
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
@@ -26,7 +30,11 @@ const Points = () => {
 
   const [maxPoints, setMaxPoints] = useState(200);
 
+  // Note: The pointsRange in the query implies your API expects this format.
+  // The slider currently controls 'maxPoints', so the range will be fixed from -200 to 'maxPoints'.
+  // If you want a dynamic min based on slider, you'd need another state.
   const pointsRange = `-200-${maxPoints}`;
+
   const {
     data: apiData,
     isLoading,
@@ -36,32 +44,76 @@ const Points = () => {
     dateRange,
     pointsRange,
   });
-  const data = apiData?.data || [];
+
+  // Get all points data and then filter based on selectedStatus
+  const allPoints = apiData?.data || [];
+
+  // Frontend filtering by employee status
+  const data = allPoints.filter(
+    (row) => row.employeeId?.status === selectedStatus
+  );
+  // IMPORTANT: Ensure 'employeeId' and 'status' exist on your point objects
 
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(50);
   const [sortConfig, setSortConfig] = useState({
-    key: "_id",
-    direction: "desc", // or "asc" for ascending
+    key: "_id", // Default sort key for points
+    direction: "desc",
   });
   const [selectedRows, setSelectedRows] = useState([]);
   const [isAllSelected, setIsAllSelected] = useState(false);
 
+  // Reset pagination when any filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, dateRange, pointsRange, selectedStatus]); // Added selectedStatus to dependencies
+
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
 
+  // Sorting logic - now applies to the 'data' (filtered) array
   const sortedData = [...data].sort((a, b) => {
-    if (a[sortConfig.key] < b[sortConfig.key]) {
+    let aValue, bValue;
+
+    switch (sortConfig.key) {
+      case "employeeId": // Sorting by employee ID string
+        aValue = a.employeeId?.employeeId || "";
+        bValue = b.employeeId?.employeeId || "";
+        break;
+      case "name": // Sorting by employee name (first + last)
+        aValue = `${a.employeeId?.firstName || ""} ${
+          a.employeeId?.lastName || ""
+        }`;
+        bValue = `${b.employeeId?.firstName || ""} ${
+          b.employeeId?.lastName || ""
+        }`;
+        break;
+      case "date": // Sorting by date (assuming createdAt for the point entry itself)
+        aValue = new Date(a.createdAt).getTime();
+        bValue = new Date(b.createdAt).getTime();
+        break;
+      default: // For 'pointsChange', 'balanceAfter', 'reason', '_id'
+        aValue = a[sortConfig.key];
+        bValue = b[sortConfig.key];
+    }
+
+    // Handle null/undefined values for consistent sorting
+    if (aValue === null || aValue === undefined)
+      return sortConfig.direction === "asc" ? 1 : -1;
+    if (bValue === null || bValue === undefined)
+      return sortConfig.direction === "asc" ? -1 : 1;
+
+    if (aValue < bValue) {
       return sortConfig.direction === "asc" ? -1 : 1;
     }
-    if (a[sortConfig.key] > b[sortConfig.key]) {
+    if (aValue > bValue) {
       return sortConfig.direction === "asc" ? 1 : -1;
     }
     return 0;
   });
 
   const currentRows = sortedData.slice(indexOfFirstRow, indexOfLastRow);
-  const totalPages = Math.ceil(data.length / rowsPerPage);
+  const totalPages = Math.ceil(data.length / rowsPerPage); // Total pages based on filtered 'data'
 
   const handleSort = (key) => {
     let direction = "asc";
@@ -91,11 +143,11 @@ const Points = () => {
   };
 
   const handleCheckboxChange = (_id) => {
-    if (selectedRows.includes(eid)) {
+    if (selectedRows.includes(_id)) {
       setSelectedRows(selectedRows.filter((id) => id !== _id));
       setIsAllSelected(false);
     } else {
-      setSelectedRows([...selectedRows, eid]);
+      setSelectedRows([...selectedRows, _id]);
     }
   };
 
@@ -106,7 +158,8 @@ const Points = () => {
   const filterRef = useRef(null);
 
   const toggleDropdown = (_id) => {
-    setOpenDropdown(openDropdown === eid ? null : eid);
+    // Corrected variable name from eid to _id
+    setOpenDropdown(openDropdown === _id ? null : _id);
   };
 
   const toggleFilterDropdown = () => {
@@ -139,9 +192,10 @@ const Points = () => {
     };
   }, [openDropdown, isFilterOpen]);
 
-  const options = [
-    { value: "active-view", label: "Active Employee View" },
-    { value: "inactive-view", label: "Inactive Employee View" },
+  // Options for the status dropdown
+  const statusOptions = [
+    { value: "Active", label: "Active Employee View" },
+    { value: "Inactive", label: "Inactive Employee View" },
   ];
 
   const customStyles = {
@@ -169,8 +223,9 @@ const Points = () => {
 
   const [value, setValue] = useState(50);
 
-  const handleChange = (e) => {
-    setValue(e.target.value);
+  // Handler for status select change
+  const handleStatusChange = (selectedOption) => {
+    setSelectedStatus(selectedOption.value);
   };
 
   return (
@@ -185,11 +240,12 @@ const Points = () => {
       <div className="table-lists-container">
         <div className="table-top-block">
           <div className="ttb-left">
-            {/* <Select
-              options={options}
-              defaultValue={options[0]}
+            <Select
+              options={statusOptions}
+              defaultValue={statusOptions[0]} // Default to Active Employee View
               styles={customStyles}
-            /> */}
+              onChange={handleStatusChange} // Handle status change
+            />
           </div>
           <div className="ttb-right">
             <div className="searchblock">
@@ -291,10 +347,10 @@ const Points = () => {
                     <th>
                       <button
                         className="table-head-btn"
-                        onClick={() => handleSort("_id")}
+                        onClick={() => handleSort("employeeId")}
                       >
                         Employee ID{" "}
-                        {sortConfig.key === "_id" && (
+                        {sortConfig.key === "employeeId" && (
                           <span
                             className={`ml-1 arrow ${
                               sortConfig.direction === "asc"
@@ -310,10 +366,10 @@ const Points = () => {
                     <th>
                       <button
                         className="table-head-btn"
-                        onClick={() => handleSort("employeeId")}
+                        onClick={() => handleSort("name")}
                       >
                         Name{" "}
-                        {sortConfig.key === "employeeId" && (
+                        {sortConfig.key === "name" && (
                           <span
                             className={`ml-1 arrow ${
                               sortConfig.direction === "asc"
@@ -427,13 +483,6 @@ const Points = () => {
                               >
                                 View
                               </Link>
-                              {/* <Link
-                                to={`/admin/point/edit/${row._id}`}
-                                className="dropdown-item"
-                              >
-                                Edit
-                              </Link> */}
-                              {/* <button className="dropdown-item">Delete</button> */}
                             </div>
                           )}
                         </div>

@@ -8,6 +8,7 @@ import {
   useGetUserQuery,
   useGetDashboardQuery,
 } from "../../services/features/users/userApi";
+import { useSelector } from "react-redux";
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("employee");
@@ -16,7 +17,7 @@ const Dashboard = () => {
     setActiveTab(tab);
   };
 
-  const userId = "684a825680c56bf96d63bf4b"; // Replace with your static ID
+  const userId = useSelector((state) => state.users.id);
   const { data: userData, isLoading: isUserLoading } = useGetUserQuery(userId);
   const role = "Super Admin";
   const user = userData?.data;
@@ -251,7 +252,7 @@ const Dashboard = () => {
                         }`}
                         onClick={() => handleTabChange("dmembers")}
                       >
-                        Department
+                        Roles
                       </button>
                     </li>
                     <li className="nav-item">
@@ -279,9 +280,9 @@ const Dashboard = () => {
                     {activeTab === "dmembers" && (
                       <div className="tab-pane fade show active">
                         <h4>
-                          {isLoading ? "..." : dashboard?.totalDepartments ?? 0}
+                          {isLoading ? "..." : dashboard?.totalRoles ?? 0}
                         </h4>
-                        <p>Department Team Members</p>
+                        <p>Total Roles</p>
                       </div>
                     )}
                     {activeTab === "nhires" && (

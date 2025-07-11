@@ -57,11 +57,11 @@ const ViewPoint = () => {
                         }
                         placeholder=""
                       />
-                      <div className="ef-actionbtns">
+                      {/* <div className="ef-actionbtns">
                         <button className="editform-btn" type="button">
                           <i className="fa fa-pencil"></i>
                         </button>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                   <div className="col-12 col-md-6 col-lg-4">
@@ -89,11 +89,11 @@ const ViewPoint = () => {
                         placeholder=""
                         disabled
                       />
-                      <div className="ef-actionbtns">
+                      {/* <div className="ef-actionbtns">
                         <button className="editform-btn" type="button">
                           <i className="fa fa-pencil"></i>
                         </button>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                   <div className="col-12 col-md-6 col-lg-8">
@@ -108,11 +108,11 @@ const ViewPoint = () => {
                         placeholder=""
                         disabled
                       />
-                      <div className="ef-actionbtns">
+                      {/* <div className="ef-actionbtns">
                         <button className="editform-btn" type="button">
                           <i className="fa fa-pencil"></i>
                         </button>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                   <div className="col-12 col-md-6 col-lg-4">

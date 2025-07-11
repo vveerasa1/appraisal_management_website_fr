@@ -1,8 +1,15 @@
 import { useEffect } from "react";
 
-
-const ProfilePhoto = ({ fileName, setFieldValue, selectedFile,previewUrl,setPreviewUrl,setSelectedFile,handleRemove  }) => {
-  console.log(fileName, "my filename",previewUrl)
+const ProfilePhoto = ({
+  fileName,
+  setFieldValue,
+  selectedFile,
+  previewUrl,
+  setPreviewUrl,
+  setSelectedFile,
+  handleRemove,
+}) => {
+  console.log(fileName, "my filename", previewUrl);
   // Set preview when file is selected
 
   const onFileChange = (e) => {
@@ -15,7 +22,6 @@ const ProfilePhoto = ({ fileName, setFieldValue, selectedFile,previewUrl,setPrev
       setFieldValue("profilePhoto", file);
     }
   };
-
 
   return (
     <>

@@ -4,22 +4,25 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import ProfileImg from "../../../assets/images/user.png";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import BasicDetails from "./BasicDetails";
-import AddressDetails from "./AddressDetails";
-import ProfilePhoto from "./ProfilePhoto";
+import BasicDetails from "./BasicDetails"; // Assuming these are external components if still needed
+import AddressDetails from "./AddressDetails"; // Assuming these are external components if still needed
+import ProfilePhoto from "./ProfilePhoto"; // Assuming these are external components if still needed
 import { useGetDepartmentsQuery } from "../../../services/features/departments/departmentApi";
 import {
   useGetReportersQuery,
   useGetUserQuery,
-  useAddUserMutation,
+  useAddUserMutation, // Assuming this is used for update as well
 } from "../../../services/features/users/userApi";
 import { useApiErrorToast } from "../../../hooks/useApiErrorToast";
 import { mapToSelectOptions } from "../../../utils/utils";
 import { showErrorToast, showSuccessToast } from "../../../utils/toast";
 import { useGetDesignationsQuery } from "../../../services/features/designation/designationApi";
-import { useGetRolesQuery } from "../../../services/features/roles/roleApi"; // <-- Import roles API
+import { useGetRolesQuery } from "../../../services/features/roles/roleApi";
+import { useSelector } from "react-redux";
+import { usePermission } from "../../../hooks/usePermission";
 
 const InitialValues = {
+  id: "",
   firstName: "",
   lastName: "",
   email: "",
@@ -29,71 +32,124 @@ const InitialValues = {
   reportingTo: "",
   designation: "",
   role: "",
+  status: "Active", // <-- ADDED: Status field with a default value
   dateOfJoining: "",
+  dob: "",
   address: "",
   city: "",
   province: "",
   postalCode: "",
   country: "",
+  modifierId: "",
   profilePhoto: null,
 };
 
 const validationSchema = Yup.object({
-  firstName: Yup.string().required("First Name is required"),
-  lastName: Yup.string().required("Last Name is required"),
-  email: Yup.string().email("Invalid email"), // not required, not editable
-  phoneNumber: Yup.string().required("Phone number is required"),
-  employeeId: Yup.string(), // not required, not editable
-  department: Yup.string(), // not required
-  reportingTo: Yup.string().required("Reporting To is required"),
-  designation: Yup.string(), // not required
+  firstName: Yup.string()
+    .required("First Name is required")
+    .matches(/^[a-zA-Z ]+$/, "First Name must contain only letters and spaces"),
+
+  lastName: Yup.string()
+    .required("Last Name is required")
+    .matches(/^[a-zA-Z ]+$/, "Last Name must contain only letters and spaces"),
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  phoneNumber: Yup.string().matches(
+    /^[0-9]{10}$/,
+    "Phone number must be exactly 10 digits and contain only numbers"
+  ),
+
+  employeeId: Yup.string(),
+  department: Yup.string(),
+  reportingTo: Yup.string().required("Reporting to is required"),
   role: Yup.string().required("Role is required"),
+  designation: Yup.string(),
   dateOfJoining: Yup.date()
     .max(new Date(), "Date of joining cannot be in the future")
     .required("Date of joining is required"),
-  address: Yup.string(), // not required
-  city: Yup.string().required("City is required"),
-  province: Yup.string().required("Province is required"),
-  postalCode: Yup.string().required("Postal Code is required"),
-  country: Yup.string().required("Country is required"),
+  dob: Yup.date() // NEW: Validation for DOB
+    .max(new Date(), "Date of birth cannot be in the future"),
+  address: Yup.string(),
+  city: Yup.string()
+    .matches(/^[a-zA-Z ]*$/, "City must contain only letters and spaces")
+    .nullable(), // Or .optional() if it's not always required
+
+  province: Yup.string()
+    .matches(/^[a-zA-Z ]*$/, "Province must contain only letters and spaces")
+    .nullable(), // Or .optional()
+
+  postalCode: Yup.string()
+    .matches(
+      /^[a-zA-Z0-9]*$/,
+      "Postal Code must contain only letters and numbers"
+    )
+    .nullable(), // Or .optional()
+
+  country: Yup.string()
+    .matches(/^[a-zA-Z ]*$/, "Country must contain only letters and spaces")
+    .nullable(), // Or .optional()
 });
 
+// `isEdit` is typically derived from `id` presence, but keeping your original definition
 const isEdit = true;
 
 const EditEmployee = () => {
   const { id } = useParams();
-  const tempUserId = id || "684fe62b3d87c714b1a7a360";
   const {
     data: userData,
     isLoading: isUserDataLoading,
     isError: isUserDataError,
     error: userDataError,
     refetch,
-  } = useGetUserQuery(id);
-  const [updateUser, { isLoading: isUpdating }] = useAddUserMutation();
+  } = useGetUserQuery(id); // Use the actual `id` from useParams
+  const [updateUser, { isLoading: isUpdating }] = useAddUserMutation(); // Assuming this mutation handles updates
   const [initialValues, setInitialValues] = useState(InitialValues);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const navigate = useNavigate();
+  const userId = useSelector((state) => state.users.id); // Get current logged-in user ID for modifierId
+  const { hasPermission } = usePermission(); // Initialize usePermission hook
 
   // Fetch roles
   const { data: rolesData, isLoading: isRolesLoading } = useGetRolesQuery({
     search: "",
   });
 
+  // Define status options
+  const statusOptions = [
+    { value: "Active", label: "Active" },
+    { value: "Inactive", label: "Inactive" },
+  ];
+
   useEffect(() => {
-    if (userData) {
-      const { reportingTo, dateOfJoining, profilePhotoUrl, role, ...rest } =
-        userData.data;
+    if (userData?.data) {
+      const {
+        reportingTo,
+        dateOfJoining,
+        profilePhotoUrl,
+        role,
+        department,
+        designation,
+        dob,
+        status, // <-- Destructure status from userData
+        ...rest
+      } = userData.data;
+
       setInitialValues({
+        id: userData.data._id,
         ...rest,
-        dateOfJoining: new Date(dateOfJoining).toISOString().split("T")[0],
-        reportingTo: reportingTo?._id,
+        dateOfJoining: dateOfJoining
+          ? new Date(dateOfJoining).toISOString().split("T")[0]
+          : "",
+        dob: dob ? new Date(dob).toISOString().split("T")[0] : "",
+        reportingTo: reportingTo?._id || "",
         role: role?._id || "",
-        profilePhoto: profilePhotoUrl,
+        department: department?._id || "",
+        designation: designation?._id || "",
+        status: status || "Active", // <-- Set initial status from fetched data, default to "Active"
+        profilePhoto: profilePhotoUrl || null,
       });
-      setSelectedFile(profilePhotoUrl);
-      setPreviewUrl(profilePhotoUrl);
+      setSelectedFile(profilePhotoUrl || null);
+      setPreviewUrl(profilePhotoUrl || null);
     }
   }, [userData]);
 
@@ -138,9 +194,15 @@ const EditEmployee = () => {
     "Failed to load designations"
   );
 
+  // --- START: Apply 'Active' status filter to dropdown options ---
+
   const designations = useMemo(() => {
     if (!designationsData || !designationsData.data) return [];
-    return mapToSelectOptions(designationsData?.data, {
+    // Filter designations to only include 'Active' ones
+    const activeDesignations = designationsData.data.filter(
+      (item) => item.status === "Active"
+    );
+    return mapToSelectOptions(activeDesignations, {
       label: "name",
       value: "_id",
     });
@@ -148,7 +210,11 @@ const EditEmployee = () => {
 
   const departments = useMemo(() => {
     if (!departmentsData || !departmentsData.data) return [];
-    return mapToSelectOptions(departmentsData?.data, {
+    // Filter departments to only include 'Active' ones
+    const activeDepartments = departmentsData.data.filter(
+      (item) => item.status === "Active"
+    );
+    return mapToSelectOptions(activeDepartments, {
       label: "name",
       value: "_id",
     });
@@ -156,68 +222,112 @@ const EditEmployee = () => {
 
   const reportingManagers = useMemo(() => {
     if (!reportersData || !reportersData.data) return [];
-    return mapToSelectOptions(reportersData?.data, {
+    // Assuming reporting managers might also have a status, filter them too
+    // If your reporter data does not have a status, you can remove this filter.
+    // I'm adding it as a best practice assumption given your pattern.
+    const activeReporters = reportersData.data.filter(
+      (item) => item.status === "Active"
+    );
+    return mapToSelectOptions(activeReporters, {
       label: (item) =>
         `${item.firstName} ${item.lastName} (${item.designation?.name})`,
       value: "_id",
     });
   }, [reportersData]);
 
-  // Roles dropdown options
+  // Roles dropdown options - filter to only include 'Active' roles
   const roles = useMemo(() => {
     if (!rolesData || !rolesData.data) return [];
-    return mapToSelectOptions(rolesData.data, {
+    const activeRoles = rolesData.data.filter(
+      (item) => item.status === "Active"
+    );
+    return mapToSelectOptions(activeRoles, {
       label: "name",
       value: "_id",
     });
   }, [rolesData]);
 
-  const handleSubmit = async (values) => {
-    console.log("here");
-    try {
-      const { profilePhoto, ...rest } = values;
-      // Add id to the user object
-      const userWithId = { ...rest, id: tempUserId };
-      const formData = new FormData();
-      formData.append("user", JSON.stringify(userWithId));
-      if (userData.profilePhoto !== profilePhoto) {
-        formData.append("image", profilePhoto);
-      }
-      await updateUser(formData).unwrap();
-      navigate("/admin/employees");
+  // --- END: Apply 'Active' status filter to dropdown options ---
 
-      refetch();
+  const handleSubmit = async (values) => {
+    try {
+      if (!userId) {
+        showErrorToast("User ID not available for modification.");
+        return; // Prevent submission if userId is missing
+      }
+
+      const { profilePhoto, ...rest } = values; // Exclude profilePhoto from the JSON part
+
+      const formData = new FormData();
+      formData.append(
+        "user",
+        JSON.stringify({ ...rest, modifierId: userId, id: userData.data._id })
+      ); // Include modifierId and id here
+
+      // Handle profile photo update logic
+      if (selectedFile instanceof File) {
+        // New file selected
+        formData.append("image", selectedFile);
+      }
+      // If selectedFile is a URL (existing photo) and not explicitly removed, don't re-upload it.
+      // If no change, or photo was removed and backend needs no signal, no action needed.
+
+      await updateUser(formData).unwrap();
       showSuccessToast("Employee updated successfully!");
+      navigate(`/admin/employee/view/${rest.id}`); // Navigate back after successful update
+      refetch(); // Refetch user data to update the view
     } catch (error) {
       showErrorToast(
-        `Failed to update employee. ${error?.data?.message || ""}`
+        `Failed to update employee. ${
+          error?.data?.message || error?.message || ""
+        }`
       );
+      console.error("Update employee error:", error);
     }
   };
 
   const handleRemove = () => {
     setSelectedFile(null);
     setPreviewUrl(null);
+    // When photo is removed, set profilePhoto field in Formik to null
+    // This is crucial for Formik to know the field is cleared
+    setInitialValues((prev) => ({ ...prev, profilePhoto: null }));
   };
+
+  if (isUserDataLoading) {
+    return <p>Loading employee details...</p>;
+  }
+
+  if (isUserDataError || !userData?.data) {
+    return <p>Error: Could not load employee details.</p>;
+  }
+  const CAN_DELETE_USER = "user:delete";
 
   return (
     <>
       <div className="pageTanDiv">
         <div className="viewPageTopDiv">
           <div className="lvDiv">
-            <Link to="/admin/users">
+            <Link to="/admin/employees">
               <i className="fa fa-angle-left"></i>
             </Link>
-            <img className="img-fluid" src={ProfileImg} alt="Profile" />
+            <img
+              className="img-fluid"
+              src={previewUrl || ProfileImg}
+              alt="Profile"
+            />{" "}
+            {/* Use previewUrl for live update */}
             <p>
               {userData?.data?.employeeId} - {userData?.data?.firstName}{" "}
               {userData?.data?.lastName}{" "}
             </p>
           </div>
           <div className="rvDiv">
-            <button className="rvDiv-btns delete" type="button">
-              <i className="fa fa-trash"></i>
-            </button>
+            {hasPermission(CAN_DELETE_USER) && (
+              <button className="rvDiv-btns delete" type="button">
+                <i className="fa fa-trash"></i>
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -274,7 +384,7 @@ const EditEmployee = () => {
                             name="email"
                             className="editform-input"
                             type="text"
-                            disabled
+                            disabled // Keep email disabled as per your comment
                           />
                         </div>
                       </div>
@@ -302,7 +412,7 @@ const EditEmployee = () => {
                             name="employeeId"
                             className="editform-input"
                             type="text"
-                            disabled
+                            disabled // Keep employeeId disabled as per your comment
                           />
                         </div>
                       </div>
@@ -388,6 +498,28 @@ const EditEmployee = () => {
                           />
                         </div>
                       </div>
+                      {/* Status Dropdown - NEWLY ADDED */}
+                      <div className="col-12 col-md-6 col-lg-4">
+                        <div className="editform-group">
+                          <label className="editform-label">Status</label>
+                          <Field
+                            as="select"
+                            name="status"
+                            className="editform-input"
+                          >
+                            {statusOptions.map((option) => (
+                              <option key={option.value} value={option.value}>
+                                {option.label}
+                              </option>
+                            ))}
+                          </Field>
+                          <ErrorMessage
+                            name="status"
+                            component="div"
+                            className="error"
+                          />
+                        </div>
+                      </div>
                       {/* Date of Joining */}
                       <div className="col-12 col-md-6 col-lg-4">
                         <div className="editform-group">
@@ -406,8 +538,29 @@ const EditEmployee = () => {
                           />
                         </div>
                       </div>
-                      {/* Address Details */}
+                      {/* DOB */}
+                      <div className="col-12 col-md-6 col-lg-4">
+                        <div className="editform-group">
+                          <label className="editform-label">
+                            Date of Birth
+                          </label>
+                          <Field
+                            name="dob"
+                            className="editform-input"
+                            type="date"
+                          />
+                          <ErrorMessage
+                            name="dob"
+                            component="div"
+                            className="error"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Address Details (assuming this component handles its own fields and errors) */}
+                      {/* You might need to pass setFieldValue to AddressDetails if it's not a direct Field component */}
                       <AddressDetails isEdit={isEdit} />
+
                       {/* Profile Photo */}
                       <ProfilePhoto
                         fileName={values.profilePhoto}
