@@ -9,7 +9,7 @@ const Sidebar = ({ isOpen }) => {
 
   const CAN_VIEW_TEAM = "team:view";
   const CAN_VIEW_USER = "user:view";
-
+  const CAN_VIEW_APPRAISAL = "appraisal:view";
   const handleMenuClick = (menu) => {
     setActiveMenu(menu);
   };
@@ -61,6 +61,18 @@ const Sidebar = ({ isOpen }) => {
             >
               <i className="fa fa-users"></i>
               Employees
+            </Link>
+          </li>
+        )}
+        {hasPermission(CAN_VIEW_APPRAISAL) && (
+          <li className="nav-item">
+            <Link
+              to="/employee/points"
+              className={`nav-link ${activeMenu === "Points" ? "active" : ""}`}
+              onClick={() => handleMenuClick("Points")}
+            >
+              <i className="fa fa-pie-chart"></i>
+              Appraisals
             </Link>
           </li>
         )}

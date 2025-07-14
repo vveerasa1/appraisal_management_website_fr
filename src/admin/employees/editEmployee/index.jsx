@@ -11,6 +11,7 @@ import { useGetDepartmentsQuery } from "../../../services/features/departments/d
 import {
   useGetReportersQuery,
   useGetUserQuery,
+  useDeleteUserMutation,
   useAddUserMutation, // Assuming this is used for update as well
 } from "../../../services/features/users/userApi";
 import { useApiErrorToast } from "../../../hooks/useApiErrorToast";
@@ -101,6 +102,8 @@ const EditEmployee = () => {
     error: userDataError,
     refetch,
   } = useGetUserQuery(id); // Use the actual `id` from useParams
+  const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
+
   const [updateUser, { isLoading: isUpdating }] = useAddUserMutation(); // Assuming this mutation handles updates
   const [initialValues, setInitialValues] = useState(InitialValues);
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -222,13 +225,7 @@ const EditEmployee = () => {
 
   const reportingManagers = useMemo(() => {
     if (!reportersData || !reportersData.data) return [];
-    // Assuming reporting managers might also have a status, filter them too
-    // If your reporter data does not have a status, you can remove this filter.
-    // I'm adding it as a best practice assumption given your pattern.
-    const activeReporters = reportersData.data.filter(
-      (item) => item.status === "Active"
-    );
-    return mapToSelectOptions(activeReporters, {
+    return mapToSelectOptions(reportersData.data, {
       label: (item) =>
         `${item.firstName} ${item.lastName} (${item.designation?.name})`,
       value: "_id",
@@ -246,6 +243,22 @@ const EditEmployee = () => {
       value: "_id",
     });
   }, [rolesData]);
+  const handleDelete = async () => {
+    if (!userData?.data?._id) return;
+    if (!window.confirm("Are you sure you want to delete this User?")) return;
+    try {
+      await deleteUser(id).unwrap();
+      showSuccessToast("User deleted successfully!");
+      navigate("/admin/employees");
+    } catch (err) {
+      const errorMsg =
+        err?.data?.message ||
+        err?.error ||
+        err?.message ||
+        "Failed to delete User.";
+      showErrorToast(errorMsg);
+    }
+  };
 
   // --- END: Apply 'Active' status filter to dropdown options ---
 
@@ -324,7 +337,13 @@ const EditEmployee = () => {
           </div>
           <div className="rvDiv">
             {hasPermission(CAN_DELETE_USER) && (
-              <button className="rvDiv-btns delete" type="button">
+              <button
+                className="rvDiv-btns delete"
+                type="button"
+                onClick={handleDelete}
+                disabled={isDeleting}
+                title="Delete"
+              >
                 <i className="fa fa-trash"></i>
               </button>
             )}
@@ -412,7 +431,6 @@ const EditEmployee = () => {
                             name="employeeId"
                             className="editform-input"
                             type="text"
-                            disabled // Keep employeeId disabled as per your comment
                           />
                         </div>
                       </div>

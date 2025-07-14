@@ -55,14 +55,15 @@ const validationSchema = Yup.object({
       "Phone number must be exactly 10 digits and contain only numbers"
     )
     .required("Phone number is required"),
-  employeeId: Yup.string().required("Employee ID is required"),
+  employeeId: Yup.string(),
   department: Yup.string(),
   reportingTo: Yup.string().required("Reporting to is required"),
   role: Yup.string().required("Role is required"),
   designation: Yup.string(),
-  dateOfJoining: Yup.date()
-    .max(new Date(), "Date of joining cannot be in the future")
-    .required("Date of joining is required"),
+  dateOfJoining: Yup.date().max(
+    new Date(),
+    "Date of joining cannot be in the future"
+  ),
   dob: Yup.date() // NEW: Validation for DOB
     .max(new Date(), "Date of birth cannot be in the future"),
   address: Yup.string(),

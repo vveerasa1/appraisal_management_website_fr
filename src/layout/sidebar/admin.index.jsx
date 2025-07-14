@@ -41,7 +41,7 @@ const Sidebar = ({ isOpen }) => {
                         onClick={() => handleMenuClick("Points")}
                     >
                         <i className="fa fa-pie-chart"></i>
-                        Points
+                        Appraisals
                     </Link>
                 </li>
                 <li className="nav-item">
