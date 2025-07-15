@@ -25,10 +25,10 @@ const initialValues = {
   email: "",
   phoneNumber: "",
   employeeId: "",
-  department: "",
+  department: null,
   reportingTo: "",
   role: "",
-  designation: "",
+  designation: null,
   dateOfJoining: "",
   dob: "", // NEW: Add date of birth
   address: "",
@@ -56,10 +56,10 @@ const validationSchema = Yup.object({
     )
     .required("Phone number is required"),
   employeeId: Yup.string(),
-  department: Yup.string(),
+  // departme nt: Yup.string(),
   reportingTo: Yup.string().required("Reporting to is required"),
   role: Yup.string().required("Role is required"),
-  designation: Yup.string(),
+  // designation: Yup.string(),
   dateOfJoining: Yup.date().max(
     new Date(),
     "Date of joining cannot be in the future"
@@ -266,6 +266,7 @@ export default function EmployeeForm() {
                       onClick={() => {
                         resetForm(initialValues);
                         handleRemove();
+                        navigate('/admin/employees')
                       }}
                     >
                       Cancel

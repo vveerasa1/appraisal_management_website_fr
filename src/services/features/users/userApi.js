@@ -7,6 +7,7 @@ export const userApi = createCustomApi("userApi", (builder) => ({
       url: `${USER_ENDPOINTS.ROOT}/${USER_ENDPOINTS.REPORTERS}`,
       method: "GET",
     }),
+    providesTags: (result, error, userId) => [{ type: "Users", id: userId }],
   }),
 
   addUser: builder.mutation({

@@ -14,13 +14,14 @@ import { Link, useNavigate } from "react-router-dom";
 import ProfileImg from "../../assets/images/user.png";
 import Select from "react-select";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
-import { useGetAllUsersQuery } from "../../services/features/users/userApi";
+import { useGetAllUsersQuery ,  useDeleteUserMutation,} from "../../services/features/users/userApi";
 import { useSelector } from "react-redux";
 import { useApiErrorToast } from "../../hooks/useApiErrorToast";
 import ActiveInactiveSelect from "../../components/common/ActiveInacitve";
 import SearchInput from "../../components/common/SearchInput";
 import FilterContainer from "../../components/wrapper/FilterWrapper";
 import { createFilterObject } from "../../utils/utils";
+import { showSuccessToast, showErrorToast } from "../../utils/toast";
 
 const IndeterminateCheckbox = ({ indeterminate, className = "", ...rest }) => {
   const ref = React.useRef(null);
@@ -99,6 +100,7 @@ const AdminViewEmployee = () => {
     { value: "inactive-view", label: "Inactive Employee View" },
   ];
   const [selectedView, setSelectedView] = useState("all-view");
+  const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
 
   //Search
   const handleSearch = useCallback((name, e) => {
@@ -167,7 +169,32 @@ const AdminViewEmployee = () => {
   const toggleDropdown = (id) => { // Parameter changed to 'id' for clarity
     setOpenDropdown((prev) => (prev === id ? null : id));
   };
-
+const handleDelete = async (id) => {
+    if (!id) return;
+    if (!window.confirm("Are you sure you want to delete this User?")) return;
+    try {
+      await deleteUser(id).unwrap().then((payload) => {
+       showSuccessToast("User deleted successfully!");
+      navigate("/admin/employees");
+      }).catch((err) => {
+        console.log(err, 'fromunwrap catch')
+         const errorMsg =
+        err?.data?.message ||
+        err?.error ||
+        err?.message ||
+        "Failed to delete User.";
+      showErrorToast(errorMsg);
+      })
+     
+    } catch (err) {
+      const errorMsg =
+        err?.data?.message ||
+        err?.error ||
+        err?.message ||
+        "Failed to delete User.";
+      showErrorToast(errorMsg);
+    }
+  };
   useEffect(() => {
     const handleClickOutside = (event) => {
       Object.values(dropdownRefs.current).forEach((ref) => {
@@ -198,38 +225,38 @@ const AdminViewEmployee = () => {
     );
 
     return [
-      columnHelper.display({
-        id: "actions",
-        header: () => (
-          <button className="table-head-btn">
-            <i className="fa fa-tasks" />
-          </button>
-        ),
-        cell: ({ row }) => (
-          <ActionsCell
-            row={row}
-            openDropdown={openDropdown}
-            toggleDropdown={toggleDropdown}
-            dropdownRefs={dropdownRefs}
-          />
-        ),
-      }),
-      columnHelper.display({
-        id: "select",
-        header: ({ table }) =>
-          renderCheckbox(
-            table.getIsAllRowsSelected(),
-            table.getIsSomeRowsSelected(),
-            table.getToggleAllRowsSelectedHandler()
-          ),
-        cell: ({ row }) =>
-          renderCheckbox(
-            row.getIsSelected(),
-            row.getIsSomeSelected(),
-            row.getToggleSelectedHandler(),
-            !row.getCanSelect()
-          ),
-      }),
+      // columnHelper.display({
+      //   id: "actions",
+      //   header: () => (
+      //     <button className="table-head-btn">
+      //       <i className="fa fa-tasks" />
+      //     </button>
+      //   ),
+      //   cell: ({ row }) => (
+      //     <ActionsCell
+      //       row={row}
+      //       openDropdown={openDropdown}
+      //       toggleDropdown={toggleDropdown}
+      //       dropdownRefs={dropdownRefs}
+      //     />
+      //   ),
+      // }),
+      // columnHelper.display({
+      //   id: "select",
+      //   header: ({ table }) =>
+      //     renderCheckbox(
+      //       table.getIsAllRowsSelected(),
+      //       table.getIsSomeRowsSelected(),
+      //       table.getToggleAllRowsSelectedHandler()
+      //     ),
+      //   cell: ({ row }) =>
+      //     renderCheckbox(
+      //       row.getIsSelected(),
+      //       row.getIsSomeSelected(),
+      //       row.getToggleSelectedHandler(),
+      //       !row.getCanSelect()
+      //     ),
+      // }),
       columnHelper.display({
         id: "photo",
         header: <button className="table-head-btn"> Photo </button>,
@@ -295,8 +322,27 @@ const AdminViewEmployee = () => {
         id: "role",
         header: <button className="table-head-btn"> Role </button>,
       }),
-    ];
-  }, [columnHelper, openDropdown, toggleDropdown, dropdownRefs]);
+  columnHelper.display({
+    id: "actions",
+    header: () => <button className="table-head-btn">Actions</button>,
+    cell: ({ row }) => (
+      <button
+        className="btn"
+        onClick={(e) => {
+          e.stopPropagation();
+          console.log(row.id)
+          handleDelete(row.original._id)
+          // Add your delete logic here, e.g., call a delete API or dispatch an action
+          // alert(`Delete clicked for ${row.original.employeeId}`);
+        }}
+        title="Delete"
+      >
+        <i className="fa fa-trash"  style={{ color: 'red' }}/>
+      </button>
+    ),
+  }),
+];
+}, [columnHelper, openDropdown, toggleDropdown, dropdownRefs]);
 
   const table = useReactTable({
     data: tableData,
@@ -368,7 +414,7 @@ const AdminViewEmployee = () => {
               defaultValue={options[0]}
             />
           </div>
-          <div className="ttb-right">
+          <div className="ttb-right" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <SearchInput onSearch={handleSearch} />
             <FilterContainer
               toggleFilterDropdown={toggleFilterDropdown}
@@ -378,6 +424,14 @@ const AdminViewEmployee = () => {
               onFilterChange={handleFilterChange}
               onCheckboxChange={handleFilterCheckboxChange}
             />
+            <Link
+              to="/admin/employee/add"
+              className="theme-btn btn-blue"
+              title="Add Employee"
+              style={{ display: "flex", alignItems: "center", gap: "6px" }}
+            >
+              <i className="fa fa-plus-circle" aria-hidden="true"></i> Add Employee
+            </Link>
           </div>
         </div>
         <div className="tables">

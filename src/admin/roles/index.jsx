@@ -3,7 +3,8 @@ import "./style.css";
 import { Link } from "react-router-dom";
 import Select from "react-select";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
-import { useGetRolesQuery } from "../../services/features/roles/roleApi";
+import { useGetRolesQuery, useDeleteRoleMutation } from "../../services/features/roles/roleApi";
+import { showSuccessToast, showErrorToast } from "../../utils/toast";
 
 const Roles = () => {
   // State for search and status filters
@@ -11,7 +12,8 @@ const Roles = () => {
   const [search, setSearch] = useState("");
   // State for status filter, default to "Active"
   const [statusFilter, setStatusFilter] = useState("Active");
-
+  const [deleteRole, { isLoading: isDeleting }] =
+    useDeleteRoleMutation();
   // Debounce search input
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -76,7 +78,24 @@ const Roles = () => {
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+  const handleDelete = async (id) => {
+    console.log(id)
+    if (!id) return;
+    // if (!window.confirm("Are you sure you want to delete this role?")) return;
+    try {
+    console.log(id)
 
+      await deleteRole(id).unwrap();
+      showSuccessToast("Role deleted successfully!");
+    } catch (err) {
+      const errorMsg =
+        err?.data?.message ||
+        err?.error ||
+        err?.message ||
+        "Failed to delete role.";
+      showErrorToast(errorMsg);
+    }
+  };
   const handleRowsPerPageChange = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setCurrentPage(1);
@@ -189,17 +208,39 @@ const Roles = () => {
             </Link>
             <p>Roles</p>
           </div>
-          <div className="rvDiv">
+        </div>
+      </div>
+      {/* <div className="table-top-block">
+        <div className="ttb-left">
+          <Select
+            options={options}
+            value={defaultSelectValue}
+            onChange={handleSelectChange}
+            styles={customStyles}
+          />
+        </div>
+        <div className="ttb-right" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <div className="searchblock" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <input
+              className="search-input"
+              type="text"
+              placeholder="Search..."
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+            />
+            <i className="fa fa-search"></i>
+
             <Link
               to="/admin/role/add"
-              type="button"
               className="theme-btn btn-blue"
+              title="Add Role"
+              style={{ display: "flex", alignItems: "center", gap: "6px" }}
             >
-              <i className="fa fa-plus-circle"></i>Add Role
+              <i className="fa fa-plus-circle" aria-hidden="true"></i> Add Role
             </Link>
           </div>
         </div>
-      </div>
+      </div> */}
       <div className="table-lists-container">
         <div className="table-top-block">
           <div className="ttb-left">
@@ -221,6 +262,14 @@ const Roles = () => {
               />
               <i className="fa fa-search"></i>
             </div>
+            <Link
+              to="/admin/role/add"
+              className="theme-btn btn-blue"
+              title="Add Role"
+              style={{ display: "flex", alignItems: "center", gap: "6px" }}
+            >
+              <i className="fa fa-plus-circle" aria-hidden="true"></i> Add Role
+            </Link>
           </div>
         </div>
         <div className="tables">
@@ -233,20 +282,20 @@ const Roles = () => {
               <table className="table table-striped">
                 <thead>
                   <tr>
-                    <th style={{ width: "50px" }}>
-                      <button className="table-head-btn">
-                        {" "}
-                        <i className="fa fa-tasks"></i>{" "}
-                      </button>
-                    </th>
-                    <th>
-                      <input
-                        className="tablecheck"
-                        type="checkbox"
-                        onChange={handleSelectAll}
-                        checked={isAllSelected}
-                      />
-                    </th>
+                    {/* <th style={{ width: "50px" }}>
+                  <button className="table-head-btn">
+                    {" "}
+                    <i className="fa fa-tasks"></i>{" "}
+                  </button>
+                </th>
+                <th>
+                  <input
+                    className="tablecheck"
+                    type="checkbox"
+                    onChange={handleSelectAll}
+                    checked={isAllSelected}
+                  />
+                </th> */}
                     <th>
                       <button
                         className="table-head-btn"
@@ -255,11 +304,10 @@ const Roles = () => {
                         Role{" "}
                         {sortConfig.key === "name" && (
                           <span
-                            className={`ml-1 arrow ${
-                              sortConfig.direction === "asc"
-                                ? "arrow-up"
-                                : "arrow-down"
-                            }`}
+                            className={`ml-1 arrow ${sortConfig.direction === "asc"
+                              ? "arrow-up"
+                              : "arrow-down"
+                              }`}
                           >
                             {sortConfig.direction === "asc" ? "▲" : "▼"}
                           </span>
@@ -274,11 +322,10 @@ const Roles = () => {
                         Description{" "}
                         {sortConfig.key === "description" && (
                           <span
-                            className={`ml-1 arrow ${
-                              sortConfig.direction === "asc"
-                                ? "arrow-up"
-                                : "arrow-down"
-                            }`}
+                            className={`ml-1 arrow ${sortConfig.direction === "asc"
+                              ? "arrow-up"
+                              : "arrow-down"
+                              }`}
                           >
                             {sortConfig.direction === "asc" ? "▲" : "▼"}
                           </span>
@@ -293,11 +340,10 @@ const Roles = () => {
                         Permissions{" "}
                         {sortConfig.key === "permissions" && (
                           <span
-                            className={`ml-1 arrow ${
-                              sortConfig.direction === "asc"
-                                ? "arrow-up"
-                                : "arrow-down"
-                            }`}
+                            className={`ml-1 arrow ${sortConfig.direction === "asc"
+                              ? "arrow-up"
+                              : "arrow-down"
+                              }`}
                           >
                             {sortConfig.direction === "asc" ? "▲" : "▼"}
                           </span>
@@ -312,62 +358,61 @@ const Roles = () => {
                         Status{" "}
                         {sortConfig.key === "status" && (
                           <span
-                            className={`ml-1 arrow ${
-                              sortConfig.direction === "asc"
-                                ? "arrow-up"
-                                : "arrow-down"
-                            }`}
+                            className={`ml-1 arrow ${sortConfig.direction === "asc"
+                              ? "arrow-up"
+                              : "arrow-down"
+                              }`}
                           >
                             {sortConfig.direction === "asc" ? "▲" : "▼"}
                           </span>
                         )}
                       </button>
                     </th>{" "}
-                    <th></th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {currentRows.map((row) => (
                     <tr key={row._id}>
-                      <td>
-                        <div
-                          ref={(el) => (dropdownRefs.current[row._id] = el)}
-                          className="dropdown"
+                      {/* <td>
+                      <div
+                        ref={(el) => (dropdownRefs.current[row._id] = el)}
+                        className="dropdown"
+                      >
+                        <button
+                          className="tdadd-drop"
+                          type="button"
+                          onClick={() => toggleDropdown(row._id)}
                         >
-                          <button
-                            className="tdadd-drop"
-                            type="button"
-                            onClick={() => toggleDropdown(row._id)}
-                          >
-                            <i className="fa fa-ellipsis-h"></i>
-                          </button>
-                          {openDropdown === row._id && (
-                            <div className="dropdown-menu tddropOptions show">
-                              <Link
-                                to={`/admin/role/view/${row._id}`}
-                                className="dropdown-item"
-                              >
-                                View
-                              </Link>
-                              <Link
-                                to={`/admin/role/edit/${row._id}`}
-                                className="dropdown-item"
-                              >
-                                Edit
-                              </Link>
-                              <button className="dropdown-item">Delete</button>
-                            </div>
-                          )}
-                        </div>
-                      </td>
-                      <td>
-                        <input
-                          className="tablecheck"
-                          type="checkbox"
-                          onChange={() => handleCheckboxChange(row._id)}
-                          checked={selectedRows.includes(row._id)}
-                        />
-                      </td>
+                          <i className="fa fa-ellipsis-h"></i>
+                        </button>
+                        {openDropdown === row._id && (
+                          <div className="dropdown-menu tddropOptions show">
+                            <Link
+                              to={`/admin/role/view/${row._id}`}
+                              className="dropdown-item"
+                            >
+                              View
+                            </Link>
+                            <Link
+                              to={`/admin/role/edit/${row._id}`}
+                              className="dropdown-item"
+                            >
+                              Edit
+                            </Link>
+                            <button className="dropdown-item">Delete</button>
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                    <td>
+                      <input
+                        className="tablecheck"
+                        type="checkbox"
+                        onChange={() => handleCheckboxChange(row._id)}
+                        checked={selectedRows.includes(row._id)}
+                      />
+                    </td> */}
                       <td>
                         <Link
                           to={`/admin/role/view/${row._id}`}
@@ -383,7 +428,21 @@ const Roles = () => {
                           : 0}
                       </td>
                       <td>{row.status}</td> {/* Display Role Status */}
-                      <td></td>
+                      <td>
+                        <button
+                          className="btn"
+                          title="Delete"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            // Add your delete logic here
+                            // alert(`Delete clicked for ${row._id}`);
+                            handleDelete(row._id)
+
+                          }}
+                        >
+                          <i className="fa fa-trash" style={{ color: "red" }} />
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -401,9 +460,8 @@ const Roles = () => {
                 {Array.from({ length: totalPages }, (_, i) => (
                   <li
                     key={i}
-                    className={`page-item ${
-                      i + 1 === currentPage ? "active" : ""
-                    }`}
+                    className={`page-item ${i + 1 === currentPage ? "active" : ""
+                      }`}
                   >
                     <button
                       className="page-link"

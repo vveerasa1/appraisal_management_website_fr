@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect ,useMemo} from "react";
 import "./style.css";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -24,7 +24,7 @@ const AddDepartment = () => {
   // Fetch parent departments
   const { data: departmentsData, isLoading: isLoadingDepartments } =
     useGetDepartmentsQuery();
-
+  console.log(departmentsData,"departmentsData")
   const handleSave = async (e) => {
     e.preventDefault();
     if (!name.trim()) {
@@ -50,7 +50,17 @@ const AddDepartment = () => {
       );
     }
   };
-
+  const departments = useMemo(() => {
+    if (!departmentsData || !departmentsData.data) return [];
+    // Filter departments to only include 'Active' ones
+    const activeDepartments = departmentsData.data.filter(
+      (item) => item.status === "Active"
+    );
+    return mapToSelectOptions(activeDepartments, {
+      label: "name",
+      value: "_id",
+    });
+  }, [departmentsData]);
   return (
     <>
       <div className="pageTanDiv">

@@ -29,9 +29,9 @@ const InitialValues = {
   email: "",
   phoneNumber: "",
   employeeId: "",
-  department: "",
+  department: null,
   reportingTo: "",
-  designation: "",
+  designation: null,
   role: "",
   status: "Active", // <-- ADDED: Status field with a default value
   dateOfJoining: "",
@@ -60,10 +60,10 @@ const validationSchema = Yup.object({
   ),
 
   employeeId: Yup.string(),
-  department: Yup.string(),
+  // department: Yup.string(),
   reportingTo: Yup.string().required("Reporting to is required"),
   role: Yup.string().required("Role is required"),
-  designation: Yup.string(),
+  // designation: Yup.string(),
   dateOfJoining: Yup.date()
     .max(new Date(), "Date of joining cannot be in the future")
     .required("Date of joining is required"),

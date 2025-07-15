@@ -94,7 +94,7 @@ const ViewRole = () => {
   const [checked, setChecked] = useState(getDefaultChecked(role?.permissions));
   const [addRole, { isLoading: isSaving }] = useAddRoleMutation(); // Assuming this mutation also handles updates
 
-  const [deleteDesignation, { isLoading: isDeleting }] =
+  const [deleteRole, { isLoading: isDeleting }] =
     useDeleteRoleMutation();
 
   useEffect(() => {
@@ -138,7 +138,7 @@ const ViewRole = () => {
     if (!role?._id) return;
     if (!window.confirm("Are you sure you want to delete this role?")) return;
     try {
-      await deleteDesignation(role._id).unwrap();
+      await deleteRole(role._id).unwrap();
       showSuccessToast("Role deleted successfully!");
       navigate("/admin/roles"); // Redirect after delete
     } catch (err) {

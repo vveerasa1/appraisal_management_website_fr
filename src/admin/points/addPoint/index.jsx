@@ -37,6 +37,8 @@ const AddPoints = () => {
     if (!selectedUser) tempErrors.user = "User is required";
     if (!points || isNaN(points) || Number(points) === 0) {
       tempErrors.points = "Points count is required";
+    } else if (Number(points) > 10) {
+      tempErrors.points = "Points count should not exceed 10";
     }
     if (!reason) tempErrors.reason = "Reason is required";
     setErrors(tempErrors);

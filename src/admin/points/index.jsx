@@ -247,7 +247,7 @@ const Points = () => {
               onChange={handleStatusChange} // Handle status change
             />
           </div>
-          <div className="ttb-right">
+          <div className="ttb-right" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <div className="searchblock">
               <input
                 className="search-input"
@@ -315,6 +315,14 @@ const Points = () => {
                 </div>
               )}
             </div>
+            <Link
+              to="/admin/point/add"
+              className="theme-btn btn-blue"
+              title="Add Points"
+              style={{ display: "flex", alignItems: "center", gap: "6px" }}
+            >
+              <i className="fa fa-plus-circle" aria-hidden="true"></i> Add Points
+            </Link>
           </div>
         </div>
         <div className="tables">
@@ -326,213 +334,229 @@ const Points = () => {
             ) : (
               <table className="table table-striped">
                 <thead>
-                  <tr>
-                    <th style={{ width: "50px" }}>
-                      <button className="table-head-btn">
-                        {" "}
-                        <i className="fa fa-tasks"></i>{" "}
-                      </button>
-                    </th>
-                    <th>
+              <tr>
+                {/* <th style={{ width: "50px" }}>
+                  <button className="table-head-btn">
+                    {" "}
+                    <i className="fa fa-tasks"></i>{" "}
+                  </button>
+                </th>
+                <th>
+                  <input
+                    className="tablecheck"
+                    type="checkbox"
+                    onChange={handleSelectAll}
+                    checked={isAllSelected}
+                  />
+                </th> */}
+                <th>
+                  <button className="table-head-btn"> Photo </button>
+                </th>
+                <th>
+                  <button
+                    className="table-head-btn"
+                    onClick={() => handleSort("employeeId")}
+                  >
+                    Employee ID{" "}
+                    {sortConfig.key === "employeeId" && (
+                      <span
+                        className={`ml-1 arrow ${
+                          sortConfig.direction === "asc"
+                            ? "arrow-up"
+                            : "arrow-down"
+                        }`}
+                      >
+                        {sortConfig.direction === "asc" ? "▲" : "▼"}
+                      </span>
+                    )}
+                  </button>
+                </th>
+                <th>
+                  <button
+                    className="table-head-btn"
+                    onClick={() => handleSort("name")}
+                  >
+                    Name{" "}
+                    {sortConfig.key === "name" && (
+                      <span
+                        className={`ml-1 arrow ${
+                          sortConfig.direction === "asc"
+                            ? "arrow-up"
+                            : "arrow-down"
+                        }`}
+                      >
+                        {sortConfig.direction === "asc" ? "▲" : "▼"}
+                      </span>
+                    )}
+                  </button>
+                </th>
+                <th>
+                  <button
+                    className="table-head-btn"
+                    onClick={() => handleSort("pointsChange")}
+                  >
+                    Points{" "}
+                    {sortConfig.key === "pointsChange" && (
+                      <span
+                        className={`ml-1 arrow ${
+                          sortConfig.direction === "asc"
+                            ? "arrow-up"
+                            : "arrow-down"
+                        }`}
+                      >
+                        {sortConfig.direction === "asc" ? "▲" : "▼"}
+                      </span>
+                    )}
+                  </button>
+                </th>
+                <th>
+                  <button
+                    className="table-head-btn"
+                    onClick={() => handleSort("balanceAfter")}
+                  >
+                    Balance{" "}
+                    {sortConfig.key === "balanceAfter" && (
+                      <span
+                        className={`ml-1 arrow ${
+                          sortConfig.direction === "asc"
+                            ? "arrow-up"
+                            : "arrow-down"
+                        }`}
+                      >
+                        {sortConfig.direction === "asc" ? "▲" : "▼"}
+                      </span>
+                    )}
+                  </button>
+                </th>
+                <th>
+                  <button
+                    className="table-head-btn"
+                    onClick={() => handleSort("reason")}
+                  >
+                    Reason{" "}
+                    {sortConfig.key === "reason" && (
+                      <span
+                        className={`ml-1 arrow ${
+                          sortConfig.direction === "asc"
+                            ? "arrow-up"
+                            : "arrow-down"
+                        }`}
+                      >
+                        {sortConfig.direction === "asc" ? "▲" : "▼"}
+                      </span>
+                    )}
+                  </button>
+                </th>
+                <th>
+                  <button
+                    className="table-head-btn"
+                    onClick={() => handleSort("date")}
+                  >
+                    Date{" "}
+                    {sortConfig.key === "date" && (
+                      <span
+                        className={`ml-1 arrow ${
+                          sortConfig.direction === "asc"
+                            ? "arrow-up"
+                            : "arrow-down"
+                        }`}
+                      >
+                        {sortConfig.direction === "asc" ? "▲" : "▼"}
+                      </span>
+                    )}
+                  </button>
+                </th>
+                <th>
+                  <button className="table-head-btn">Actions</button>
+                </th>
+              </tr>
+                </thead>
+                <tbody>
+                {currentRows.map((row) => (
+                  <tr key={row._id}>
+                    {/* <td>
+                      <div
+                        ref={(el) => (dropdownRefs.current[row._id] = el)}
+                        className="dropdown"
+                      >
+                        <button
+                          className="tdadd-drop"
+                          type="button"
+                          onClick={() => toggleDropdown(row._id)}
+                        >
+                          <i className="fa fa-ellipsis-h"></i>
+                        </button>
+                        {openDropdown === row._id && (
+                          <div className="dropdown-menu tddropOptions show">
+                            <Link
+                              to={`/admin/point/view/${row._id}`}
+                              className="dropdown-item"
+                            >
+                              View
+                            </Link>
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                    <td>
                       <input
                         className="tablecheck"
                         type="checkbox"
-                        onChange={handleSelectAll}
-                        checked={isAllSelected}
+                        onChange={() => handleCheckboxChange(row._id)}
+                        checked={selectedRows.includes(row._id)}
                       />
-                    </th>
-                    <th>
-                      <button className="table-head-btn"> Photo </button>
-                    </th>
-                    <th>
-                      <button
-                        className="table-head-btn"
-                        onClick={() => handleSort("employeeId")}
+                    </td> */}
+                    <td>
+                      <img
+                        className="img-fluid tableProfileImg"
+                        src={ProfileImg}
+                        alt="User"
+                      />
+                    </td>
+                    <td>
+                      <Link
+                        to={`/admin/point/view/${row._id}`}
+                        className="tlink"
                       >
-                        Employee ID{" "}
-                        {sortConfig.key === "employeeId" && (
-                          <span
-                            className={`ml-1 arrow ${
-                              sortConfig.direction === "asc"
-                                ? "arrow-up"
-                                : "arrow-down"
-                            }`}
-                          >
-                            {sortConfig.direction === "asc" ? "▲" : "▼"}
-                          </span>
-                        )}
-                      </button>
-                    </th>
-                    <th>
+                        {row.employeeId?.employeeId}
+                      </Link>
+                    </td>
+                    <td>
+                      {" "}
+                      {row.employeeId?.firstName} {row.employeeId?.lastName}
+                    </td>
+                    <td
+                      style={{
+                        color:
+                          row.pointsChange > 0
+                            ? "green"
+                            : row.pointsChange < 0
+                            ? "red"
+                            : "black",
+                      }}
+                    >
+                      {row.pointsChange > 0
+                        ? `+${row.pointsChange}`
+                        : row.pointsChange}
+                    </td>
+                    <td>{row.balanceAfter}</td>
+                    <td>{row.reason}</td>
+                    <td>{new Date(row.createdAt).toLocaleDateString()}</td>
+                    <td>
                       <button
-                        className="table-head-btn"
-                        onClick={() => handleSort("name")}
-                      >
-                        Name{" "}
-                        {sortConfig.key === "name" && (
-                          <span
-                            className={`ml-1 arrow ${
-                              sortConfig.direction === "asc"
-                                ? "arrow-up"
-                                : "arrow-down"
-                            }`}
-                          >
-                            {sortConfig.direction === "asc" ? "▲" : "▼"}
-                          </span>
-                        )}
-                      </button>
-                    </th>
-                    <th>
-                      <button
-                        className="table-head-btn"
-                        onClick={() => handleSort("pointsChange")}
-                      >
-                        Points{" "}
-                        {sortConfig.key === "pointsChange" && (
-                          <span
-                            className={`ml-1 arrow ${
-                              sortConfig.direction === "asc"
-                                ? "arrow-up"
-                                : "arrow-down"
-                            }`}
-                          >
-                            {sortConfig.direction === "asc" ? "▲" : "▼"}
-                          </span>
-                        )}
-                      </button>
-                    </th>
-                    <th>
-                      <button
-                        className="table-head-btn"
-                        onClick={() => handleSort("balanceAfter")}
-                      >
-                        Balance{" "}
-                        {sortConfig.key === "balanceAfter" && (
-                          <span
-                            className={`ml-1 arrow ${
-                              sortConfig.direction === "asc"
-                                ? "arrow-up"
-                                : "arrow-down"
-                            }`}
-                          >
-                            {sortConfig.direction === "asc" ? "▲" : "▼"}
-                          </span>
-                        )}
-                      </button>
-                    </th>
-                    <th>
-                      <button
-                        className="table-head-btn"
-                        onClick={() => handleSort("reason")}
-                      >
-                        Reason{" "}
-                        {sortConfig.key === "reason" && (
-                          <span
-                            className={`ml-1 arrow ${
-                              sortConfig.direction === "asc"
-                                ? "arrow-up"
-                                : "arrow-down"
-                            }`}
-                          >
-                            {sortConfig.direction === "asc" ? "▲" : "▼"}
-                          </span>
-                        )}
-                      </button>
-                    </th>
-                    <th>
-                      <button
-                        className="table-head-btn"
-                        onClick={() => handleSort("date")}
-                      >
-                        Date{" "}
-                        {sortConfig.key === "date" && (
-                          <span
-                            className={`ml-1 arrow ${
-                              sortConfig.direction === "asc"
-                                ? "arrow-up"
-                                : "arrow-down"
-                            }`}
-                          >
-                            {sortConfig.direction === "asc" ? "▲" : "▼"}
-                          </span>
-                        )}
-                      </button>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {currentRows.map((row) => (
-                    <tr key={row._id}>
-                      <td>
-                        <div
-                          ref={(el) => (dropdownRefs.current[row._id] = el)}
-                          className="dropdown"
-                        >
-                          <button
-                            className="tdadd-drop"
-                            type="button"
-                            onClick={() => toggleDropdown(row._id)}
-                          >
-                            <i className="fa fa-ellipsis-h"></i>
-                          </button>
-                          {openDropdown === row._id && (
-                            <div className="dropdown-menu tddropOptions show">
-                              <Link
-                                to={`/admin/point/view/${row._id}`}
-                                className="dropdown-item"
-                              >
-                                View
-                              </Link>
-                            </div>
-                          )}
-                        </div>
-                      </td>
-                      <td>
-                        <input
-                          className="tablecheck"
-                          type="checkbox"
-                          onChange={() => handleCheckboxChange(row._id)}
-                          checked={selectedRows.includes(row._id)}
-                        />
-                      </td>
-                      <td>
-                        <img
-                          className="img-fluid tableProfileImg"
-                          src={ProfileImg}
-                          alt="User"
-                        />
-                      </td>
-                      <td>
-                        <Link
-                          to={`/admin/point/view/${row._id}`}
-                          className="tlink"
-                        >
-                          {row.employeeId?.employeeId}
-                        </Link>
-                      </td>
-                      <td>
-                        {" "}
-                        {row.employeeId?.firstName} {row.employeeId?.lastName}
-                      </td>
-                      <td
-                        style={{
-                          color:
-                            row.pointsChange > 0
-                              ? "green"
-                              : row.pointsChange < 0
-                              ? "red"
-                              : "black",
+                        className="btn"
+                        title="Delete"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          // Add your delete logic here
+                          alert(`Delete clicked for ${row._id}`);
                         }}
                       >
-                        {row.pointsChange > 0
-                          ? `+${row.pointsChange}`
-                          : row.pointsChange}
-                      </td>
-                      <td>{row.balanceAfter}</td>
-                      <td>{row.reason}</td>
-                      <td>{new Date(row.createdAt).toLocaleDateString()}</td>
-                    </tr>
-                  ))}
+                        <i className="fa fa-trash" style={{ color: "red" }} />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
                 </tbody>
               </table>
             )}

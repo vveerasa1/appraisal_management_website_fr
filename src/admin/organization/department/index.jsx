@@ -4,8 +4,12 @@ import { Link } from "react-router-dom";
 import ProfileImg from "../../../assets/images/user.png"; // This might not be needed for departments, but keeping for now
 import Select from "react-select";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
-import { useGetDepartmentsQuery } from "../../../services/features/departments/departmentApi";
+import { useGetDepartmentsQuery,
+  useDeleteDepartmentMutation,
+
+ } from "../../../services/features/departments/departmentApi";
 import { usePermission } from "../../../hooks/usePermission";
+import { showSuccessToast, showErrorToast } from "../../../utils/toast";
 
 const Department = () => {
   // State for search query
@@ -24,6 +28,8 @@ const Department = () => {
     isLoading,
     error,
   } = useGetDepartmentsQuery({ search });
+ const [deleteDepartment, { isLoading: isDeleting }] =
+    useDeleteDepartmentMutation();
 
   // Get all departments from API data
   const allDepartments = apiData?.data || [];
@@ -33,7 +39,24 @@ const Department = () => {
     (department) => department.status === selectedStatus
   );
   // IMPORTANT: Ensure your 'department' object has a 'status' field (e.g., 'Active', 'Inactive')
-
+ const handleDelete = async (id) => {
+    if (!id) return;
+    if (!window.confirm("Are you sure you want to delete this department?"))
+      return;
+    try {
+      await deleteDepartment(id).unwrap();
+      showSuccessToast("Department deleted successfully!");
+      // Optionally redirect after delete:
+      window.location.href = "/admin/organization/department";
+    } catch (err) {
+      const errorMsg =
+        err?.data?.message ||
+        err?.error ||
+        err?.message ||
+        "Failed to delete department.";
+      showErrorToast(errorMsg);
+    }
+  };
   useEffect(() => {
     const timeout = setTimeout(() => {
       setSearch(searchInput.trim());
@@ -248,6 +271,14 @@ const Department = () => {
               />
               <i className="fa fa-search"></i>
             </div>
+            <Link
+              to="/admin/organization/department/add"
+              className="theme-btn btn-blue"
+              title="Add Department"
+              style={{ display: "flex", alignItems: "center", gap: "6px" }}
+            >
+              <i className="fa fa-plus-circle" aria-hidden="true"></i> Add Department
+            </Link>
           </div>
         </div>
         <div className="tables">
@@ -260,19 +291,19 @@ const Department = () => {
               <table className="table">
                 <thead>
                   <tr>
-                    <th style={{ width: "50px" }}>
+                    {/* <th style={{ width: "50px" }}>
                       <button className="table-head-btn">
                         <i className="fa fa-tasks"></i>
                       </button>
-                    </th>
-                    <th>
+                    </th> */}
+                    {/* <th>
                       <input
                         className="tablecheck"
                         type="checkbox"
                         onChange={handleSelectAll}
                         checked={isAllSelected}
                       />
-                    </th>
+                    </th> */}
                     <th>
                       <button
                         className="table-head-btn"
@@ -281,11 +312,10 @@ const Department = () => {
                         Department Name{" "}
                         {sortConfig.key === "name" && (
                           <span
-                            className={`ml-1 arrow ${
-                              sortConfig.direction === "asc"
+                            className={`ml-1 arrow ${sortConfig.direction === "asc"
                                 ? "arrow-up"
                                 : "arrow-down"
-                            }`}
+                              }`}
                           >
                             {sortConfig.direction === "asc" ? "▲" : "▼"}
                           </span>
@@ -300,11 +330,10 @@ const Department = () => {
                         Department Lead{" "}
                         {sortConfig.key === "departmentLead" && (
                           <span
-                            className={`ml-1 arrow ${
-                              sortConfig.direction === "asc"
+                            className={`ml-1 arrow ${sortConfig.direction === "asc"
                                 ? "arrow-up"
                                 : "arrow-down"
-                            }`}
+                              }`}
                           >
                             {sortConfig.direction === "asc" ? "▲" : "▼"}
                           </span>
@@ -319,11 +348,10 @@ const Department = () => {
                         Parent Department{" "}
                         {sortConfig.key === "parentDepartment" && (
                           <span
-                            className={`ml-1 arrow ${
-                              sortConfig.direction === "asc"
+                            className={`ml-1 arrow ${sortConfig.direction === "asc"
                                 ? "arrow-up"
                                 : "arrow-down"
-                            }`}
+                              }`}
                           >
                             {sortConfig.direction === "asc" ? "▲" : "▼"}
                           </span>
@@ -338,11 +366,10 @@ const Department = () => {
                         Status{" "}
                         {sortConfig.key === "status" && (
                           <span
-                            className={`ml-1 arrow ${
-                              sortConfig.direction === "asc"
+                            className={`ml-1 arrow ${sortConfig.direction === "asc"
                                 ? "arrow-up"
                                 : "arrow-down"
-                            }`}
+                              }`}
                           >
                             {sortConfig.direction === "asc" ? "▲" : "▼"}
                           </span>
@@ -357,11 +384,10 @@ const Department = () => {
                         Added By{" "}
                         {sortConfig.key === "addedBy" && (
                           <span
-                            className={`ml-1 arrow ${
-                              sortConfig.direction === "asc"
+                            className={`ml-1 arrow ${sortConfig.direction === "asc"
                                 ? "arrow-up"
                                 : "arrow-down"
-                            }`}
+                              }`}
                           >
                             {sortConfig.direction === "asc" ? "▲" : "▼"}
                           </span>
@@ -376,23 +402,25 @@ const Department = () => {
                         Added Time{" "}
                         {sortConfig.key === "createdAt" && (
                           <span
-                            className={`ml-1 arrow ${
-                              sortConfig.direction === "asc"
+                            className={`ml-1 arrow ${sortConfig.direction === "asc"
                                 ? "arrow-up"
                                 : "arrow-down"
-                            }`}
+                              }`}
                           >
                             {sortConfig.direction === "asc" ? "▲" : "▼"}
                           </span>
                         )}
                       </button>
                     </th>
+                    <th>
+                      <button className="table-head-btn">Actions</button>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {currentRows.map((row) => (
                     <tr key={row._id}>
-                      <td>
+                      {/* <td>
                         <div
                           ref={(el) => (dropdownRefs.current[row._id] = el)}
                           className="dropdown"
@@ -430,7 +458,7 @@ const Department = () => {
                           onChange={() => handleCheckboxChange(row._id)}
                           checked={selectedRows.includes(row._id)}
                         />
-                      </td>
+                      </td> */}
                       <td>
                         <Link
                           to={`/admin/organization/department/view/${row._id}`}
@@ -456,6 +484,21 @@ const Department = () => {
                           ? new Date(row.createdAt).toLocaleString()
                           : "-"}
                       </td>
+                      <td>
+                        <button
+                          className="btn"
+                          title="Delete"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            console.log(row)
+                            handleDelete(row._id)
+                            // Add your delete logic here
+                            // alert(`Delete clicked for ${row._id}`);
+                          }}
+                        >
+                          <i className="fa fa-trash" style={{ color: "red" }} />
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -473,9 +516,8 @@ const Department = () => {
                 {Array.from({ length: totalPages }, (_, i) => (
                   <li
                     key={i}
-                    className={`page-item ${
-                      i + 1 === currentPage ? "active" : ""
-                    }`}
+                    className={`page-item ${i + 1 === currentPage ? "active" : ""
+                      }`}
                   >
                     <button
                       className="page-link"

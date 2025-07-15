@@ -4,8 +4,11 @@ import { Link } from "react-router-dom";
 import ProfileImg from "../../../assets/images/user.png"; // Keeping for consistency, though likely not used directly here
 import Select from "react-select";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
-import { useGetDesignationsQuery } from "../../../services/features/designation/designationApi";
+import { useGetDesignationsQuery,
+  useDeleteDesignationMutation,
+ } from "../../../services/features/designation/designationApi";
 import { usePermission } from "../../../hooks/usePermission";
+import { showSuccessToast, showErrorToast } from "../../../utils/toast";
 
 const Designation = () => {
   // State for search query
@@ -16,6 +19,8 @@ const Designation = () => {
 
   // State for status filter (frontend controlled)
   const [selectedStatus, setSelectedStatus] = useState("Active"); // Default to 'Active'
+  const [deleteDesignation, { isLoading: isDeleting }] =
+    useDeleteDesignationMutation();
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -48,7 +53,24 @@ const Designation = () => {
   });
   const [selectedRows, setSelectedRows] = useState([]);
   const [isAllSelected, setIsAllSelected] = useState(false);
-
+ const handleDelete = async (id) => {
+    if (!id) return;
+    if (!window.confirm("Are you sure you want to delete this designation?"))
+      return;
+    try {
+      await deleteDesignation(id).unwrap();
+      showSuccessToast("Designation deleted successfully!");
+      // navigate("/admin/organization/designation");
+    } catch (err) {
+      console.log(err);
+      const errorMsg =
+        err?.data?.message ||
+        err?.error ||
+        err?.message ||
+        "Failed to delete designation.";
+      showErrorToast(errorMsg);
+    }
+  };
   // Reset pagination when any filter changes
   useEffect(() => {
     setCurrentPage(1);
@@ -240,6 +262,14 @@ const Designation = () => {
               />
               <i className="fa fa-search"></i>
             </div>
+            <Link
+              to="/admin/organization/designation/add"
+              className="theme-btn btn-blue"
+              title="Add Designation"
+              style={{ display: "flex", alignItems: "center", gap: "6px" }}
+            >
+              <i className="fa fa-plus-circle" aria-hidden="true"></i> Add Designation
+            </Link>
           </div>
         </div>
         <div className="tables">
@@ -247,19 +277,19 @@ const Designation = () => {
             <table className="table">
               <thead>
                 <tr>
-                  <th style={{ width: "50px" }}>
+                  {/* <th style={{ width: "50px" }}>
                     <button className="table-head-btn">
                       <i className="fa fa-tasks"></i>
                     </button>
-                  </th>
-                  <th>
+                  </th> */}
+                  {/* <th>
                     <input
                       className="tablecheck"
                       type="checkbox"
                       onChange={handleSelectAll}
                       checked={isAllSelected}
                     />
-                  </th>
+                  </th> */}
                   <th>
                     <button
                       className="table-head-btn"
@@ -268,11 +298,10 @@ const Designation = () => {
                       Designation Name{" "}
                       {sortConfig.key === "name" && (
                         <span
-                          className={`ml-1 arrow ${
-                            sortConfig.direction === "asc"
+                          className={`ml-1 arrow ${sortConfig.direction === "asc"
                               ? "arrow-up"
                               : "arrow-down"
-                          }`}
+                            }`}
                         >
                           {sortConfig.direction === "asc" ? "▲" : "▼"}
                         </span>
@@ -287,11 +316,10 @@ const Designation = () => {
                       Status{" "}
                       {sortConfig.key === "status" && (
                         <span
-                          className={`ml-1 arrow ${
-                            sortConfig.direction === "asc"
+                          className={`ml-1 arrow ${sortConfig.direction === "asc"
                               ? "arrow-up"
                               : "arrow-down"
-                          }`}
+                            }`}
                         >
                           {sortConfig.direction === "asc" ? "▲" : "▼"}
                         </span>
@@ -306,11 +334,10 @@ const Designation = () => {
                       Added By{" "}
                       {sortConfig.key === "addedBy" && (
                         <span
-                          className={`ml-1 arrow ${
-                            sortConfig.direction === "asc"
+                          className={`ml-1 arrow ${sortConfig.direction === "asc"
                               ? "arrow-up"
                               : "arrow-down"
-                          }`}
+                            }`}
                         >
                           {sortConfig.direction === "asc" ? "▲" : "▼"}
                         </span>
@@ -325,16 +352,18 @@ const Designation = () => {
                       Added Time{" "}
                       {sortConfig.key === "createdAt" && (
                         <span
-                          className={`ml-1 arrow ${
-                            sortConfig.direction === "asc"
+                          className={`ml-1 arrow ${sortConfig.direction === "asc"
                               ? "arrow-up"
                               : "arrow-down"
-                          }`}
+                            }`}
                         >
                           {sortConfig.direction === "asc" ? "▲" : "▼"}
                         </span>
                       )}
                     </button>
+                  </th>
+                  <th>
+                    <button className="table-head-btn">Actions</button>
                   </th>
                 </tr>
               </thead>
@@ -352,7 +381,7 @@ const Designation = () => {
                 ) : (
                   currentRows.map((row) => (
                     <tr key={row._id}>
-                      <td>
+                      {/* <td>
                         <div
                           ref={(el) => (dropdownRefs.current[row._id] = el)}
                           className="dropdown"
@@ -390,7 +419,7 @@ const Designation = () => {
                           onChange={() => handleCheckboxChange(row._id)}
                           checked={selectedRows.includes(row._id)}
                         />
-                      </td>
+                      </td> */}
                       <td>
                         <Link
                           to={`/admin/organization/designation/view/${row._id}`}
@@ -411,6 +440,20 @@ const Designation = () => {
                           ? new Date(row.createdAt).toLocaleString()
                           : "-"}
                       </td>
+                      <td>
+                        <button
+                          className="btn"
+                          title="Delete"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(row._id)
+                            // Add your delete logic here
+                            // alert(`Delete clicked for ${row._id}`);
+                          }}
+                        >
+                          <i className="fa fa-trash" style={{ color: "red" }} />
+                        </button>
+                      </td>
                     </tr>
                   ))
                 )}
@@ -428,9 +471,8 @@ const Designation = () => {
                 {Array.from({ length: totalPages }, (_, i) => (
                   <li
                     key={i}
-                    className={`page-item ${
-                      i + 1 === currentPage ? "active" : ""
-                    }`}
+                    className={`page-item ${i + 1 === currentPage ? "active" : ""
+                      }`}
                   >
                     <button
                       className="page-link"
