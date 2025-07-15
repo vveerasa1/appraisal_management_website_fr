@@ -180,7 +180,7 @@ const AddPoints = () => {
                       type="button"
                       onClick={handleSave}
                     >
-                      Save Points
+                      Save
                     </button>
                   </div>
                 </div>

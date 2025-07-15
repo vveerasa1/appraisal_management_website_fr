@@ -278,7 +278,7 @@ export default function EmployeeForm() {
                     >
                       {isSubmitting || isAddEmployeeLoading
                         ? "Saving..."
-                        : "Save Employee"}
+                        : "Save"}
                     </button>
                   </div>
                 </div>

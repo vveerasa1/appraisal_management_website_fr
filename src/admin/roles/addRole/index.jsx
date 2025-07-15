@@ -3,14 +3,14 @@ import "./style.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useAddRoleMutation } from "../../../services/features/roles/roleApi";
 import { showSuccessToast, showErrorToast } from "../../../utils/toast";
+import { useSelector } from "react-redux";
 
 const PERMISSIONS = [
   { entity: "User", actions: ["Add", "Edit", "View", "Delete"] },
   { entity: "Department", actions: ["Add", "Edit", "View", "Delete"] },
   { entity: "Designation", actions: ["Add", "Edit", "View", "Delete"] },
   { entity: "Appraisal", actions: ["Add", "Edit", "View", "Delete"] },
-    { entity: "Team", actions: ["Add", "Edit", "View", "Delete"] },
-
+  { entity: "Team", actions: ["Add", "Edit", "View", "Delete"] },
 ];
 
 const permissionMap = {
@@ -69,6 +69,8 @@ const getPermissionsArray = (checked) => {
 };
 
 const AddRole = () => {
+  const userId = useSelector((state) => state.users.id);
+
   const [form, setForm] = useState({ name: "", description: "" });
   const [checked, setChecked] = useState(getDefaultChecked());
   const [addRole, { isLoading }] = useAddRoleMutation();
@@ -116,6 +118,7 @@ const AddRole = () => {
     if (!validate()) return;
     try {
       await addRole({
+        userId,
         name: form.name,
         description: form.description,
         permissions: getPermissionsArray(checked),
@@ -228,7 +231,7 @@ const AddRole = () => {
                       type="submit"
                       disabled={isLoading}
                     >
-                      Save Role
+                      Save
                     </button>
                   </div>
                 </div>

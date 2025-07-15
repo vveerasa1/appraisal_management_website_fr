@@ -151,7 +151,7 @@ const AddDepartment = () => {
                       type="submit"
                       disabled={isLoading}
                     >
-                      Save Department
+                      Save
                     </button>
                   </div>
                 </div>

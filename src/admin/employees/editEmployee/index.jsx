@@ -596,7 +596,7 @@ const EditEmployee = () => {
                             type="submit"
                             disabled={isSubmitting || isUpdating}
                           >
-                            {isUpdating ? "Saving.." : "Save Changes"}
+                            {isUpdating ? "Saving.." : "Save"}
                           </button>
                         </div>
                       </div>

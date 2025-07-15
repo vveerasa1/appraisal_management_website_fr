@@ -327,7 +327,7 @@ const ViewDesignation = () => {
                               >
                                 {isSubmitting || isSaving
                                   ? "Saving..."
-                                  : "Save Changes"}
+                                  : "Save"}
                               </button>
                               <button
                                 className="theme-btn btn-grey"

@@ -8,6 +8,7 @@ import {
   useDeleteRoleMutation,
 } from "../../../services/features/roles/roleApi";
 import { showSuccessToast, showErrorToast } from "../../../utils/toast";
+import { useSelector } from "react-redux";
 
 const PERMISSIONS = [
   { entity: "User", actions: ["Add", "Edit", "View", "Delete"] },
@@ -80,6 +81,8 @@ const statusOptions = [
 ];
 
 const ViewRole = () => {
+  const userId = useSelector((state) => state.users.id);
+
   const { id } = useParams();
   const { data, isLoading, error, refetch } = useGetRoleByIdQuery(id);
   const role = data?.data;
@@ -94,8 +97,7 @@ const ViewRole = () => {
   const [checked, setChecked] = useState(getDefaultChecked(role?.permissions));
   const [addRole, { isLoading: isSaving }] = useAddRoleMutation(); // Assuming this mutation also handles updates
 
-  const [deleteRole, { isLoading: isDeleting }] =
-    useDeleteRoleMutation();
+  const [deleteRole, { isLoading: isDeleting }] = useDeleteRoleMutation();
 
   useEffect(() => {
     if (role) {
@@ -155,6 +157,7 @@ const ViewRole = () => {
     try {
       await addRole({
         id: role._id, // Pass ID for update operation
+        userId,
         name: form.name,
         description: form.description,
         permissions: getPermissionsArray(checked),
@@ -383,7 +386,7 @@ const ViewRole = () => {
                         onClick={handleSave}
                         disabled={isSaving}
                       >
-                        Save Changes
+                        Save
                       </button>
                       <button
                         className="theme-btn btn-grey"

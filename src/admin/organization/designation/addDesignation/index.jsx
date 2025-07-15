@@ -92,7 +92,7 @@ const AddDesignation = () => {
                       type="submit"
                       disabled={isLoading}
                     >
-                      Save Designation
+                      Save
                     </button>
                   </div>
                 </div>

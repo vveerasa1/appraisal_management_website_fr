@@ -43,7 +43,7 @@ import AdminViewRoles from "./admin/roles/viewRole";
 // admin organization
 import AdminDepartment from "./admin/organization/department";
 import AdminAddDepartment from "./admin/organization/department/addDepartment";
-import AdminEditDepartment from "./admin/organization/department/editDepartment";
+// import AdminEditDepartment from "./admin/organization/department/editDepartment";
 import AdminViewDepartment from "./admin/organization/department/viewDepartment";
 import AdminDesignation from "./admin/organization/designation";
 import AdminAddDesignation from "./admin/organization/designation/addDesignation";
@@ -345,7 +345,7 @@ function App() {
             </AuthProtectedRoute>
           }
         />
-        <Route
+        {/* <Route
           path="/admin/organization/department/edit"
           element={
             <AuthProtectedRoute>
@@ -354,7 +354,7 @@ function App() {
               </AppLayout>
             </AuthProtectedRoute>
           }
-        />
+        /> */}
         <Route
           path="/admin/organization/department/view/:id"
           element={

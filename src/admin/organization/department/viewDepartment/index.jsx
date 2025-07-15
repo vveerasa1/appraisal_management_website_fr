@@ -382,7 +382,7 @@ const ViewDepartment = () => {
                           onClick={handleSave}
                           disabled={isSaving}
                         >
-                          {isSaving ? "Saving..." : "Save Changes"}
+                          {isSaving ? "Saving..." : "Save"}
                         </button>
                         <button
                           className="theme-btn btn-grey"
