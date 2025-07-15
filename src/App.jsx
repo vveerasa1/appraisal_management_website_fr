@@ -33,7 +33,7 @@ import AdminViewEmployee from "./admin/employees/viewEmployee";
 // admin points
 import AdminPoints from "./admin/points";
 import AdminAddPoints from "./admin/points/addPoint";
-import AdminEditPoints from "./admin/points/editPoint";
+// import AdminEditPoints from "./admin/points/editPoint";
 import AdminViewPoints from "./admin/points/viewPoint";
 // admin roles
 import AdminRoles from "./admin/roles";
@@ -255,7 +255,7 @@ function App() {
             </AuthProtectedRoute>
           }
         />
-        <Route
+        {/* <Route
           path="/admin/point/edit"
           element={
             <AuthProtectedRoute>
@@ -264,7 +264,7 @@ function App() {
               </AppLayout>
             </AuthProtectedRoute>
           }
-        />
+        /> */}
         <Route
           path="/admin/point/view/:id"
           element={

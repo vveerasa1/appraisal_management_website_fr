@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import "./style.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ProfileImg from "../../assets/images/user.png";
 import Select from "react-select";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
-import { useGetAllPointsQuery } from "../../services/features/points/pointApi";
+import { useGetAllPointsQuery, useDeletePointMutation } from "../../services/features/points/pointApi";
+import { showSuccessToast, showErrorToast } from "../../utils/toast";
+import { usePermission } from "../../hooks/usePermission";
 
 const Points = () => {
 
@@ -12,6 +14,9 @@ const Points = () => {
   const [searchInput, setSearchInput] = useState("");
   // State for employee status filter (frontend controlled)
   const [selectedStatus, setSelectedStatus] = useState("Active"); // Default to 'Active'
+  const navigate = useNavigate()
+    const { hasPermission } = usePermission();
+  const CAN_DELETE_APPRAISAL="appraisal:delete"
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -62,6 +67,8 @@ const Points = () => {
   });
   const [selectedRows, setSelectedRows] = useState([]);
   const [isAllSelected, setIsAllSelected] = useState(false);
+  const [deletePoints, { isLoading: isDeleting }] =
+    useDeletePointMutation();
 
   // Reset pagination when any filter changes
   useEffect(() => {
@@ -81,12 +88,10 @@ const Points = () => {
         bValue = b.employeeId?.employeeId || "";
         break;
       case "name": // Sorting by employee name (first + last)
-        aValue = `${a.employeeId?.firstName || ""} ${
-          a.employeeId?.lastName || ""
-        }`;
-        bValue = `${b.employeeId?.firstName || ""} ${
-          b.employeeId?.lastName || ""
-        }`;
+        aValue = `${a.employeeId?.firstName || ""} ${a.employeeId?.lastName || ""
+          }`;
+        bValue = `${b.employeeId?.firstName || ""} ${b.employeeId?.lastName || ""
+          }`;
         break;
       case "date": // Sorting by date (assuming createdAt for the point entry itself)
         aValue = new Date(a.createdAt).getTime();
@@ -227,7 +232,23 @@ const Points = () => {
   const handleStatusChange = (selectedOption) => {
     setSelectedStatus(selectedOption.value);
   };
-
+  const handleDelete = async (id) => {
+    if (!id) return;
+    if (!window.confirm("Are you sure you want to delete this department?"))
+      return;
+    try {
+      await deletePoints(id).unwrap();
+      showSuccessToast("Points deleted successfully!");
+      navigate('/admin/points')
+    } catch (err) {
+      const errorMsg =
+        err?.data?.message ||
+        err?.error ||
+        err?.message ||
+        "Failed to delete Points.";
+      showErrorToast(errorMsg);
+    }
+  };
   return (
     <>
       <div className="pageTanDiv">
@@ -334,8 +355,8 @@ const Points = () => {
             ) : (
               <table className="table table-striped">
                 <thead>
-              <tr>
-                {/* <th style={{ width: "50px" }}>
+                  <tr>
+                    {/* <th style={{ width: "50px" }}>
                   <button className="table-head-btn">
                     {" "}
                     <i className="fa fa-tasks"></i>{" "}
@@ -349,132 +370,131 @@ const Points = () => {
                     checked={isAllSelected}
                   />
                 </th> */}
-                <th>
-                  <button className="table-head-btn"> Photo </button>
-                </th>
-                <th>
-                  <button
-                    className="table-head-btn"
-                    onClick={() => handleSort("employeeId")}
-                  >
-                    Employee ID{" "}
-                    {sortConfig.key === "employeeId" && (
-                      <span
-                        className={`ml-1 arrow ${
-                          sortConfig.direction === "asc"
-                            ? "arrow-up"
-                            : "arrow-down"
-                        }`}
+                    <th>
+                      <button className="table-head-btn"> Photo </button>
+                    </th>
+                    <th>
+                      <button
+                        className="table-head-btn"
+                        onClick={() => handleSort("employeeId")}
                       >
-                        {sortConfig.direction === "asc" ? "▲" : "▼"}
-                      </span>
-                    )}
-                  </button>
-                </th>
-                <th>
-                  <button
-                    className="table-head-btn"
-                    onClick={() => handleSort("name")}
-                  >
-                    Name{" "}
-                    {sortConfig.key === "name" && (
-                      <span
-                        className={`ml-1 arrow ${
-                          sortConfig.direction === "asc"
-                            ? "arrow-up"
-                            : "arrow-down"
-                        }`}
+                        Employee ID{" "}
+                        {sortConfig.key === "employeeId" && (
+                          <span
+                            className={`ml-1 arrow ${sortConfig.direction === "asc"
+                              ? "arrow-up"
+                              : "arrow-down"
+                              }`}
+                          >
+                            {sortConfig.direction === "asc" ? "▲" : "▼"}
+                          </span>
+                        )}
+                      </button>
+                    </th>
+                    <th>
+                      <button
+                        className="table-head-btn"
+                        onClick={() => handleSort("name")}
                       >
-                        {sortConfig.direction === "asc" ? "▲" : "▼"}
-                      </span>
-                    )}
-                  </button>
-                </th>
-                <th>
-                  <button
-                    className="table-head-btn"
-                    onClick={() => handleSort("pointsChange")}
-                  >
-                    Points{" "}
-                    {sortConfig.key === "pointsChange" && (
-                      <span
-                        className={`ml-1 arrow ${
-                          sortConfig.direction === "asc"
-                            ? "arrow-up"
-                            : "arrow-down"
-                        }`}
+                        Name{" "}
+                        {sortConfig.key === "name" && (
+                          <span
+                            className={`ml-1 arrow ${sortConfig.direction === "asc"
+                              ? "arrow-up"
+                              : "arrow-down"
+                              }`}
+                          >
+                            {sortConfig.direction === "asc" ? "▲" : "▼"}
+                          </span>
+                        )}
+                      </button>
+                    </th>
+                    <th>
+                      <button
+                        className="table-head-btn"
+                        onClick={() => handleSort("pointsChange")}
                       >
-                        {sortConfig.direction === "asc" ? "▲" : "▼"}
-                      </span>
-                    )}
-                  </button>
-                </th>
-                <th>
-                  <button
-                    className="table-head-btn"
-                    onClick={() => handleSort("balanceAfter")}
-                  >
-                    Balance{" "}
-                    {sortConfig.key === "balanceAfter" && (
-                      <span
-                        className={`ml-1 arrow ${
-                          sortConfig.direction === "asc"
-                            ? "arrow-up"
-                            : "arrow-down"
-                        }`}
+                        Points{" "}
+                        {sortConfig.key === "pointsChange" && (
+                          <span
+                            className={`ml-1 arrow ${sortConfig.direction === "asc"
+                              ? "arrow-up"
+                              : "arrow-down"
+                              }`}
+                          >
+                            {sortConfig.direction === "asc" ? "▲" : "▼"}
+                          </span>
+                        )}
+                      </button>
+                    </th>
+                    <th>
+                      <button
+                        className="table-head-btn"
+                        onClick={() => handleSort("balanceAfter")}
                       >
-                        {sortConfig.direction === "asc" ? "▲" : "▼"}
-                      </span>
-                    )}
-                  </button>
-                </th>
-                <th>
-                  <button
-                    className="table-head-btn"
-                    onClick={() => handleSort("reason")}
-                  >
-                    Reason{" "}
-                    {sortConfig.key === "reason" && (
-                      <span
-                        className={`ml-1 arrow ${
-                          sortConfig.direction === "asc"
-                            ? "arrow-up"
-                            : "arrow-down"
-                        }`}
+                        Balance{" "}
+                        {sortConfig.key === "balanceAfter" && (
+                          <span
+                            className={`ml-1 arrow ${sortConfig.direction === "asc"
+                              ? "arrow-up"
+                              : "arrow-down"
+                              }`}
+                          >
+                            {sortConfig.direction === "asc" ? "▲" : "▼"}
+                          </span>
+                        )}
+                      </button>
+                    </th>
+                    <th>
+                      <button
+                        className="table-head-btn"
+                        onClick={() => handleSort("reason")}
                       >
-                        {sortConfig.direction === "asc" ? "▲" : "▼"}
-                      </span>
-                    )}
-                  </button>
-                </th>
-                <th>
-                  <button
-                    className="table-head-btn"
-                    onClick={() => handleSort("date")}
-                  >
-                    Date{" "}
-                    {sortConfig.key === "date" && (
-                      <span
-                        className={`ml-1 arrow ${
-                          sortConfig.direction === "asc"
-                            ? "arrow-up"
-                            : "arrow-down"
-                        }`}
+                        Reason{" "}
+                        {sortConfig.key === "reason" && (
+                          <span
+                            className={`ml-1 arrow ${sortConfig.direction === "asc"
+                              ? "arrow-up"
+                              : "arrow-down"
+                              }`}
+                          >
+                            {sortConfig.direction === "asc" ? "▲" : "▼"}
+                          </span>
+                        )}
+                      </button>
+                    </th>
+                    <th>
+                      <button
+                        className="table-head-btn"
+                        onClick={() => handleSort("date")}
                       >
-                        {sortConfig.direction === "asc" ? "▲" : "▼"}
-                      </span>
-                    )}
-                  </button>
-                </th>
-                <th>
-                  <button className="table-head-btn">Actions</button>
-                </th>
-              </tr>
+                        Date{" "}
+                        {sortConfig.key === "date" && (
+                          <span
+                            className={`ml-1 arrow ${sortConfig.direction === "asc"
+                              ? "arrow-up"
+                              : "arrow-down"
+                              }`}
+                          >
+                            {sortConfig.direction === "asc" ? "▲" : "▼"}
+                          </span>
+                        )}
+                      </button>
+                    </th>
+                    <th>
+                      <button className="table-head-btn">Actions</button>
+                    </th>
+                  </tr>
                 </thead>
                 <tbody>
-                {currentRows.map((row) => (
-                  <tr key={row._id}>
-                    {/* <td>
+                  {currentRows.map((row) => {
+                    const createdAt = new Date(row.createdAt);
+                    const now = new Date();
+                    const diffInHours = (now - createdAt) / (1000 * 60 * 60); // ms to hours
+                    const canDelete = diffInHours <= 24;
+                    return (
+                      <tr key={row._id}>
+                        {/* <td>
                       <div
                         ref={(el) => (dropdownRefs.current[row._id] = el)}
                         className="dropdown"
@@ -506,57 +526,72 @@ const Points = () => {
                         checked={selectedRows.includes(row._id)}
                       />
                     </td> */}
-                    <td>
-                      <img
-                        className="img-fluid tableProfileImg"
-                        src={ProfileImg}
-                        alt="User"
-                      />
-                    </td>
-                    <td>
-                      <Link
-                        to={`/admin/point/view/${row._id}`}
-                        className="tlink"
-                      >
-                        {row.employeeId?.employeeId}
-                      </Link>
-                    </td>
-                    <td>
-                      {" "}
-                      {row.employeeId?.firstName} {row.employeeId?.lastName}
-                    </td>
-                    <td
-                      style={{
-                        color:
-                          row.pointsChange > 0
-                            ? "green"
-                            : row.pointsChange < 0
-                            ? "red"
-                            : "black",
-                      }}
-                    >
-                      {row.pointsChange > 0
-                        ? `+${row.pointsChange}`
-                        : row.pointsChange}
-                    </td>
-                    <td>{row.balanceAfter}</td>
-                    <td>{row.reason}</td>
-                    <td>{new Date(row.createdAt).toLocaleDateString()}</td>
-                    <td>
-                      <button
-                        className="btn"
-                        title="Delete"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          // Add your delete logic here
-                          alert(`Delete clicked for ${row._id}`);
-                        }}
-                      >
-                        <i className="fa fa-trash" style={{ color: "red" }} />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                        <td>
+                          <img
+                            className="img-fluid tableProfileImg"
+                            src={ProfileImg}
+                            alt="User"
+                          />
+                        </td>
+                        <td>
+                          <Link
+                            to={`/admin/point/view/${row._id}`}
+                            className="tlink"
+                          >
+                            {row.employeeId?.employeeId}
+                          </Link>
+                        </td>
+                        <td>
+                          {" "}
+                          {row.employeeId?.firstName} {row.employeeId?.lastName}
+                        </td>
+                        <td
+                          style={{
+                            color:
+                              row.pointsChange > 0
+                                ? "green"
+                                : row.pointsChange < 0
+                                  ? "red"
+                                  : "black",
+                          }}
+                        >
+                          {row.pointsChange > 0
+                            ? `+${row.pointsChange}`
+                            : row.pointsChange}
+                        </td>
+                        <td>{row.balanceAfter}</td>
+                        <td>{row.reason}</td>
+                        <td>{new Date(row.createdAt).toLocaleDateString()}</td>
+                        <td>
+                          {/* <button
+                          className="btn"
+                          title="Delete"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            // Add your delete logic here
+                            handleDelete(row._id)
+                            // alert(`Delete clicked for ${row._id}`);
+                          }}
+                        >
+                          <i className="fa fa-trash" style={{ color: "red" }} />
+                        </button> */}
+          {hasPermission(CAN_DELETE_APPRAISAL) && 
+                          canDelete && (
+                            <button
+                              className="btn"
+                              title="Delete"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDelete(row._id);
+                              }}
+                            >
+                              <i className="fa fa-trash" style={{ color: "red" }} />
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    )
+                  })}
                 </tbody>
               </table>
             )}
@@ -571,9 +606,8 @@ const Points = () => {
                 {Array.from({ length: totalPages }, (_, i) => (
                   <li
                     key={i}
-                    className={`page-item ${
-                      i + 1 === currentPage ? "active" : ""
-                    }`}
+                    className={`page-item ${i + 1 === currentPage ? "active" : ""
+                      }`}
                   >
                     <button
                       className="page-link"

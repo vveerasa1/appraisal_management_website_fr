@@ -5,10 +5,17 @@ import User from "../../assets/images/user.png";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import { usePermission } from "../../hooks/usePermission";
 import { useNavigate } from "react-router-dom";
+import {
+  useGetUserQuery,
+} from "../../services/features/users/userApi";
+import { useSelector } from "react-redux";
+
 const Topbar = ({ toggleSidebar }) => {
   const location = useLocation();
   const { hasPermission } = usePermission();
-
+  const userId = useSelector((state) => state.users.id);
+  const { data: userData, isLoading: isUserLoading } = useGetUserQuery(userId);
+console.log(userData,"userDatauserDatauserData")
   const CAN_CREATE_USER = "user:create";
   const CAN_CREATE_DEPARTMENT = "department:create";
   const CAN_CREATE_DESIGNATION = "designation:create";
@@ -172,9 +179,8 @@ const Topbar = ({ toggleSidebar }) => {
           </button>
 
           <ul
-            className={`notificationdrop dropdown-menu ${
-              isNotificationDropdownOpen ? "show" : ""
-            }`}
+            className={`notificationdrop dropdown-menu ${isNotificationDropdownOpen ? "show" : ""
+              }`}
           >
             <h3 className="nofify-heading">Notifications</h3>
             <li>
@@ -205,7 +211,14 @@ const Topbar = ({ toggleSidebar }) => {
         {/* admin */}
         <div className="user" ref={dropdownRef}>
           <button className="user-avatar" onClick={toggleDropdown}>
-            <img className="img-fluid" src={User} alt="Avatar" />
+            {userData?.data?.profilePhotoUrl?
+             <img className="img-fluid" style={{
+              borderRadius:'50%'
+             }}
+              height={'100%'} width={'100%'}
+               src={userData?.data?.profilePhotoUrl} alt="Avatar" />:
+             
+            <img className="img-fluid" src={User} alt="Avatar" />}
           </button>
           <ul className={`dropdown-menu ${isDropdownOpen ? "show" : ""}`}>
             <li>

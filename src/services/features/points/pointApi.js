@@ -22,11 +22,28 @@ export const pointApi = createCustomApi("pointApi", (builder) => ({
       return tagsToInvalidate;
     },
   }),
+  updatePoint: builder.mutation({
+    query: ({ id, ...patch }) => ({
+      url: `${POINT_ENDPOINTS.ROOT}`,
+      method: "POST",
+      data: {id,...patch},
+    }),
+    invalidatesTags: (result, error, arg) => {
+      const tagsToInvalidate = ["Points"];
+      if (arg.employeeId) {
+        tagsToInvalidate.push({ type: "Users", id: arg.employeeId });
+      }
+      tagsToInvalidate.push("TeamMembers");
+      return tagsToInvalidate;
+    },
+  }),
   getPoint: builder.query({
     query: (id) => ({
       url: `${POINT_ENDPOINTS.ROOT}/${id}`,
       method: "GET",
     }),
+    providesTags: ["Points"], 
+
   }),
   getAllPoints: builder.query({
     query: ({
@@ -38,7 +55,7 @@ export const pointApi = createCustomApi("pointApi", (builder) => ({
       url: `${POINT_ENDPOINTS.ROOT}?search=${search}&dateRange=${dateRange}&pointsRange=${pointsRange}&createdBy=${createdBy}`,
       method: "GET",
     }),
-    providesTags: ["Points"], // <-- Add this
+    providesTags: ["Points"], 
   }),
 
   getAllPointsByUserId: builder.query({
@@ -46,6 +63,15 @@ export const pointApi = createCustomApi("pointApi", (builder) => ({
       url: `${POINT_ENDPOINTS.ROOT}/employee/${id}`,
       method: "GET",
     }),
+    providesTags: ["Points"], 
+
+  }),
+  deletePoint: builder.mutation({
+    query: (id) => ({
+      url: `${POINT_ENDPOINTS.ROOT}/${id}`,
+      method: "DELETE",
+    }),
+    invalidatesTags: ["Points"],
   }),
 }));
 
@@ -53,5 +79,7 @@ export const {
   useCreatePointMutation,
   useGetPointQuery,
   useGetAllPointsQuery,
+  useUpdatePointMutation,
   useGetAllPointsByUserIdQuery,
+  useDeletePointMutation,
 } = pointApi;
