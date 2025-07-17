@@ -138,6 +138,10 @@
   display: none;
 }
 
+.tree-empItem-has-list{
+  top: -65px;
+}
+
 .tree-empItem::before {
   content: "";
   position: absolute;

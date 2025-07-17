@@ -122,11 +122,18 @@ console.log(userData,"userDatauserDatauserData")
               className={`dropdown-menu ${isaddmenuDropdownOpen ? "show" : ""}`}
             >
               {hasPermission(CAN_CREATE_USER) && (
+                <>
                 <li>
                   <Link to="/admin/employee/add" className="dropdown-item">
                     <i className="fa fa-plus-circle"></i> Add Employee
                   </Link>
                 </li>
+                <li>
+                  <Link to="/admin/attendance/add" className="dropdown-item">
+                    <i className="fa fa-plus-circle"></i> Add Attendance
+                  </Link>
+                </li>
+                </>
               )}
               {/* <li>
                             <Link to="/admin/user/add" className="dropdown-item">

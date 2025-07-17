@@ -317,7 +317,7 @@ const Dashboard = () => {
                   ) : (
                     <li>
                       <div className="dmemebers-wrapper">
-                        <h3>No users</h3>
+                        <p>No users</p>
                       </div>
                     </li>
                   )}
