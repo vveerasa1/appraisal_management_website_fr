@@ -1,0 +1,147 @@
+.calendarWrapper{
+    width: 100%;
+    position: relative;
+    display: flex;
+    height: 100vh;
+}
+
+.calendarEmployeeList{
+    width: 200px;
+    padding: 1rem 0rem 1rem 1rem;
+    border-right: 1px solid #ddd;
+}
+
+.cemployeeHeading{
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.cEmployeeItem{
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    cursor: pointer;
+    font-family: 'Lato-Medium', sans-serif;
+}
+
+.cEmployeeItem:last-child{
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+    border-bottom: none;
+}
+
+.cEmployeeIcon{
+    width: 35px;
+    height: 35px;
+    min-width: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    background-color: rgb(215 215 215);
+    color: #009688;
+    border-radius: 50%;
+}
+
+.ceStatusTop{
+    display: flex;
+    align-items: center;
+}
+
+.ceStatusTop h4{
+    font-size: 12px;
+    color: #ffffff;
+    margin-bottom: 0px;
+    font-family: 'Lato-Medium', sans-serif;
+}
+
+.ceStatusTop p{
+    font-size: 12px;
+    color: #ffffff;
+    margin-bottom: 0px;
+}
+
+.ceStatusBottom{
+    font-size: 10px;
+    color: #ffffff;
+}
+
+.ceStatusTop h4::after{
+    content: '•';
+    position: relative;
+    display: inline-block;
+    margin-left: 5px;
+    margin-right: 5px;
+    color: #ffffff;
+    margin-top: 2px;
+}
+
+.calendarContent{
+    flex: 1;
+    padding: 1rem;
+}
+
+/* Override for month view cells */
+.rbc-btn-group button{
+    height: 35px;
+    border: 1px solid #ddd !important;
+    font-size: 13px !important;
+}
+
+.rbc-btn-group button.rbc-active{
+    background-color: #143361 !important;
+    box-shadow: none !important;
+    color: #ffffff !important;
+    border-color: #143361 !important;
+}
+
+.rbc-header {
+  background: #3e4265;
+  color: #fff;
+  font-family: 'Lato-Bold', sans-serif;
+  font-weight: normal !important;
+}
+
+.rbc-toolbar .rbc-toolbar-label{
+    font-size: 13px !important;
+}
+
+.rbc-header.rbc-today .rbc-button-link{
+    color: #143361 !important;
+}
+
+.smallheading{
+    font-size: 16px;
+    margin-bottom: 0px;
+}
+
+.table-wrapper.calendar{
+    max-height: calc(100vh - 180px);
+    min-height: calc(100vh - 180px);
+}
+
+.rbc-row-bg{
+    overflow: auto !important;
+}
+
+.rbc-month-row + .rbc-month-row{
+    overflow: visible !important;
+}
+
+.cEmployeeItem.active{
+    font-family: 'Lato-Bold', sans-serif;
+}
+
+.date-input{
+    height: 35px;
+    padding: 5px 10px 5px 10px;
+    border: 1px solid #ddd;
+    background-color: var(--white);
+    border-radius: 8px;
+    min-width: 180px;
+}
