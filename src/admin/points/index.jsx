@@ -563,30 +563,31 @@ const Points = () => {
                         <td>{row.reason}</td>
                         <td>{new Date(row.createdAt).toLocaleDateString()}</td>
                         <td>
-                          {/* <button
-                          className="btn"
-                          title="Delete"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            // Add your delete logic here
-                            handleDelete(row._id)
-                            // alert(`Delete clicked for ${row._id}`);
-                          }}
-                        >
-                          <i className="fa fa-trash" style={{ color: "red" }} />
-                        </button> */}
-          {hasPermission(CAN_DELETE_APPRAISAL) && 
+                          {hasPermission(CAN_DELETE_APPRAISAL) && 
                           canDelete && (
-                            <button
-                              className="btn"
-                              title="Delete"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDelete(row._id);
-                              }}
-                            >
-                              <i className="fa fa-trash" style={{ color: "red" }} />
-                            </button>
+                            <>
+                              <button
+                                className="btn"
+                                title="Edit"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  window.location.assign(`/admin/point/edit/${row._id}`);
+                                }}
+                                style={{ marginRight: "8px" }}
+                              >
+                                <i className="fa fa-pencil" style={{ color: "blue" }} />
+                              </button>
+                              <button
+                                className="btn"
+                                title="Delete"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDelete(row._id);
+                                }}
+                              >
+                                <i className="fa fa-trash" style={{ color: "red" }} />
+                              </button>
+                            </>
                           )}
                         </td>
                       </tr>

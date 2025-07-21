@@ -83,7 +83,7 @@ const statusOptions = [
 const ViewRole = () => {
   const userId = useSelector((state) => state.users.id);
 
-  const { id } = useParams();
+  const { id, type } = useParams();
   const { data, isLoading, error, refetch } = useGetRoleByIdQuery(id);
   const role = data?.data;
   const navigate = useNavigate();
@@ -152,7 +152,11 @@ const ViewRole = () => {
       showErrorToast(errorMsg);
     }
   };
-
+  useEffect(() => {
+    if (type === "edit") {
+      setEditMode(true);
+    }
+  }, [type]);
   const handleSave = async () => {
     try {
       await addRole({
@@ -399,6 +403,8 @@ const ViewRole = () => {
                             status: role.status || "Active", // Reset status on cancel
                           });
                           setChecked(getDefaultChecked(role.permissions));
+                          navigate("/admin/roles");
+
                         }}
                         style={{ marginLeft: 12 }}
                       >

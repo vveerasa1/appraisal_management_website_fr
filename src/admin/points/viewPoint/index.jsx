@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 
 
 const ViewPoint = () => {
-  const { id } = useParams(); // Get the point ID from the URL
+  const { id ,type} = useParams(); // Get the point ID from the URL
   const { data, isLoading, error } = useGetPointQuery(id);
   const userId = useSelector((state) => state.users.id);  
 
@@ -57,7 +57,11 @@ const ViewPoint = () => {
     setEditMode(!editMode);
     setErrors({});
   };
-
+useEffect(() => {
+  if (type === "edit") {
+    setEditMode(true);
+  };
+}, [type]);
   const handleSave = async () => {
     let tempErrors = {};
     if (!pointsChange || isNaN(pointsChange) || Number(pointsChange) === 0) {
@@ -88,7 +92,11 @@ const ViewPoint = () => {
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Failed to load point details.</p>;
-  const handleEdit = () => setEditMode(true);
+  const handleEdit = () =>{ 
+    setEditMode(true);
+    navigate(`/admin/point/edit/${id}`);
+    
+  }
   const handleCancel = () => {
     setEditMode(false);
     // setPointsChange(originalData.pointsChange);
@@ -100,6 +108,7 @@ const ViewPoint = () => {
 const now = new Date();
 const diffInHours = (now - createdAt) / (1000 * 60 * 60);
 const canEditOrDelete = diffInHours <= 24;
+
   return (
     <>
       <div className="pageTanDiv">
@@ -116,7 +125,7 @@ const canEditOrDelete = diffInHours <= 24;
           </div>
           <div className="rvDiv">
             {hasPermission(CAN_UPDATE_APPRAISAL) && 
-          canEditOrDelete && (
+          canEditOrDelete &&!editMode && (
            <button
               className="rvDiv-btns"
               type="button"

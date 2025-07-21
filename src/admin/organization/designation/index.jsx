@@ -441,18 +441,42 @@ const Designation = () => {
                           : "-"}
                       </td>
                       <td>
-                        <button
-                          className="btn"
-                          title="Delete"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDelete(row._id)
-                            // Add your delete logic here
-                            // alert(`Delete clicked for ${row._id}`);
-                          }}
-                        >
-                          <i className="fa fa-trash" style={{ color: "red" }} />
-                        </button>
+                        <>
+                          {/* <button
+                            className="btn"
+                            title="Edit"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              window.location.assign(`/admin/organization/designation/edit/${row._id}`);
+                            }}
+                            style={{ marginRight: "8px" }}
+                          >
+                            <i className="fa fa-pencil" style={{ color: "blue" }} />
+                          </button> */}
+                           <button
+                            className="btn"
+                            title="Edit"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              window.location.assign(`/admin/organization/designation/edit/${row._id}`);
+                            }}
+                            style={{ marginRight: "8px" }}
+                          >
+                            <i className="fa fa-pencil" style={{ color: "blue" }} />
+                          </button>
+                          <button
+                            className="btn"
+                            title="Delete"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDelete(row._id)
+                              // Add your delete logic here
+                              // alert(`Delete clicked for ${row._id}`);
+                            }}
+                          >
+                            <i className="fa fa-trash" style={{ color: "red" }} />
+                          </button>
+                        </>
                       </td>
                     </tr>
                   ))
@@ -506,5 +530,4 @@ const Designation = () => {
     </>
   );
 };
-
 export default Designation;

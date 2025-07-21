@@ -266,7 +266,7 @@ function App() {
           }
         /> */}
         <Route
-          path="/admin/point/view/:id"
+          path="/admin/point/:type/:id"
           element={
             <AuthProtectedRoute>
               <AppLayout>
@@ -306,7 +306,7 @@ function App() {
           }
         />
         <Route
-          path="/admin/role/view/:id"
+          path="/admin/role/:type/:id"
           element={
             <AuthProtectedRoute>
               <AppLayout>
@@ -356,7 +356,7 @@ function App() {
           }
         /> */}
         <Route
-          path="/admin/organization/department/view/:id"
+          path="/admin/organization/department/:type/:id"
           element={
             <AuthProtectedRoute>
               <AppLayout>
@@ -396,7 +396,7 @@ function App() {
           }
         />
         <Route
-          path="/admin/organization/designation/view/:id"
+          path="/admin/organization/designation/:type/:id"
           element={
             <AuthProtectedRoute>
               <AppLayout>

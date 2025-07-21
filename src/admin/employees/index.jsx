@@ -326,19 +326,30 @@ const handleDelete = async (id) => {
     id: "actions",
     header: () => <button className="table-head-btn">Actions</button>,
     cell: ({ row }) => (
-      <button
-        className="btn"
-        onClick={(e) => {
-          e.stopPropagation();
-          console.log(row.id)
-          handleDelete(row.original._id)
-          // Add your delete logic here, e.g., call a delete API or dispatch an action
-          // alert(`Delete clicked for ${row.original.employeeId}`);
-        }}
-        title="Delete"
-      >
-        <i className="fa fa-trash"  style={{ color: 'red' }}/>
-      </button>
+      <>
+        <button
+          className="btn"
+          onClick={(e) => {
+            e.stopPropagation();
+            // Navigate to edit screen
+            row.original._id && window.location.assign(`/admin/employee/edit/${row.original._id}`);
+          }}
+          title="Edit"
+          style={{ marginRight: "8px" }}
+        >
+          <i className="fa fa-pencil" style={{ color: 'blue' }} />
+        </button>
+        <button
+          className="btn"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleDelete(row.original._id);
+          }}
+          title="Delete"
+        >
+          <i className="fa fa-trash" style={{ color: 'red' }} />
+        </button>
+      </>
     ),
   }),
 ];

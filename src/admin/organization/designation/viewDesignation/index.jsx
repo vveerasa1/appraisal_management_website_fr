@@ -18,7 +18,7 @@ import { usePermission } from "../../../../hooks/usePermission";
 // Removed: Select from "react-select"; - as we're no longer using it for status
 
 const ViewDesignation = () => {
-  const { id } = useParams();
+  const { id, type } = useParams();
   const { data, isLoading, error, refetch } = useGetDesignationByIdQuery(id);
   const designation = data?.data;
   const navigate = useNavigate();
@@ -73,7 +73,11 @@ const ViewDesignation = () => {
       showErrorToast(errorMsg);
     }
   };
-
+  useEffect(() => {
+    if (type === "edit") {
+      setEditMode(true);
+    }
+  }, [type]);
   const handleSave = async (values, { setSubmitting }) => {
     try {
       await addDesignation({
@@ -114,6 +118,9 @@ const ViewDesignation = () => {
     <>
       <div className="pageTanDiv">
         <ul className="pageTabPane">
+          <Link to="/admin/organization/designation">
+            <i className="fa fa-angle-left"></i>
+          </Link>
           <li>
             <Link to="/admin/organization/department">Department</Link>
           </li>
@@ -125,7 +132,7 @@ const ViewDesignation = () => {
           </li>
         </ul>
         <div className="rvDiv">
-          {hasPermission(CAN_UPDATE_DESIGNATION) && (
+          {hasPermission(CAN_UPDATE_DESIGNATION) && !editMode && (
             <button
               className="rvDiv-btns"
               type="button"
@@ -268,8 +275,8 @@ const ViewDesignation = () => {
                             value={
                               designation?.createdAt
                                 ? new Date(
-                                    designation.createdAt
-                                  ).toLocaleString()
+                                  designation.createdAt
+                                ).toLocaleString()
                                 : "-"
                             }
                             disabled
@@ -306,8 +313,8 @@ const ViewDesignation = () => {
                             value={
                               designation?.updatedAt
                                 ? new Date(
-                                    designation.updatedAt
-                                  ).toLocaleString()
+                                  designation.updatedAt
+                                ).toLocaleString()
                                 : "-"
                             }
                             disabled
@@ -335,6 +342,8 @@ const ViewDesignation = () => {
                                 onClick={() => {
                                   resetForm();
                                   setEditMode(false);
+                                  navigate(`/admin/organization/designation`);
+
                                 }}
                                 disabled={isSubmitting || isSaving}
                               >
@@ -356,4 +365,5 @@ const ViewDesignation = () => {
   );
 };
 
+// export default ViewDesignation;
 export default ViewDesignation;

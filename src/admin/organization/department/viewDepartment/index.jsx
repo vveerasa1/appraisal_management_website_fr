@@ -18,7 +18,7 @@ import { usePermission } from "../../../../hooks/usePermission";
 // import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 
 const ViewDepartment = () => {
-  const { id } = useParams();
+  const { id, type } = useParams();
   const { data, isLoading, error, refetch } = useGetDepartmentByIdQuery(id);
   const department = data?.data;
   const userId = useSelector((state) => state.users.id);
@@ -28,7 +28,7 @@ const ViewDepartment = () => {
   const CAN_DELETE_DEPARTMENT = "department:delete";
 
   // Fetch all departments for Parent Department dropdown
-  const { data: departmentsData } = useGetDepartmentsQuery({search: ""});
+  const { data: departmentsData } = useGetDepartmentsQuery({ search: "" });
   const departments = departmentsData?.data || [];
 
   // Fetch all employees for Department Lead dropdown
@@ -65,12 +65,19 @@ const ViewDepartment = () => {
       });
     }
   }, [department]);
-
+  useEffect(() => {
+    if (type === "edit") {
+      setEditMode(true);
+    }
+  }, [type]);
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleEdit = () => setEditMode(true);
+  const handleEdit = () => {
+    setEditMode(true);
+    navigate(`/admin/organization/department/edit/${id}`);
+  }
   const handleCancel = () => {
     setEditMode(false);
     if (department) {
@@ -81,6 +88,8 @@ const ViewDepartment = () => {
         status: department.status || "Active", // Reset status on cancel
       });
     }
+    navigate(`/admin/organization/department`);
+
   };
 
   const handleDelete = async () => {
@@ -147,6 +156,9 @@ const ViewDepartment = () => {
     <>
       <div className="pageTanDiv">
         <ul className="pageTabPane">
+          <Link to="/admin/organization/department">
+            <i className="fa fa-angle-left"></i>
+          </Link>
           <li className="active">
             <Link to="/admin/organization/department">Department</Link>
           </li>
@@ -158,7 +170,7 @@ const ViewDepartment = () => {
           </li>
         </ul>
         <div className="rvDiv">
-          {hasPermission(CAN_UPDATE_DEPARTMENT) && (
+          {hasPermission(CAN_UPDATE_DEPARTMENT) && !editMode && (
             <button
               className="rvDiv-btns"
               type="button"
