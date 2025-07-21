@@ -36,6 +36,16 @@ const Sidebar = ({ isOpen }) => {
                 </li>
                 <li className="nav-item">
                     <Link
+                        to="/admin/attendance"
+                        className={`nav-link ${activeMenu === "Attendance" ? "active" : ""}`}
+                        onClick={() => handleMenuClick("Attendance")}
+                    >
+                        <i className="fa fa-clock-o"></i>
+                        Attendance
+                    </Link>
+                </li>
+                <li className="nav-item">
+                    <Link
                         to="/admin/points"
                         className={`nav-link ${activeMenu === "Points" ? "active" : ""}`}
                         onClick={() => handleMenuClick("Points")}

@@ -1,4 +1,4 @@
-import {React , useState } from "react";
+import { React, useState } from "react";
 import "./style.css";
 import { Link } from "react-router-dom";
 import { useCreatePointMutation } from "../../../services/features/points/pointApi";
@@ -37,6 +37,8 @@ const AddPoints = () => {
     if (!selectedUser) tempErrors.user = "User is required";
     if (!points || isNaN(points) || Number(points) === 0) {
       tempErrors.points = "Points count is required";
+    } else if (Number(points) > 10) {
+      tempErrors.points = "Points count should not exceed 10";
     }
     if (!reason) tempErrors.reason = "Reason is required";
     setErrors(tempErrors);
@@ -170,7 +172,15 @@ const AddPoints = () => {
 
                 <div className="col-12 col-md-12 col-lg-12">
                   <div className="submit-btn-block">
-                    <button className="theme-btn btn-border" type="button">
+                    <button
+                      className="theme-btn btn-border"
+                      type="button"
+                      onClick={() => {
+                        // resetForm(initialValues);
+                        // handleRemove();
+                        navigate("/admin/points");
+                      }}
+                    >
                       Cancel
                     </button>
                     <button

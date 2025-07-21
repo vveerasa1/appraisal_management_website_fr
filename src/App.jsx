@@ -50,10 +50,19 @@ import AdminAddDesignation from "./admin/organization/designation/addDesignation
 import AdminEditDesignation from "./admin/organization/designation/editDesignation";
 import AdminViewDesignation from "./admin/organization/designation/viewDesignation";
 import AdminOrganizationTree from "./admin/organization/organizationTree";
+// admin Attendance
+import AdminAttendance from "./admin/attendance";
+import AdminAddAttendance from "./admin/attendance/addAttendance";
+import AdminEditAttendance from "./admin/attendance/editAttendance"
+import AdminViewAttendance from "./admin/attendance/viewAttendance"
 
 // ***** employee ***** //
 import EmployeeDashboard from "./employee/dashboard";
 import EmployeePoints from "./employee/points";
+import Attendance from './employee/attendance';
+import AddAttendance from './employee/attendance/addAttendance';
+import EditAttendance from './employee/attendance/editAttendance';
+import ViewAttendance from './employee/attendance/viewAttendance';
 
 // ***** hr ***** //
 import HRDashboard from "./hr/dashboard";
@@ -415,6 +424,46 @@ function App() {
             </AuthProtectedRoute>
           }
         />
+        <Route
+          path="/admin/attendance"
+          element={
+            <AuthProtectedRoute>
+              <AppLayout>
+                <AdminAttendance />
+              </AppLayout>
+            </AuthProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/attendance/add"
+          element={
+            <AuthProtectedRoute>
+              <AppLayout>
+                <AdminAddAttendance />
+              </AppLayout>
+            </AuthProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/attendance/edit"
+          element={
+            <AuthProtectedRoute>
+              <AppLayout>
+                <AdminEditAttendance />
+              </AppLayout>
+            </AuthProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/attendance/view"
+          element={
+            <AuthProtectedRoute>
+              <AppLayout>
+                <AdminViewAttendance />
+              </AppLayout>
+            </AuthProtectedRoute>
+          }
+        />
 
         {/* employee */}
         <Route
@@ -433,6 +482,46 @@ function App() {
             <AuthProtectedRoute>
               <AppLayout>
                 <EmployeePoints />
+              </AppLayout>
+            </AuthProtectedRoute>
+          }
+        />
+        <Route
+          path="/employee/attendance"
+          element={
+            <AuthProtectedRoute>
+              <AppLayout>
+                <Attendance />
+              </AppLayout>
+            </AuthProtectedRoute>
+          }
+        />
+        <Route
+          path="/employee/attendance/add"
+          element={
+            <AuthProtectedRoute>
+              <AppLayout>
+                <AddAttendance />
+              </AppLayout>
+            </AuthProtectedRoute>
+          }
+        />
+        <Route
+          path="/employee/attendance/edit"
+          element={
+            <AuthProtectedRoute>
+              <AppLayout>
+                <EditAttendance />
+              </AppLayout>
+            </AuthProtectedRoute>
+          }
+        />
+        <Route
+          path="/employee/attendance/view"
+          element={
+            <AuthProtectedRoute>
+              <AppLayout>
+                <ViewAttendance />
               </AppLayout>
             </AuthProtectedRoute>
           }

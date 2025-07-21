@@ -67,7 +67,7 @@ const Sidebar = ({ isOpen }) => {
         {hasPermission(CAN_VIEW_APPRAISAL) && (
           <li className="nav-item">
             <Link
-              to="/employee/points"
+              to="/admin/points"
               className={`nav-link ${activeMenu === "Points" ? "active" : ""}`}
               onClick={() => handleMenuClick("Points")}
             >

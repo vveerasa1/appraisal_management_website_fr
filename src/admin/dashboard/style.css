@@ -200,6 +200,10 @@
     cursor: pointer;
 }
 
+.dc-list li:last-child{
+    border-bottom: none;
+}
+
 .dc-list-inner{
     display: flex;
     align-items: center;
