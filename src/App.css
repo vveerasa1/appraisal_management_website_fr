@@ -139,3 +139,11 @@ b{
     padding: 20px;
     padding-top: 0px;
 }
+
+.table thead tr th:first-child{
+  padding-left: 30px !important;
+}
+
+.table tbody tr td:first-child{
+  padding-left: 30px !important;
+}

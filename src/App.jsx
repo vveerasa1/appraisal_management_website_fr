@@ -55,6 +55,11 @@ import AdminAttendance from "./admin/attendance";
 import AdminAddAttendance from "./admin/attendance/addAttendance";
 import AdminEditAttendance from "./admin/attendance/editAttendance"
 import AdminViewAttendance from "./admin/attendance/viewAttendance"
+// holidays
+import AdminHolidays from "./admin/holidays";
+import AdminAddHoliday from "./admin/holidays/addHoliday";
+import AdminEditHoliday from "./admin/holidays/editHoliday"
+import AdminViewHoliday from "./admin/holidays/viewHoliday"
 
 // ***** employee ***** //
 import EmployeeDashboard from "./employee/dashboard";
@@ -460,6 +465,46 @@ function App() {
             <AuthProtectedRoute>
               <AppLayout>
                 <AdminViewAttendance />
+              </AppLayout>
+            </AuthProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/holidays"
+          element={
+            <AuthProtectedRoute>
+              <AppLayout>
+                <AdminHolidays />
+              </AppLayout>
+            </AuthProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/holiday/add"
+          element={
+            <AuthProtectedRoute>
+              <AppLayout>
+                <AdminAddHoliday />
+              </AppLayout>
+            </AuthProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/holiday/edit"
+          element={
+            <AuthProtectedRoute>
+              <AppLayout>
+                <AdminEditHoliday />
+              </AppLayout>
+            </AuthProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/holiday/view"
+          element={
+            <AuthProtectedRoute>
+              <AppLayout>
+                <AdminViewHoliday />
               </AppLayout>
             </AuthProtectedRoute>
           }

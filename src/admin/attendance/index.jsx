@@ -67,6 +67,9 @@ const AdminAttendance = () => {
                     <li className="active">
                         <Link to="/admin/attendance">Attendance</Link>
                     </li>
+                    <li>
+                        <Link to="/admin/holidays">Holidays</Link>
+                    </li>
                 </ul>
             </div>
             <div className='table-lists-container'>
