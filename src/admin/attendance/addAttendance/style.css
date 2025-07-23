@@ -1,3 +1,5 @@
-.form-input:disabled{
-    background-color: #F4F4F4;
+.error-message {
+    color: red;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
 }

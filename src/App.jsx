@@ -87,13 +87,13 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import SuperAdminProtectedRoute from "./routes/protected/SuperAdminProtectedRoute";
 import AuthProtectedRoute from "./routes/protected/AuthProtectedRoute";
-
+import CognitoLoginRedirect from './CognitoLoginRedirect'
 function App() {
   return (
     <Router>
       <Routes>
         {/* Redirect default route ("/") to "/signin" */}
-        <Route path="/" element={<SignIn />} />
+        <Route path="/" element={<CognitoLoginRedirect />} />
 
         {/* Auth Route */}
         <Route path="/signin" element={<SignIn />} />
