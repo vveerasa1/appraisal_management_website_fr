@@ -57,9 +57,7 @@ import AdminEditAttendance from "./admin/attendance/editAttendance"
 import AdminViewAttendance from "./admin/attendance/viewAttendance"
 // holidays
 import AdminHolidays from "./admin/holidays";
-import AdminAddHoliday from "./admin/holidays/addHoliday";
-import AdminEditHoliday from "./admin/holidays/editHoliday"
-import AdminViewHoliday from "./admin/holidays/viewHoliday"
+import AdminAddHoliday from "./admin/holidays/HolidayForm";
 
 // ***** employee ***** //
 import EmployeeDashboard from "./employee/dashboard";
@@ -480,7 +478,7 @@ function App() {
           }
         />
         <Route
-          path="/admin/holiday/add"
+          path="/admin/holiday/:type?/:id?"
           element={
             <AuthProtectedRoute>
               <AppLayout>
@@ -489,7 +487,7 @@ function App() {
             </AuthProtectedRoute>
           }
         />
-        <Route
+        {/* <Route
           path="/admin/holiday/edit"
           element={
             <AuthProtectedRoute>
@@ -508,7 +506,7 @@ function App() {
               </AppLayout>
             </AuthProtectedRoute>
           }
-        />
+        /> */}
 
         {/* employee */}
         <Route
