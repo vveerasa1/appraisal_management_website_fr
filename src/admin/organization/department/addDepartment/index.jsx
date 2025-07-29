@@ -35,7 +35,7 @@ const AddDepartment = () => {
     try {
       await addDepartment({
         name,
-        userId: userId, // static userId
+        userId: userId, 
         departmentLead,
         parentDepartment
       }).unwrap();

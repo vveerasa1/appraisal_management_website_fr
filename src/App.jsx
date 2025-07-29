@@ -8,6 +8,8 @@ import {
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import AppLayout from "./layout";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 // auth
 import SignIn from "./auth/signin";
 import ForgotPassword from "./auth/forgotPassword";
