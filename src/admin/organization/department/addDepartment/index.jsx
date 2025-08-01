@@ -1,4 +1,4 @@
-import { useState, useEffect ,useMemo} from "react";
+import { useState, useEffect, useMemo } from "react";
 import "./style.css";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -23,8 +23,8 @@ const AddDepartment = () => {
     useGetReportersQuery();
   // Fetch parent departments
   const { data: departmentsData, isLoading: isLoadingDepartments } =
-    useGetDepartmentsQuery();
-  console.log(departmentsData,"departmentsData")
+    useGetDepartmentsQuery({ search: "" });
+  console.log("departmentsData :" + departmentsData);
   const handleSave = async (e) => {
     e.preventDefault();
     if (!name.trim()) {
@@ -35,9 +35,9 @@ const AddDepartment = () => {
     try {
       await addDepartment({
         name,
-        userId: userId, 
+        userId: userId,
         departmentLead,
-        parentDepartment
+        parentDepartment,
       }).unwrap();
       showSuccessToast("Department added successfully!");
       navigate("/admin/organization/department");
@@ -50,17 +50,7 @@ const AddDepartment = () => {
       );
     }
   };
-  const departments = useMemo(() => {
-    if (!departmentsData || !departmentsData.data) return [];
-    // Filter departments to only include 'Active' ones
-    const activeDepartments = departmentsData.data.filter(
-      (item) => item.status === "Active"
-    );
-    return mapToSelectOptions(activeDepartments, {
-      label: "name",
-      value: "_id",
-    });
-  }, [departmentsData]);
+  
   return (
     <>
       <div className="pageTanDiv">

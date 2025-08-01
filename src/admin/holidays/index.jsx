@@ -1,11 +1,11 @@
-import { useState, } from "react";
+import { useState } from "react";
 import "./style.css";
 import { Link, NavLink } from "react-router-dom";
 import {
   useGetHolidaysQuery,
   useDeleteHolidayMutation,
 } from "../../services/features/holidays/holidayApi";
-import { ToastContainer,toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 const AdminHolidays = () => {
   const { data: getAllHolidays } = useGetHolidaysQuery();
   const [deleteHoliday] = useDeleteHolidayMutation();
@@ -82,7 +82,7 @@ const AdminHolidays = () => {
   const handleDelete = async (id) => {
     try {
       await deleteHoliday(id).unwrap();
-      toast.success("Holiday Deleted")
+      toast.success("Holiday Deleted");
     } catch {
       console.log("Failed to delete");
     }
@@ -202,7 +202,7 @@ const AdminHolidays = () => {
                           {row.name}
                         </Link>
                       </td>
-                      <td>{row.date}</td>
+                      <td>{new Date(row.date).toLocaleDateString("en-GB")}</td>
                       <td>{row.description}</td>
                       <td>
                         <Link

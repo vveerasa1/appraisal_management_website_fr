@@ -3,8 +3,8 @@ import { createCustomApi } from "../../api";
 
 export const userApi = createCustomApi("userApi", (builder) => ({
   getReporters: builder.query({
-    query: () => ({
-      url: `${USER_ENDPOINTS.ROOT}/${USER_ENDPOINTS.REPORTERS}`,
+    query: (employeeId) => ({
+      url: `${USER_ENDPOINTS.ROOT}/${USER_ENDPOINTS.REPORTERS}?employeeId=${employeeId}`,
       method: "GET",
     }),
     providesTags: (result, error, userId) => [{ type: "Users", id: userId }],

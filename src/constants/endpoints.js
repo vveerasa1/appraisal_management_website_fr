@@ -17,6 +17,9 @@ export const USER_ENDPOINTS = {
 export const DEPARTMENT_ENDPOINTS = {
   ROOT: "/departments",
 };
+export const ATTENDENCE_ENDPOINTS = {
+  ROOT: "/attendance",
+};
 
 export const DESIGNATION_ENDPOINTS = {
   ROOT: "/designations",
