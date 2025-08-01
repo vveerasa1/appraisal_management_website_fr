@@ -34,6 +34,11 @@
   color: var(--heading-color);
 }
 
+.topbar-logo img{
+  height: 30px;
+  object-fit: contain;
+}
+
 .topbar-menu .pageTabPane li a{
   color: var(--fobt-color);
 }
