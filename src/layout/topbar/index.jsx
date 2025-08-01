@@ -9,6 +9,7 @@ import {
   useGetUserQuery,
 } from "../../services/features/users/userApi";
 import { useSelector } from "react-redux";
+import Logo from '../../assets/images/logo-black.png'
 
 const Topbar = ({ toggleSidebar }) => {
   const location = useLocation();
@@ -88,7 +89,7 @@ console.log(userData,"userDatauserDatauserData")
     <nav className="topbar">
       <div className="topbar-left">
         <Link to="#" className="topbar-logo">
-          <h3 className="topbar-brand">People Soft</h3>
+          <img className="img-fluid" src={Logo} alt="Brand Logo" />
         </Link>
         <div className="topbar-menu">
           <ul className="pageTabPane">
