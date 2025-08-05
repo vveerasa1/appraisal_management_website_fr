@@ -1,3 +1,48 @@
 .form-input:disabled{
     background-color: #F4F4F4;
 }
+
+.css-17lrb62-MuiAutocomplete-root .MuiAutocomplete-popupIndicator{
+    width: 42px;
+}
+
+.css-1n04w30-MuiInputBase-root-MuiOutlinedInput-root {
+  border-radius: 12px !important;
+  padding: 6px 10px !important;
+  font-size: 13px !important;
+}
+
+.css-1n04w30-MuiInputBase-root-MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+  border-color: #dddddd !important;
+}
+
+.MuiAutocomplete-option {
+  font-size: 13px !important;
+  padding: 10px 10px !important;
+  height: 36px !important;
+}
+
+textarea:focus, textarea:active{
+    outline: none;
+    box-shadow: none;
+}
+
+.MuiAutocomplete-root input::placeholder{
+    opacity: 1 !important;
+}
+
+.css-17lrb62-MuiAutocomplete-root .MuiAutocomplete-tag{
+    margin: 0px 3px !important;
+}
+
+.css-xx9ogs-MuiTypography-root{
+    margin-bottom: 0px !important;
+}
+
+.css-1e3qgpi-MuiInputBase-root-MuiOutlinedInput-root{
+    border-radius: 12px !important;
+}
+
+.css-96o82f-MuiFormControl-root-MuiTextField-root .MuiInputBase-root{
+    padding: 5px 10px !important;
+}

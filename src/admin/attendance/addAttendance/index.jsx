@@ -180,9 +180,9 @@ const AdminAddAttendance = () => {
     } catch (error) {
       showErrorToast(
         err?.data?.message ||
-          err?.error ||
-          err?.message ||
-          "Failed to add attendence."
+        err?.error ||
+        err?.message ||
+        "Failed to add attendence."
       );
     }
   };
@@ -209,7 +209,7 @@ const AdminAddAttendance = () => {
                   <div className="forn-group">
                     <label className="form-label">Employee</label>
                     {isLoadingReporters ? (
-                      <div>Loading employees...</div>
+                      <div className="form-input d-flex align-items-center">Loading employees...</div>
                     ) : isErrorReporters ? (
                       <div className="error-text">
                         Error loading employees:{" "}
@@ -220,7 +220,7 @@ const AdminAddAttendance = () => {
                         options={employeeOptions}
                         value={formData.selectedEmployeeIds}
                         onChange={handleEmployeeSelection}
-                        placeholder="Select employees"
+                        placeholder="---Select employees---"
                       />
                     )}
                     {errors.employees && (
@@ -386,8 +386,8 @@ const AdminAddAttendance = () => {
                       {isAddingAttendance
                         ? "Saving..."
                         : isLoadingReporters
-                        ? "Loading Employees..."
-                        : "Save"}
+                          ? "Loading Employees..."
+                          : "Save"}
                     </button>
                   </div>
                 </div>
