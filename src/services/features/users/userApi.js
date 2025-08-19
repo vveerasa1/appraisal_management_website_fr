@@ -118,9 +118,8 @@ export const userApi = createCustomApi("userApi", (builder) => ({
       }
       return {
         // Construct the URL with all relevant parameters
-        url: `${
-          USER_ENDPOINTS.ROOT
-        }/${userId}/team-members?${params.toString()}`,
+        url: `${USER_ENDPOINTS.ROOT
+          }/${userId}/team-members?${params.toString()}`,
         method: "GET",
       };
     },
@@ -133,6 +132,29 @@ export const userApi = createCustomApi("userApi", (builder) => ({
       method: "DELETE",
     }),
     invalidatesTags: ["Users"], // Add this
+  }),
+  userExist: builder.query({
+    query: () => ({
+      url: `${USER_ENDPOINTS.ROOT}/exist`,
+      method: "GET",
+    }),
+    providesTags: (result, error, userId) => [{ type: "Users", id: userId }],
+  }),
+  globalLogout: builder.mutation({
+    query: (payload) => ({
+      url: `${USER_ENDPOINTS.ROOT}/global-logout`,
+      method: "POST",
+      data:payload
+    }),
+    invalidatesTags: (result, error, userId) => [{ type: "Users", id: userId }],
+  }),
+  refreshTokens: builder.mutation({
+    query: (payload) => ({
+      url: `${USER_ENDPOINTS.ROOT}/refreshTokens`,
+      method: "POST",
+      data:payload
+    }),
+    invalidatesTags: (result, error, userId) => [{ type: "Users", id: userId }],
   }),
 }));
 
@@ -151,4 +173,8 @@ export const {
   useUpdateUserProfileMutation,
   useDeleteUserMutation,
   useGetAllUsersForAppraisalQuery,
+  useUserExistQuery,
+  // useGobalLogoutMutation,
+  useGlobalLogoutMutation,
+  useRefreshTokensMutation,
 } = userApi;

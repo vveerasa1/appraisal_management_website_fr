@@ -18,7 +18,8 @@ const Dashboard = () => {
   };
 
   const userId = useSelector((state) => state.users.id);
-  const { data: userData, isLoading: isUserLoading } = useGetUserQuery(userId);
+  console.log(userId)
+  const { data: userData, isLoading: isUserLoading } = useGetUserQuery(userId,{skip:!userId});
   const role = "Super Admin";
   const user = userData?.data;
   const { data: dashboardData, isLoading } = useGetDashboardQuery({

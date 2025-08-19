@@ -1,37 +1,73 @@
-// import { useEffect } from "react";
+import React, { useEffect, useState } from 'react';
+import { useAuth } from 'react-oidc-context';
+import { useNavigate } from 'react-router-dom';
+import {
+  useGetUserQuery,
+  useGetDashboardQuery,
+  useUserExistQuery
+} from "./services/features/users/userApi";
+import { useDispatch } from "react-redux";
+import {
+  addToken,
+  setPermissions,
+} from "./services/features/auth/authSlice";
+import { addUserInfo } from "./services/features/users/userSlice";
 
-// const AWS_COGNITO_LOGIN_URL = "https://us-east-19wz4couvt.auth.region.amazoncognito.com/login?client_id=ci9eipuin29bm62r5pcvdc3vr&response_type=code&scope=openid+profile&redirect_uri=https://yourdomain.com/callback";
+const OidcLoginRedirect = () => {
+  const auth = useAuth();
+  const navigate = useNavigate()
+  const [id, setId] = useState(null)
+  // const { data: userDetails } = useGetUserQuery(id, { skip: !id })
+  const [cognitoId, setCognitoId] = useState(null)
+  const { data: userdata } = useUserExistQuery(id, { skip: !cognitoId })
+  const dispatch = useDispatch();
 
-// const CognitoLoginRedirect = () => {
-//   useEffect(() => {
-//     window.location.href = AWS_COGNITO_LOGIN_URL;
-//   }, []);
+  console.log(userdata, "userdata")
 
-//   return null;
-// };
-
-// export default CognitoLoginRedirect;
-import React, { useEffect } from 'react';
-import * as awsconfig from './aws-exports';
-
-const CognitoLoginRedirect = () => {
   useEffect(() => {
-    console.log('awsconfig:', awsconfig);
-    console.log('awsconfig.Auth:', awsconfig.default.Auth);
+    console.log('auth', auth);
+    // auth.signoutPopup();
 
-    const { domain, redirectSignIn, responseType, scope } = awsconfig.default.Auth.oauth;
-    const clientId = awsconfig.default.Auth.userPoolWebClientId;
+    if (!auth.isLoading && !auth.isAuthenticated) {
+      console.log('auth', auth);
+      auth.signinRedirect();
+    }
+    if (auth.isAuthenticated) {
+      // auth.signoutRedirect();
+      setId(auth.user?.profile?.sub);
+      console.log(auth.user?.profile?.sub);
+      setCognitoId(auth.user?.profile?.sub)
+      localStorage.setItem('token', auth.user.id_token);
+      const groups = auth.user?.profile?.["cognito:groups"] || [];
+      console.log(groups)
+      if (groups.includes("hrmsAccess")) {
+        console.log('dashboard')
+        navigate('/callback');
+      } else {
+        navigate('/subscribe-hrms');
+      }
+    }
+  }, [auth.isLoading, auth.isAuthenticated]);
+  // useEffect(() => {
+  //   if (userdata) {
+  //     console.log(userdata, "userdata")
+  //     const token = localStorage.getItem('token')
+  //     dispatch(addToken({ role: userdata?.data?.role, accessToken: token }));
 
-    const url = new URL(`https://${domain}/login`);
-    url.searchParams.append('client_id', clientId);
-    url.searchParams.append('response_type', responseType);
-    url.searchParams.append('scope', scope.join(' '));
-    url.searchParams.append('redirect_uri', redirectSignIn);
+  //     localStorage.setItem("authUser", userdata?.data);
+  //     dispatch(addUserInfo({
+  //       id: userdata?.data?._id,
+  //       name: `${userdata?.data?.firstName} ${userdata?.data?.lastName}`,
+  //       email: userdata?.data?.email,
+  //       status: userdata?.data?.status,
+  //     }))
+  //   }
+  // }, [userdata])
+  if (auth.isLoading || !auth.isAuthenticated) {
+    return <div>Redirecting to login...</div>;
+  }
 
-    window.location.href = url.toString();
-  }, []);
-
-  return <div>Redirecting to Cognito login...</div>;
+  return null;
 };
 
-export default CognitoLoginRedirect;
+export default OidcLoginRedirect;

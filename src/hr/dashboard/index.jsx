@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import "./style.css";
 import { Link } from "react-router-dom";
 import PartyPaper from "../../assets/images/party-popper.png";
@@ -9,6 +9,7 @@ import {
   useGetDashboardQuery,
 } from "../../services/features/users/userApi";
 import { useSelector } from "react-redux";
+import { useRefreshTokensMutation } from "../../services/features/users/userApi";
 
 const HRDashboard = () => {
   const [activeTab, setActiveTab] = useState("employee");
@@ -17,6 +18,7 @@ const HRDashboard = () => {
     setActiveTab(tab);
   };
   const userId = useSelector((state) => state.users.id);
+  console.log(userId)
   const { data: userData, isLoading: isUserLoading } = useGetUserQuery(userId);
   const role = "";
 
@@ -27,6 +29,7 @@ const HRDashboard = () => {
   });
 
   const dashboard = dashboardData?.data || {};
+  
 
   return (
     <>

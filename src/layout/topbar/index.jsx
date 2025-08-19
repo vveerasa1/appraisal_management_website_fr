@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import "./style.css";
 import { Link, useLocation } from "react-router-dom";
 import User from "../../assets/images/user.png";
@@ -7,15 +7,19 @@ import { usePermission } from "../../hooks/usePermission";
 import { useNavigate } from "react-router-dom";
 import {
   useGetUserQuery,
+  useGlobalLogoutMutation,
+  useRefreshTokensMutation,
 } from "../../services/features/users/userApi";
 import { useSelector } from "react-redux";
+import { useAuth } from 'react-oidc-context';
+import { jwtDecode } from "jwt-decode";
 
 const Topbar = ({ toggleSidebar }) => {
   const location = useLocation();
   const { hasPermission } = usePermission();
   const userId = useSelector((state) => state.users.id);
   const { data: userData, isLoading: isUserLoading } = useGetUserQuery(userId);
-console.log(userData,"userDatauserDatauserData")
+  console.log(userData, "userDatauserDatauserData")
   const CAN_CREATE_USER = "user:create";
   const CAN_CREATE_DEPARTMENT = "department:create";
   const CAN_CREATE_DESIGNATION = "designation:create";
@@ -23,13 +27,15 @@ console.log(userData,"userDatauserDatauserData")
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
-
+  const auth = useAuth();
+  const [logoutApi, { isLoading: LogoutApiIsLoading }] = useGlobalLogoutMutation()
   const [isNotificationDropdownOpen, setIsNotificationDropdownOpen] =
     useState(false);
   const notificationDropdownRef = useRef(null);
 
   const [isaddmenuDropdownOpen, setIsAddmenuDropdownOpen] = useState(false);
   const addmenuDropdownRef = useRef(null);
+  const [refreshTokenApi] = useRefreshTokensMutation()
 
   const toggleDropdown = () => {
     setIsDropdownOpen((prev) => !prev);
@@ -79,10 +85,66 @@ console.log(userData,"userDatauserDatauserData")
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
+  useLayoutEffect(() => {
+    console.log("Dashboard Datalayout effect");
+    const refreshUserToken = async () => {
+      const refreshToken = localStorage.getItem('refresh_token');
+      if (refreshToken) {
+        try {
+          if (!refreshToken) {
+            throw new Error("No refresh token available");
+          }
+          await refreshTokenApi({ refreshToken: refreshToken }).unwrap().then(() => {
+            console.log("Token refreshed successfully");
+          }).catch((error) => {
+            console.error("Error refreshing token:", error);
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.href = `https://us-east-16ivaal8x0.auth.us-east-1.amazoncognito.com/logout?client_id=4ddoerjll2aonqd8srp8rljt9&logout_uri=${encodeURIComponent("http://localhost:5174")}`;
+            dispatch(addUserInfo({})); // Clear user info in Redux
+            navigate('/');
+          })
+          // localStorage.setItem("token", user.id_token); // Store new token in local storage
+        } catch (error) {
 
-  const handleLogout = () => {
-    localStorage.clear("authUser");
-    navigate("/");
+        }
+      }
+    };
+
+    // Call the function to refresh the token on component mount
+    refreshUserToken();
+  }, []);
+  useEffect(() => {
+    console.log('auth', auth);
+    // auth.signoutPopup();
+
+    if (!auth.isLoading && !auth.isAuthenticated) {
+      console.log('auth', auth);
+      localStorage.clear();
+      sessionStorage.clear();
+      // setOpen(false);
+      navigate("/");
+    }
+    if (auth.isAuthenticated) {
+      // console.log(auth.user?.profile?.sub);
+      // localStorage.setItem('token', auth.user.access_token);
+      // localStorage.setItem("authUser", auth.user?.profile);
+
+      const groups = auth.user?.profile?.["cognito:groups"] || [];
+      if (groups.includes("hrmsAccess")) {
+        // navigate('/dashboard');
+      } else {
+        navigate('/subscribe-hrms');
+      }
+    }
+  }, [auth.isLoading, auth.isAuthenticated]);
+  const handleLogout = async () => {
+    const accessToken = localStorage.getItem('token');
+    const decoded = jwtDecode(accessToken)
+    console.log(decoded)
+    await logoutApi({ email: decoded["cognito:username"] })
+
+
   };
   return (
     <nav className="topbar">
@@ -123,16 +185,16 @@ console.log(userData,"userDatauserDatauserData")
             >
               {hasPermission(CAN_CREATE_USER) && (
                 <>
-                <li>
-                  <Link to="/admin/employee/add" className="dropdown-item">
-                    <i className="fa fa-plus-circle"></i> Add Employee
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/admin/attendance/add" className="dropdown-item">
-                    <i className="fa fa-plus-circle"></i> Add Attendance
-                  </Link>
-                </li>
+                  <li>
+                    <Link to="/admin/employee/add" className="dropdown-item">
+                      <i className="fa fa-plus-circle"></i> Add Employee
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/admin/attendance/add" className="dropdown-item">
+                      <i className="fa fa-plus-circle"></i> Add Attendance
+                    </Link>
+                  </li>
                 </>
               )}
               {/* <li>
@@ -218,14 +280,14 @@ console.log(userData,"userDatauserDatauserData")
         {/* admin */}
         <div className="user" ref={dropdownRef}>
           <button className="user-avatar" onClick={toggleDropdown}>
-            {userData?.data?.profilePhotoUrl?
-             <img className="img-fluid" style={{
-              borderRadius:'50%'
-             }}
-              height={'100%'} width={'100%'}
-               src={userData?.data?.profilePhotoUrl} alt="Avatar" />:
-             
-            <img className="img-fluid" src={User} alt="Avatar" />}
+            {userData?.data?.profilePhotoUrl ?
+              <img className="img-fluid" style={{
+                borderRadius: '50%'
+              }}
+                height={'100%'} width={'100%'}
+                src={userData?.data?.profilePhotoUrl} alt="Avatar" /> :
+
+              <img className="img-fluid" src={User} alt="Avatar" />}
           </button>
           <ul className={`dropdown-menu ${isDropdownOpen ? "show" : ""}`}>
             <li>

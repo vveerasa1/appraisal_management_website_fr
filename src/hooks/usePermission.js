@@ -1,7 +1,8 @@
 import { useSelector } from "react-redux";
 
 export const usePermission = () => {
-  const userPermissions = useSelector((state) => state.auth.permissions); // Get permissions array from your auth slice
+  const userPermissions = useSelector((state) => state.auth.permissions);
+  console.log(userPermissions) // Get permissions array from your auth slice
   //   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated); // Get authentication status
 
   const hasPermission = (permissionSlug) => {

@@ -88,6 +88,9 @@ import { useEffect } from "react";
 import SuperAdminProtectedRoute from "./routes/protected/SuperAdminProtectedRoute";
 import AuthProtectedRoute from "./routes/protected/AuthProtectedRoute";
 import CognitoLoginRedirect from './CognitoLoginRedirect'
+import Callback from "./Callback";
+import SubscribeToHRMS from "./auth/SubscribeToHRMS";
+
 function App() {
   return (
     <Router>
@@ -101,6 +104,8 @@ function App() {
         <Route path="/otp-verify" element={<OTPVerify />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/reset-success" element={<ResetSuccess />} />
+        <Route path="/callback" element={<Callback />} />
+        <Route path="/subscribe-hrms" element={<SubscribeToHRMS />} />
 
         {/* Routes for pages with Sidebar and Topbar */}
         <Route
