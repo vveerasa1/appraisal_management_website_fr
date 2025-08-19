@@ -21,6 +21,7 @@ import { useGetDesignationsQuery } from "../../../services/features/designation/
 import { useGetRolesQuery } from "../../../services/features/roles/roleApi";
 import { useSelector } from "react-redux";
 import { usePermission } from "../../../hooks/usePermission";
+import { useGetEmployeeTreeQuery,useGetDepartmentTreeQuery } from "../../../services/features/users/userApi";
 
 const InitialValues = {
   id: "",
@@ -123,6 +124,16 @@ const EditEmployee = () => {
     { value: "Inactive", label: "Inactive" },
   ];
 
+
+
+    const { data:employeeTreeData,refetch:empRefetch } = useGetEmployeeTreeQuery();
+    const {
+      data: deptData,
+      isLoading: deptLoading,
+      error: deptError,
+      refetch: deptRefetch,
+    } = useGetDepartmentTreeQuery();
+  
   useEffect(() => {
     if (userData?.data) {
       const {
@@ -286,6 +297,8 @@ const EditEmployee = () => {
       // If no change, or photo was removed and backend needs no signal, no action needed.
 
       await updateUser(formData).unwrap();
+      empRefetch();
+      deptRefetch();
       showSuccessToast("Employee updated successfully!");
       navigate(`/admin/employee/view/${rest.id}`); // Navigate back after successful update
       refetch(); // Refetch user data to update the view
