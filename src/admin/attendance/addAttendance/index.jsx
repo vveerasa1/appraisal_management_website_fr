@@ -40,7 +40,7 @@ const AdminAddAttendance = () => {
     isLoading: isLoadingReporters,
     isError: isErrorReporters,
     error: reportersError,
-  } = useGetReportersQuery();
+  } = useGetReportersQuery({});
 
   const employeeOptions = useMemo(() => {
     // Corrected access to data and added a console.log for debugging
@@ -180,9 +180,9 @@ const AdminAddAttendance = () => {
     } catch (error) {
       showErrorToast(
         err?.data?.message ||
-        err?.error ||
-        err?.message ||
-        "Failed to add attendence."
+          err?.error ||
+          err?.message ||
+          "Failed to add attendence."
       );
     }
   };
@@ -209,7 +209,9 @@ const AdminAddAttendance = () => {
                   <div className="forn-group">
                     <label className="form-label">Employee</label>
                     {isLoadingReporters ? (
-                      <div className="form-input d-flex align-items-center">Loading employees...</div>
+                      <div className="form-input d-flex align-items-center">
+                        Loading employees...
+                      </div>
                     ) : isErrorReporters ? (
                       <div className="error-text">
                         Error loading employees:{" "}
@@ -386,8 +388,8 @@ const AdminAddAttendance = () => {
                       {isAddingAttendance
                         ? "Saving..."
                         : isLoadingReporters
-                          ? "Loading Employees..."
-                          : "Save"}
+                        ? "Loading Employees..."
+                        : "Save"}
                     </button>
                   </div>
                 </div>

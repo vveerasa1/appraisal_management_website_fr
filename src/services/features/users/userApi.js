@@ -3,7 +3,7 @@ import { createCustomApi } from "../../api";
 
 export const userApi = createCustomApi("userApi", (builder) => ({
   getReporters: builder.query({
-    query: (employeeId) => ({
+    query: ({ employeeId }) => ({
       url: `${USER_ENDPOINTS.ROOT}/${USER_ENDPOINTS.REPORTERS}?employeeId=${employeeId}`,
       method: "GET",
     }),

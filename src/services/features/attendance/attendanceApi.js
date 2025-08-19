@@ -9,5 +9,40 @@ export const attendanceApi = createCustomApi("attendanceApi", (builder) => ({
     }),
     invalidatesTags: ["Attendance"], // <-- Add this
   }),
+  getAttendanceSummary: builder.query({
+    query: ({ userId, month, year, mode, startDate, endDate, date }) => ({
+      url: `${ATTENDENCE_ENDPOINTS.ROOT}/summary/${userId}`,
+      method: "GET",
+      params: {
+        month,
+        year,
+        mode,
+        startDate,
+        endDate,
+        date,
+      },
+    }),
+    providesTags: ["Attendance"],
+  }),
+  getAttendance: builder.query({
+    query: (id) => ({
+      url: `${ATTENDENCE_ENDPOINTS.ROOT}/${id}`,
+      method: "GET",
+    }),
+    providesTags: ["Attendance"],
+  }),
+
+  deleteAttendance: builder.mutation({
+    query: (id) => ({
+      url: `${ATTENDENCE_ENDPOINTS.ROOT}/${id}`,
+      method: "DELETE",
+    }),
+    invalidatesTags: ["Attendance"], // Add this
+  }),
 }));
-export const { useAddAttendanceMutation } = attendanceApi;
+export const {
+  useAddAttendanceMutation,
+  useGetAttendanceSummaryQuery,
+  useGetAttendanceQuery,
+  useDeleteAttendanceMutation,
+} = attendanceApi;

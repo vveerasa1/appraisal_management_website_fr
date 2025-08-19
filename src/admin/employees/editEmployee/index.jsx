@@ -174,7 +174,7 @@ const EditEmployee = () => {
     isLoading: isReporterLoading,
     isError: isReporterError,
     error: reporterError,
-  } = useGetReportersQuery();
+  } = useGetReportersQuery({ employeeId: "" });
 
   useApiErrorToast(
     isUserDataError,

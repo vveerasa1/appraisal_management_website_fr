@@ -450,7 +450,7 @@ function App() {
           }
         />
         <Route
-          path="/admin/attendance/edit"
+          path="/admin/attendance/edit/:id"
           element={
             <AuthProtectedRoute>
               <AppLayout>
@@ -460,7 +460,7 @@ function App() {
           }
         />
         <Route
-          path="/admin/attendance/view"
+          path="/admin/attendance/view/:id"
           element={
             <AuthProtectedRoute>
               <AppLayout>

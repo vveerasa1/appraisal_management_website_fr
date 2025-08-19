@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./style.css";
-import { Link, useParams, useLocation ,useNavigate} from "react-router-dom";
+import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 import {
   useAddHolidayMutation,
   useGetHolidayByIdQuery,
@@ -9,7 +9,7 @@ import {
 } from "../../../services/features/holidays/holidayApi";
 import { useSelector } from "react-redux";
 import dayjs from "dayjs";
-import { showSuccessToast,showErrorToast } from "../../../utils/toast";
+import { showSuccessToast, showErrorToast } from "../../../utils/toast";
 
 const HolidayForm = () => {
   const userId = useSelector((state) => state.users.id);
@@ -37,9 +37,8 @@ const HolidayForm = () => {
   const singleHoliday = getSingleHoliday?.data || [];
   console.log(singleHoliday, "single");
   useEffect(() => {
-    console.log("show holidays")
+    console.log("show holidays");
     if (id && singleHoliday) {
-
       setFormData({
         holidayName: singleHoliday?.name,
         date: dayjs(singleHoliday?.date).format("YYYY-MM-DD"),
@@ -47,6 +46,13 @@ const HolidayForm = () => {
       });
     }
   }, [id, singleHoliday]);
+  const addedByName = singleHoliday.addedBy
+    ? `${singleHoliday.addedBy.firstName} ${singleHoliday.addedBy.lastName}`
+    : "Unknown User";
+
+  const modifiedByName = singleHoliday.modifiedBy
+    ? `${singleHoliday.modifiedBy.firstName} ${singleHoliday.modifiedBy.lastName}`
+    : null;
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({
@@ -105,29 +111,28 @@ const HolidayForm = () => {
         description: "",
       });
       setErrors({});
-        setTimeout(() => {
-        navigate('/admin/holidays');
+      setTimeout(() => {
+        navigate("/admin/holidays");
       }, 500); // 500ms delay
     } catch (error) {
       console.error("Error submitting holiday:", error);
-     showErrorToast("Failed to submit holiday. Please try again.");
+      showErrorToast("Failed to submit holiday. Please try again.");
     }
   };
   const handleDelete = async (id) => {
     try {
       await deleteHoliday(id);
-      showSuccessToast("Holiday Deleted")
-      navigate('/admin/holidays')
+      showSuccessToast("Holiday Deleted");
+      navigate("/admin/holidays");
     } catch {
       console.error("Error deleting holiday");
     }
   };
   return (
     <>
-
       <div className="pageTanDiv">
-              {/* ToastContainer removed here */}
-      
+        {/* ToastContainer removed here */}
+
         <ul className="pageTabPane">
           <li className="active">
             <Link to="/admin/holidays">Holidays</Link>
@@ -296,7 +301,7 @@ const HolidayForm = () => {
                         <input
                           type="text"
                           className="editform-input"
-                          value="Admin"
+                          value={addedByName}
                           placeholder=""
                           disabled
                         />
@@ -308,7 +313,9 @@ const HolidayForm = () => {
                         <input
                           type="text"
                           className="editform-input"
-                          value="20/07/2024"
+                          value={dayjs(singleHoliday.createdAt).format(
+                            "MM/DD/YYYY, h:mm:ss A"
+                          )}
                           placeholder=""
                           disabled
                         />
@@ -320,7 +327,7 @@ const HolidayForm = () => {
                         <input
                           type="text"
                           className="editform-input"
-                          value="Admin"
+                          value={modifiedByName}
                           placeholder=""
                           disabled
                         />
@@ -332,7 +339,13 @@ const HolidayForm = () => {
                         <input
                           type="text"
                           className="editform-input"
-                          value="20/07/2024"
+                          value={
+                            singleHoliday.modifiedTime
+                              ? dayjs(singleHoliday.modifiedTime).format(
+                                  "MM/DD/YYYY, h:mm:ss A"
+                                )
+                              : ""
+                          }
                           placeholder=""
                           disabled
                         />
@@ -346,7 +359,7 @@ const HolidayForm = () => {
                     <button
                       className="theme-btn btn-border"
                       type="button"
-                      onClick={() =>navigate('/admin/holidays')}
+                      onClick={() => navigate("/admin/holidays")}
                     >
                       Cancel
                     </button>

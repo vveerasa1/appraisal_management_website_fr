@@ -20,7 +20,7 @@ const AddDepartment = () => {
 
   // Fetch department leads (reporters)
   const { data: reportersData, isLoading: isLoadingReporters } =
-    useGetReportersQuery();
+    useGetReportersQuery({ employeeId: "" });
   // Fetch parent departments
   const { data: departmentsData, isLoading: isLoadingDepartments } =
     useGetDepartmentsQuery({ search: "" });
@@ -50,7 +50,7 @@ const AddDepartment = () => {
       );
     }
   };
-  
+
   return (
     <>
       <div className="pageTanDiv">

@@ -113,7 +113,7 @@ export default function EmployeeForm() {
     isLoading: isReporterLoading,
     isError: isReporterError,
     error: reporterError,
-  } = useGetReportersQuery();
+  } = useGetReportersQuery( {employeeId: "" });
 
   const {
     data: rolesData,
@@ -266,7 +266,7 @@ export default function EmployeeForm() {
                       onClick={() => {
                         resetForm(initialValues);
                         handleRemove();
-                        navigate('/admin/employees')
+                        navigate("/admin/employees");
                       }}
                     >
                       Cancel
