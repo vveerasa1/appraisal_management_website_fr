@@ -33,7 +33,7 @@ const ViewDepartment = () => {
 
   // Fetch all employees for Department Lead dropdown
   const { data: reportersData, isLoading: reportersLoading } =
-    useGetReportersQuery();
+    useGetReportersQuery({ employeeId: "" });
   const reporters = reportersData?.data || [];
 
   const [deleteDepartment, { isLoading: isDeleting }] =
@@ -77,7 +77,7 @@ const ViewDepartment = () => {
   const handleEdit = () => {
     setEditMode(true);
     navigate(`/admin/organization/department/edit/${id}`);
-  }
+  };
   const handleCancel = () => {
     setEditMode(false);
     if (department) {
@@ -89,7 +89,6 @@ const ViewDepartment = () => {
       });
     }
     navigate(`/admin/organization/department`);
-
   };
 
   const handleDelete = async () => {

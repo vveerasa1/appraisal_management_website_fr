@@ -8,6 +8,8 @@ import {
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import AppLayout from "./layout";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 // auth
 import SignIn from "./auth/signin";
 import ForgotPassword from "./auth/forgotPassword";
@@ -55,6 +57,9 @@ import AdminAttendance from "./admin/attendance";
 import AdminAddAttendance from "./admin/attendance/addAttendance";
 import AdminEditAttendance from "./admin/attendance/editAttendance"
 import AdminViewAttendance from "./admin/attendance/viewAttendance"
+// holidays
+import AdminHolidays from "./admin/holidays";
+import AdminAddHoliday from "./admin/holidays/HolidayForm";
 
 // ***** employee ***** //
 import EmployeeDashboard from "./employee/dashboard";
@@ -450,7 +455,7 @@ function App() {
           }
         />
         <Route
-          path="/admin/attendance/edit"
+          path="/admin/attendance/edit/:id"
           element={
             <AuthProtectedRoute>
               <AppLayout>
@@ -460,7 +465,7 @@ function App() {
           }
         />
         <Route
-          path="/admin/attendance/view"
+          path="/admin/attendance/view/:id"
           element={
             <AuthProtectedRoute>
               <AppLayout>
@@ -469,6 +474,46 @@ function App() {
             </AuthProtectedRoute>
           }
         />
+        <Route
+          path="/admin/holidays"
+          element={
+            <AuthProtectedRoute>
+              <AppLayout>
+                <AdminHolidays />
+              </AppLayout>
+            </AuthProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/holiday/:type?/:id?"
+          element={
+            <AuthProtectedRoute>
+              <AppLayout>
+                <AdminAddHoliday />
+              </AppLayout>
+            </AuthProtectedRoute>
+          }
+        />
+        {/* <Route
+          path="/admin/holiday/edit"
+          element={
+            <AuthProtectedRoute>
+              <AppLayout>
+                <AdminEditHoliday />
+              </AppLayout>
+            </AuthProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/holiday/view"
+          element={
+            <AuthProtectedRoute>
+              <AppLayout>
+                <AdminViewHoliday />
+              </AppLayout>
+            </AuthProtectedRoute>
+          }
+        /> */}
 
         {/* employee */}
         <Route

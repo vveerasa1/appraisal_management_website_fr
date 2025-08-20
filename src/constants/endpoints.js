@@ -17,6 +17,9 @@ export const USER_ENDPOINTS = {
 export const DEPARTMENT_ENDPOINTS = {
   ROOT: "/departments",
 };
+export const ATTENDENCE_ENDPOINTS = {
+  ROOT: "/attendance",
+};
 
 export const DESIGNATION_ENDPOINTS = {
   ROOT: "/designations",
@@ -25,3 +28,7 @@ export const DESIGNATION_ENDPOINTS = {
 export const ROLE_ENDPOINTS = {
   ROOT: "/roles",
 };
+
+export const URL_CONSTANTS = {
+  BASE_URL:"http://44.211.37.68:4003/api"
+}

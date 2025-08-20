@@ -13,6 +13,7 @@ import {
 import { useSelector } from "react-redux";
 import { useAuth } from 'react-oidc-context';
 import { jwtDecode } from "jwt-decode";
+import Logo from '../../assets/images/logo-black.png'
 
 const Topbar = ({ toggleSidebar }) => {
   const location = useLocation();
@@ -150,7 +151,7 @@ const Topbar = ({ toggleSidebar }) => {
     <nav className="topbar">
       <div className="topbar-left">
         <Link to="#" className="topbar-logo">
-          <h3 className="topbar-brand">People Soft</h3>
+          <img className="img-fluid" src={Logo} alt="Brand Logo" />
         </Link>
         <div className="topbar-menu">
           <ul className="pageTabPane">
